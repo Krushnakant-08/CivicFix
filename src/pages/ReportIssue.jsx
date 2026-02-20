@@ -21,7 +21,7 @@ export default function ReportIssue() {
     <div className="min-h-[calc(100vh-80px)] bg-mesh py-12 px-4 flex items-center justify-center font-sans">
       
       {/* Light Glassmorphism Card matching the Home Page */}
-      <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl p-8 md:p-12 relative overflow-hidden animate-slide-up rounded-[2rem] shadow-xl border border-slate-100">
+      <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl p-8 md:p-12 relative overflow-hidden animate-slide-up rounded-4xl shadow-xl border border-slate-100">
         
         {/* Subtle decorative glows behind the form */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl -z-10 animate-float"></div>

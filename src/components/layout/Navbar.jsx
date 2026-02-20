@@ -28,7 +28,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
               C
             </div>
             <span className="font-extrabold text-2xl tracking-tight text-slate-900">

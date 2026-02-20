@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-2 group mb-4 w-fit">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md">
+              <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md">
                 C
               </div>
               <span className="font-extrabold text-xl tracking-tight text-slate-900">
