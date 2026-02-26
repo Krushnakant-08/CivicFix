@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,9 +59,38 @@ export default function Navbar() {
 
             <div className="w-px h-6 bg-slate-200"></div> 
             
-            <button className="font-medium text-slate-600 hover:text-slate-900 transition-colors">
-              Sign In
-            </button>
+            {isAuthenticated ? (
+              <>
+                <span className="font-medium text-slate-600">
+                  Hi, {user?.name?.split(' ')[0] || 'User'}
+                </span>
+                <button
+                  onClick={logout}
+                  className="font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className={`font-medium transition-colors hover:text-blue-600 ${
+                    isActive('/login') ? 'text-blue-600' : 'text-slate-600'
+                  }`}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/signup"
+                  className={`font-medium transition-colors hover:text-blue-600 ${
+                    isActive('/signup') ? 'text-blue-600' : 'text-slate-600'
+                  }`}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
             
             <Link to="/report">
               <Button variant="primary" className="py-2.5 px-5 text-sm">
