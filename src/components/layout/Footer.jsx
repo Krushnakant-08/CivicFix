@@ -15,7 +15,7 @@ export default function Footer() {
                 C
               </div>
               <span className="font-extrabold text-xl tracking-tight text-slate-900">
-                Civic<span className="text-blue-600">Connect</span>
+                Civic<span className="text-blue-600">Fix</span>
               </span>
             </Link>
             <p className="text-slate-500 leading-relaxed max-w-sm">
@@ -66,7 +66,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-slate-400 text-sm">
-            © {new Date().getFullYear()} CivicConnect. All rights reserved.
+            © {new Date().getFullYear()} CivicFix. All rights reserved.
           </p>
           <div className="flex gap-4">
             <div className="w-8 h-8 rounded-full bg-slate-100 hover:bg-blue-100 cursor-pointer transition-colors" aria-hidden="true"></div>

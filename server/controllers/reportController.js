@@ -383,6 +383,24 @@ export const upvoteReport = async (req, res) => {
 
     await report.save();
 
+    // Notify reporter about upvote (only on new upvotes, not self-upvotes)
+    if (!alreadyUpvoted && report.reporter && report.reporter.toString() !== req.user._id.toString()) {
+      try {
+        const notification = await Notification.createNotification({
+          recipient: report.reporter,
+          type: 'report_upvoted',
+          title: 'Your report received an upvote',
+          message: `Someone upvoted your report "${report.title}" (${report.trackingId}). Total: ${report.upvotes} upvotes.`,
+          relatedReport: report._id,
+          trackingId: report.trackingId,
+          metadata: { actionBy: req.user._id },
+        });
+        emitToUser(report.reporter.toString(), 'notification:new', notification);
+      } catch (notifErr) {
+        console.error('Upvote notification error:', notifErr);
+      }
+    }
+
     res.json({
       message: alreadyUpvoted ? 'Upvote removed' : 'Report upvoted',
       upvotes: report.upvotes,

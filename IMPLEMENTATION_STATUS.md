@@ -1,7 +1,7 @@
 # CivicFix — Implementation Status
 
-> **Last Updated:** April 10, 2026
-> **Resume From:** Phase 4 — Real-Time Communication (Finalizing FCM/Twilio)
+> **Last Updated:** April 10, 2026 (22:00 IST)
+> **Resume From:** Phase 5 — AI Intelligence Layer
 
 ---
 
@@ -14,14 +14,14 @@ Everything below is built, tested, and working.
 |:---|:---|
 | `src/App.jsx` | Main router — public routes, protected routes (role-gated), 404 |
 | `src/main.jsx` | React entry point |
-| `src/index.css` | Design system — Inter font, glass-card, animations, bg-mesh |
+| `src/index.css` | Design system — Inter font, card/button utilities, slide-up animation, skeleton shimmer |
 | `src/context/AuthContext.jsx` | Auth state (login, register, logout, getMe, role checks) |
 | `src/services/api.js` | Fetch wrapper — authAPI, usersAPI, reportsAPI, healthCheck |
 | `src/components/auth/ProtectedRoute.jsx` | Route guard (auth + role check + loading state) |
-| `src/components/layout/Navbar.jsx` | Responsive nav with scroll blur, user dropdown, role badges |
-| `src/components/layout/Footer.jsx` | Site footer with real links to /report, /feed |
-| `src/components/ui/Button.jsx` | Reusable button (primary gradient / secondary outline) |
-| `src/pages/Home.jsx` | Landing page — hero + feature grid |
+| `src/components/layout/Navbar.jsx` | Responsive nav with scroll effect, user dropdown, role badges |
+| `src/components/layout/Footer.jsx` | Site footer with quick links, social icons (GitHub, X) |
+| `src/components/ui/Button.jsx` | Reusable button (primary / secondary variants) |
+| `src/pages/Home.jsx` | Landing page — hero + "How it works" steps + feature grid + dark CTA |
 | `src/pages/Login.jsx` | Login form — email/password, error display, redirect-after-login |
 | `src/pages/Register.jsx` | Register form — name, email, phone, password, confirm |
 
@@ -35,7 +35,7 @@ Everything below is built, tested, and working.
 | `server/models/Report.js` | Report schema — tracking ID, location, images, status history, AI fields |
 | `server/middleware/auth.js` | `protect`, `optionalAuth`, `authorize` middleware |
 | `server/controllers/authController.js` | Register, login, getMe, createStaffAccount |
-| `server/controllers/reportController.js` | CRUD + track, upvote, assign, stats |
+| `server/controllers/reportController.js` | CRUD + track, upvote (with notification), assign, stats |
 | `server/controllers/userController.js` | getAllUsers, getById, updateProfile, updateRole, toggleStatus |
 | `server/routes/auth.js` | POST register/login, GET me, POST create-staff (admin) |
 | `server/routes/reports.js` | Full report routes with role guards |
@@ -56,9 +56,9 @@ Everything below is built, tested, and working.
 ### What was built:
 | File | What it does |
 |:---|:---|
-| `src/pages/ReportIssue.jsx` | **Full report submission form** — title, category (7 types with icon cards), description with char counter, GPS auto-location via Geolocation API + reverse geocoding (OpenStreetMap Nominatim), drag-and-drop image upload with previews (up to 3 images), anonymous reporting toggle, success state with tracking ID + copy-to-clipboard, real API integration |
-| `src/pages/TrackReport.jsx` | **Report tracker** — search by tracking ID, displays status badge, detail grid, status timeline, upvote count |
-| `src/pages/MyReports.jsx` | **Citizen dashboard** — fetches user's reports, status filter tabs (All/Reported/In Progress/Resolved/Closed), report cards with expand/collapse details + status timeline, empty states, pagination-ready |
+| `src/pages/ReportIssue.jsx` | **Full report submission form** — title, category selector (7 types), description with char counter, GPS auto-location via Geolocation API + reverse geocoding (OpenStreetMap Nominatim), drag-and-drop image upload with previews (up to 3 images), anonymous reporting toggle, success state with tracking ID + copy-to-clipboard |
+| `src/pages/TrackReport.jsx` | **Report tracker** — search by tracking ID, displays status badge with colored dot, detail grid, status timeline with connector dots |
+| `src/pages/MyReports.jsx` | **Citizen dashboard** — fetches user's reports, status filter tabs (All/Reported/In Progress/Resolved/Closed), expand/collapse report details + status timeline, pagination |
 
 ### Key Details:
 - **GPS Auto-Location:** `navigator.geolocation` → reverse geocodes via OpenStreetMap Nominatim → auto-fills address + lat/lng
@@ -76,61 +76,65 @@ Everything below is built, tested, and working.
 #### Reusable Components
 | File | What it does |
 |:---|:---|
-| `src/components/reports/ReportCard.jsx` | **Reusable report card** — 3 variants (default, compact, admin), status badges, priority tags, category icons, image thumbnails, action buttons (Acknowledge/Start Work/Resolve/Reject/Assign) |
-| `src/components/reports/FilterBar.jsx` | **Reusable filter bar** — dropdowns for category, status, priority, sort, optional search, reset button |
+| `src/components/reports/ReportCard.jsx` | **Reusable report card** — 3 variants (default, compact, admin), colored-dot status badges, priority tags, image thumbnails, action buttons (Acknowledge/Start Work/Resolve/Reject/Assign) |
+| `src/components/reports/FilterBar.jsx` | **Reusable filter bar** — dropdowns for category, status, priority, sort, reset button |
 
 #### Pages
 | File | What it does |
 |:---|:---|
-| `src/pages/DepartmentDashboard.jsx` | **Department Dashboard** (`/dashboard/department`) — Stats cards (Open/In Progress/Resolved/Total), status filter, list of department-scoped reports with action buttons to update status (acknowledge → in_progress → resolved), pagination |
-| `src/pages/AdminDashboard.jsx` | **Admin Dashboard** (`/dashboard/admin`) — 4-tab interface: **Overview** (aggregate stats with progress bars by category & priority), **All Reports** (full filter bar + report cards with status update + department assignment modal), **Users** (list with role change dropdown, activate/deactivate toggle, department filter), **Create Staff** (form to create department/admin accounts) |
-| `src/pages/PublicFeed.jsx` | **Community Feed** (`/feed`) — 2-column grid of all reports, full filter bar (category/status/priority/sort), upvote buttons for authenticated users, "Report Issue" CTA, pagination |
-
-#### Updated Files
-| File | Changes |
-|:---|:---|
-| `src/App.jsx` | Replaced placeholders with real `DepartmentDashboard` + `AdminDashboard`, added `/feed` route |
-| `src/components/layout/Navbar.jsx` | Added "Feed" link in desktop and mobile navigation |
-| `src/components/layout/Footer.jsx` | "Issue Feed" placeholder now links to `/feed` |
-| `src/services/api.js` | Added `authAPI.createStaff()` method for admin account creation |
+| `src/pages/DepartmentDashboard.jsx` | **Department Dashboard** (`/dashboard/department`) — Number-based stats (Open/In Progress/Resolved/Total), status filter, list of department-scoped reports with action buttons, pagination |
+| `src/pages/AdminDashboard.jsx` | **Admin Dashboard** (`/dashboard/admin`) — 4-tab interface: **Overview** (aggregate stats with progress bars by category & priority), **All Reports** (filter bar + report cards with status update + department assignment modal), **Users** (list with role change, activate/deactivate), **Create Staff** (form for department/admin accounts) |
+| `src/pages/PublicFeed.jsx` | **Community Feed** (`/feed`) — 2-column grid of all reports, full filter bar, SVG upvote buttons for authenticated users, "Report Issue" CTA, pagination |
 
 ### Key Details:
-- **Department Dashboard** scoped by `user.department` — only shows reports assigned to that department
-- **Admin Dashboard tabs:** Overview (stats charts), All Reports (manage all), Users (manage all), Create Staff (new accounts)
-- **Assignment Modal:** Admin can reassign reports to any department via overlay dialog
-- **User Management:** Change roles (citizen/department/admin), activate/deactivate accounts
-- **Public Feed** shows all reports with upvote capability for logged-in users
+- Department Dashboard scoped by `user.department`
+- Admin tabs: Overview, All Reports, Users, Create Staff
+- Assignment Modal: Admin can reassign reports to any department
+- User Management: Change roles, activate/deactivate accounts
+- Public Feed with upvote capability for logged-in users
 
 ---
 
-## 🔄 Phase 4 — Real-Time Communication & Notifications (IN PROGRESS)
+## ✅ Phase 4 — Real-Time Communication & Notifications (COMPLETE)
 
-> **CURRENT FOCUS:** Finalizing Push Notifications (FCM) and External Alerts (Twilio).
+### What was built:
 
-### What has been built:
-1. **WebSocket integration** — Socket.io server and client integration ✅
-2. **In-App Notifications** — Real-time notification feed with unread count ✅
-3. **Notification Persistence** — Database model and API endpoints for alerts ✅
+#### WebSocket Infrastructure
+| File | What it does |
+|:---|:---|
+| `server/socket.js` | Socket.io server — JWT auth middleware, room management (user, role, department) |
+| `src/services/socket.js` | Socket.io client — authenticated connection, event subscription/emission |
 
-### What needs to be built:
-1. **Push notifications** — Firebase Cloud Messaging (FCM) ⬜
-2. **Email/SMS notifications** — Twilio for status change alerts ⬜
-3. **Live map updates** — Real-time issue markers ⬜
-4. **Estimated resolution time** — ETA display based on historical data ⬜
+#### In-App Notification System
+| File | What it does |
+|:---|:---|
+| `server/models/Notification.js` | Schema — recipient, type (6 types), title, message, relatedReport, trackingId, isRead, metadata |
+| `server/controllers/notificationController.js` | CRUD — getNotifications (paginated), getUnreadCount, markAsRead, markAllAsRead, deleteNotification, clearReadNotifications |
+| `server/routes/notifications.js` | Routes — all require authentication |
+| `src/context/NotificationContext.jsx` | Global notification state, WebSocket listeners for new notifications, unread count management |
+| `src/components/ui/NotificationBell.jsx` | Navbar dropdown — emoji type indicators, timeAgo display, mark read, delete, clear, tracking ID links |
 
-### Prerequisites:
-- Install `socket.io` (server) and `socket.io-client` (frontend)
-- Set up Firebase project for FCM
-- Set up Twilio account for SMS
+#### Notification Triggers
+| Event | What Happens |
+|:---|:---|
+| **Report status change** | Reporter receives in-app + WebSocket notification with new status and optional note |
+| **Report assigned to dept** | Reporter notified about department assignment; department receives WebSocket event |
+| **Report upvoted** | Reporter notified (only for new upvotes by other users, not self-upvotes) |
+| **Report update broadcast** | All public feed listeners receive `report:updated` event |
 
-### Files created/modified:
-- `server/socket.js` — **COMPLETE** (Socket.io handlers)
-- `server/index.js` — **COMPLETE** (Integrated socket server)
-- `server/models/Notification.js` — **COMPLETE** (Schema for alerts)
-- `server/routes/notifications.js` — **COMPLETE** (CRUD for alerts)
-- `src/services/socket.js` — **COMPLETE** (Socket.io client service)
-- `src/context/NotificationContext.jsx` — **COMPLETE** (Global notification state)
-- `src/components/ui/NotificationBell.jsx` — **COMPLETE** (Navbar component)
+### Key Details:
+- Socket.io integrated with JWT authentication for secure connections
+- All notification types: `status_change`, `report_assigned`, `report_upvoted`, `new_report`, `report_resolved`, `system`
+- Notifications persist in MongoDB with read/unread state
+- Real-time delivery via WebSocket, fallback to polling on reconnect
+- Upvote notifications include a try/catch to not break the upvote action on notification failure
+
+---
+
+### Minor Fixes Applied:
+- **Branding:** Fixed "CivicConnect" → "CivicFix" in Footer (both logo text and copyright)
+- **HTML Title:** Fixed `<title>crowdsourcing</title>` → `<title>CivicFix — Civic Issue Tracker</title>` with proper meta description
+- **Server .env:** Added missing `JWT_SECRET` and `NODE_ENV` variables
 
 ---
 
@@ -174,10 +178,10 @@ Everything below is built, tested, and working.
 | Auth | JWT (bcrypt + jsonwebtoken) | ✅ Active |
 | Storage | Base64 (temporary) → Firebase/Cloudinary (planned) | 🔄 Partial |
 | Real-Time | Socket.io | ✅ Active |
+| Notifications | In-app (Socket.io + MongoDB) | ✅ Active |
 | Maps | Leaflet.js / Mapbox GL | ⬜ Phase 6 |
 | AI/ML | TensorFlow.js, OpenAI | ⬜ Phase 5 |
-| Notifications | Socket.io (In-app) | ✅ Active |
-| Notifications | FCM, Twilio (External) | ⬜ Phase 4 |
+| Notifications | FCM, Twilio (External push/SMS) | ⬜ Phase 5+ |
 | Deployment | Vercel + Railway/AWS | ⬜ Phase 8 |
 
 ---
@@ -186,53 +190,61 @@ Everything below is built, tested, and working.
 
 ```
 src/
-├── App.jsx                              # Router with all routes
+├── App.jsx                              # Router with all routes + 404
 ├── main.jsx                             # React entry
-├── index.css                            # Design system
+├── index.css                            # Design system (card, btn, input, animations)
 ├── context/
-│   └── AuthContext.jsx                  # Auth state management
+│   ├── AuthContext.jsx                  # Auth state management
+│   └── NotificationContext.jsx          # Global notification state + WebSocket
 ├── services/
-│   └── api.js                           # API service layer
+│   ├── api.js                           # API service layer
+│   └── socket.js                        # Socket.io client
 ├── components/
 │   ├── auth/
 │   │   └── ProtectedRoute.jsx           # Route guard
 │   ├── layout/
-│   │   ├── Navbar.jsx                   # Top navigation
-│   │   └── Footer.jsx                   # Footer
+│   │   ├── Navbar.jsx                   # Top navigation (CivicFix branding)
+│   │   └── Footer.jsx                   # Footer with SVG social icons
 │   ├── ui/
-│   │   └── Button.jsx                   # Reusable button
+│   │   ├── Button.jsx                   # Reusable button (primary/secondary)
+│   │   └── NotificationBell.jsx         # Notification dropdown
 │   └── reports/
-│       ├── ReportCard.jsx               # Report card (3 variants)
+│       ├── ReportCard.jsx               # Report card (3 variants, colored-dot badges)
 │       └── FilterBar.jsx                # Filter dropdowns
 └── pages/
-    ├── Home.jsx                         # Landing page
+    ├── Home.jsx                         # Landing page (hero, steps, features, CTA)
     ├── Login.jsx                        # Login form
     ├── Register.jsx                     # Register form
     ├── ReportIssue.jsx                  # Submit report (GPS, images, anon)
     ├── TrackReport.jsx                  # Track by ID
     ├── MyReports.jsx                    # Citizen's reports
-    ├── PublicFeed.jsx                   # Community issue feed
+    ├── PublicFeed.jsx                   # Community issue feed + upvotes
     ├── DepartmentDashboard.jsx          # Department management
     └── AdminDashboard.jsx               # Admin portal (4 tabs)
 
 server/
-├── index.js                             # Express app entry
+├── index.js                             # Express app entry + Socket.io
+├── socket.js                            # Socket.io handlers (JWT auth, rooms)
 ├── package.json                         # Backend deps
+├── .env                                 # MONGO_URI, JWT_SECRET, NODE_ENV
 ├── config/
 │   └── db.js                            # MongoDB connection
 ├── utils/
 │   └── generateToken.js                 # JWT helper
 ├── models/
 │   ├── User.js                          # User schema
-│   └── Report.js                        # Report schema
+│   ├── Report.js                        # Report schema
+│   └── Notification.js                  # Notification schema (6 types)
 ├── middleware/
 │   └── auth.js                          # Auth middleware
 ├── controllers/
 │   ├── authController.js                # Auth logic
-│   ├── reportController.js              # Report CRUD
-│   └── userController.js                # User management
+│   ├── reportController.js              # Report CRUD + notification triggers
+│   ├── userController.js                # User management
+│   └── notificationController.js        # Notification CRUD
 └── routes/
     ├── auth.js                          # Auth routes
     ├── reports.js                       # Report routes
-    └── users.js                         # User routes
+    ├── users.js                         # User routes
+    └── notifications.js                 # Notification routes
 ```
