@@ -149,6 +149,49 @@ export default function TrackReport() {
               </div>
             )}
 
+            {/* AI Insights */}
+            {(report.aiTags?.length > 0 || report.estimatedResolutionTime || report.isDuplicate) && (
+              <div className="mt-4 bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span>🤖</span>
+                  <h4 className="text-xs font-bold text-slate-700">AI Analysis</h4>
+                  {report.aiConfidence && (
+                    <span className="text-[10px] font-medium text-indigo-600 bg-indigo-100 px-1.5 py-0.5 rounded-full ml-auto">
+                      {Math.round(report.aiConfidence * 100)}% confidence
+                    </span>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <div className="bg-white/60 rounded-lg p-2">
+                    <p className="text-[10px] text-slate-400 font-medium">Severity</p>
+                    <p className="text-sm font-bold text-slate-700">{report.severity || '—'}/10</p>
+                  </div>
+                  {report.estimatedResolutionTime && report.status !== 'resolved' && report.status !== 'closed' && (
+                    <div className="bg-white/60 rounded-lg p-2">
+                      <p className="text-[10px] text-slate-400 font-medium">Est. Resolution</p>
+                      <p className="text-sm font-bold text-slate-700">
+                        {new Date(report.estimatedResolutionTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {report.aiTags?.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {report.aiTags.map((tag) => (
+                      <span key={tag} className="px-1.5 py-0.5 bg-white/80 border border-indigo-100 text-indigo-600 rounded text-[10px] font-medium capitalize">
+                        {tag.replace(/-/g, ' ')}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {report.isDuplicate && (
+                  <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs">
+                    ⚠️ This report may be a duplicate of an existing issue.
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Submitted info */}
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-400">
               <span>Submitted: {new Date(report.createdAt).toLocaleDateString()}</span>

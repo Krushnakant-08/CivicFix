@@ -1,6 +1,7 @@
 import Report from '../models/Report.js';
 import Notification from '../models/Notification.js';
 import { emitToUser, emitToDepartment, broadcast } from '../socket.js';
+import { analyzeReport } from '../services/aiService.js';
 
 // ─── Department mapping for auto-routing ─────────────────
 const CATEGORY_TO_DEPARTMENT = {
@@ -25,8 +26,27 @@ export const createReport = async (req, res) => {
     // Generate unique tracking ID
     const trackingId = await Report.generateTrackingId();
 
-    // Auto-assign department based on category
-    const assignedDepartment = CATEGORY_TO_DEPARTMENT[category] || 'general';
+    // ─── Phase 5: AI Analysis ──────────────────────────
+    let aiResult;
+    try {
+      aiResult = await analyzeReport(title, description, category);
+    } catch (aiErr) {
+      console.error('AI analysis failed (non-blocking):', aiErr);
+      aiResult = null;
+    }
+
+    // Spam check — reject if score is too high
+    if (aiResult?.spam?.isSpam) {
+      return res.status(400).json({
+        message: `Report flagged as low quality: ${aiResult.spam.reason || 'Content does not meet quality standards'}`,
+        spam: true,
+      });
+    }
+
+    // Use AI-suggested department if it overrode the category mapping
+    const assignedDepartment = aiResult?.departmentOverridden
+      ? aiResult.department
+      : (CATEGORY_TO_DEPARTMENT[category] || 'general');
 
     const report = await Report.create({
       trackingId,
@@ -45,6 +65,19 @@ export const createReport = async (req, res) => {
       },
       images: images || [],
       assignedDepartment,
+      // AI-populated fields
+      priority: aiResult?.priority || 'medium',
+      severity: aiResult?.severity || 5,
+      aiTags: aiResult?.tags || [],
+      aiConfidence: aiResult?.confidence || null,
+      isDuplicate: aiResult?.duplicate?.isDuplicate || false,
+      duplicateOf: aiResult?.duplicate?.duplicateOf || null,
+      spamScore: aiResult?.spam?.score || 0,
+      aiDepartmentSuggestion: aiResult ? {
+        department: aiResult.department,
+        overridden: aiResult.departmentOverridden,
+      } : undefined,
+      estimatedResolutionTime: aiResult?.estimatedResolution || null,
       statusHistory: [
         {
           status: 'reported',
@@ -59,6 +92,16 @@ export const createReport = async (req, res) => {
       message: 'Report submitted successfully',
       report,
       trackingId: report.trackingId,
+      aiInsights: aiResult ? {
+        tags: aiResult.tags,
+        priority: aiResult.priority,
+        severity: aiResult.severity,
+        confidence: aiResult.confidence,
+        departmentOverridden: aiResult.departmentOverridden,
+        suggestedDepartment: aiResult.department,
+        duplicate: aiResult.duplicate?.isDuplicate ? aiResult.duplicate.match : null,
+        estimatedResolution: aiResult.estimatedResolution,
+      } : null,
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -441,5 +484,59 @@ export const getReportStats = async (req, res) => {
   } catch (error) {
     console.error('GetReportStats error:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * @route   POST /api/reports/:id/analyze
+ * @desc    Re-run AI analysis on an existing report (admin only)
+ * @access  Private (admin)
+ */
+export const reanalyzeReport = async (req, res) => {
+  try {
+    const report = await Report.findById(req.params.id);
+    if (!report) return res.status(404).json({ message: 'Report not found' });
+
+    const aiResult = await analyzeReport(report.title, report.description, report.category);
+
+    // Apply AI results
+    report.aiTags = aiResult.tags;
+    report.aiConfidence = aiResult.confidence;
+    report.priority = aiResult.priority;
+    report.severity = aiResult.severity;
+    report.isDuplicate = aiResult.duplicate.isDuplicate;
+    report.duplicateOf = aiResult.duplicate.duplicateOf;
+    report.spamScore = aiResult.spam.score;
+    report.aiDepartmentSuggestion = {
+      department: aiResult.department,
+      overridden: aiResult.departmentOverridden,
+    };
+    report.estimatedResolutionTime = aiResult.estimatedResolution;
+
+    // Optionally update department if AI overrode it
+    if (aiResult.departmentOverridden) {
+      report.assignedDepartment = aiResult.department;
+    }
+
+    await report.save();
+
+    res.json({
+      message: 'AI analysis complete',
+      report,
+      aiInsights: {
+        tags: aiResult.tags,
+        priority: aiResult.priority,
+        severity: aiResult.severity,
+        confidence: aiResult.confidence,
+        departmentOverridden: aiResult.departmentOverridden,
+        suggestedDepartment: aiResult.department,
+        duplicate: aiResult.duplicate.isDuplicate ? aiResult.duplicate.match : null,
+        spam: aiResult.spam,
+        estimatedResolution: aiResult.estimatedResolution,
+      },
+    });
+  } catch (error) {
+    console.error('ReanalyzeReport error:', error);
+    res.status(500).json({ message: 'Server error during AI analysis' });
   }
 };

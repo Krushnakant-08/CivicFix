@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 
 const reportSchema = new mongoose.Schema(
   {
-    // ─── Tracking ────────────────────────────────────────
+    // Tracking
     trackingId: {
       type: String,
       unique: true,
       required: true,
     },
 
-    // ─── Reporter Info ───────────────────────────────────
+    // Reporter Info
     reporter: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -20,7 +20,7 @@ const reportSchema = new mongoose.Schema(
       default: false,
     },
 
-    // ─── Issue Details ───────────────────────────────────
+    // Issue Details
     title: {
       type: String,
       required: [true, 'Issue title is required'],
@@ -47,7 +47,7 @@ const reportSchema = new mongoose.Schema(
       ],
     },
 
-    // ─── Location ────────────────────────────────────────
+    // Location
     location: {
       address: {
         type: String,
@@ -64,7 +64,7 @@ const reportSchema = new mongoose.Schema(
       },
     },
 
-    // ─── Media ───────────────────────────────────────────
+    // Media
     images: [
       {
         url: { type: String },
@@ -77,7 +77,7 @@ const reportSchema = new mongoose.Schema(
       duration: { type: Number, default: null }, // seconds
     },
 
-    // ─── Status & Workflow ───────────────────────────────
+    // Status & Workflow
     status: {
       type: String,
       enum: ['reported', 'acknowledged', 'assigned', 'in_progress', 'resolved', 'closed', 'rejected'],
@@ -95,7 +95,7 @@ const reportSchema = new mongoose.Schema(
       default: 5,
     },
 
-    // ─── Department Assignment ───────────────────────────
+    // Department Assignment
     assignedDepartment: {
       type: String,
       enum: ['roads', 'sanitation', 'water', 'electricity', 'parks', 'traffic', 'general', null],
@@ -107,7 +107,7 @@ const reportSchema = new mongoose.Schema(
       default: null,
     },
 
-    // ─── Resolution ──────────────────────────────────────
+    // Resolution
     resolution: {
       description: { type: String, default: null },
       images: [{ url: String, uploadedAt: { type: Date, default: Date.now } }],
@@ -115,7 +115,7 @@ const reportSchema = new mongoose.Schema(
       resolvedAt: { type: Date, default: null },
     },
 
-    // ─── Timestamps for status transitions ───────────────
+    // Timestamps for status transitions
     statusHistory: [
       {
         status: { type: String },
@@ -125,7 +125,7 @@ const reportSchema = new mongoose.Schema(
       },
     ],
 
-    // ─── Engagement ──────────────────────────────────────
+    // Engagement
     upvotes: {
       type: Number,
       default: 0,
@@ -137,13 +137,18 @@ const reportSchema = new mongoose.Schema(
       },
     ],
 
-    // ─── AI Metadata (Phase 5 prep) ─────────────────────
+    // AI Metadata (Phase 5)
     aiTags: [String],
     aiConfidence: { type: Number, default: null },
     isDuplicate: { type: Boolean, default: false },
     duplicateOf: { type: mongoose.Schema.Types.ObjectId, ref: 'Report', default: null },
+    spamScore: { type: Number, default: 0 },
+    aiDepartmentSuggestion: {
+      department: { type: String, default: null },
+      overridden: { type: Boolean, default: false },
+    },
 
-    // ─── Estimated Resolution ────────────────────────────
+    // Estimated Resolution
     estimatedResolutionTime: {
       type: Date,
       default: null,
@@ -154,7 +159,7 @@ const reportSchema = new mongoose.Schema(
   }
 );
 
-// ─── Indexes for performance ─────────────────────────────
+// Indexes for performance
 reportSchema.index({ trackingId: 1 });
 reportSchema.index({ status: 1 });
 reportSchema.index({ category: 1 });
@@ -164,7 +169,7 @@ reportSchema.index({ 'location.coordinates.lat': 1, 'location.coordinates.lng': 
 reportSchema.index({ createdAt: -1 });
 reportSchema.index({ priority: 1, severity: -1 });
 
-// ─── Static: Generate unique tracking ID ─────────────────
+// Static: Generate unique tracking ID
 reportSchema.statics.generateTrackingId = async function () {
   const prefix = 'CF';
   const date = new Date().toISOString().slice(2, 10).replace(/-/g, '');

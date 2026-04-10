@@ -1,7 +1,7 @@
 # CivicFix — Implementation Status
 
-> **Last Updated:** April 10, 2026 (22:00 IST)
-> **Resume From:** Phase 5 — AI Intelligence Layer
+> **Last Updated:** April 10, 2026 (23:47 IST)
+> **Resume From:** Phase 6 — Map Visualization & AR
 
 ---
 
@@ -56,8 +56,8 @@ Everything below is built, tested, and working.
 ### What was built:
 | File | What it does |
 |:---|:---|
-| `src/pages/ReportIssue.jsx` | **Full report submission form** — title, category selector (7 types), description with char counter, GPS auto-location via Geolocation API + reverse geocoding (OpenStreetMap Nominatim), drag-and-drop image upload with previews (up to 3 images), anonymous reporting toggle, success state with tracking ID + copy-to-clipboard |
-| `src/pages/TrackReport.jsx` | **Report tracker** — search by tracking ID, displays status badge with colored dot, detail grid, status timeline with connector dots |
+| `src/pages/ReportIssue.jsx` | **Full report submission form** — title, category selector (7 types), description with char counter, GPS auto-location via Geolocation API + reverse geocoding (OpenStreetMap Nominatim), drag-and-drop image upload with previews (up to 3 images), anonymous reporting toggle, success state with tracking ID + copy-to-clipboard, **AI insights panel** (priority, severity, department, ETA, auto-tags, duplicate flag) |
+| `src/pages/TrackReport.jsx` | **Report tracker** — search by tracking ID, displays status badge with colored dot, detail grid, status timeline with connector dots, **AI insights panel** (severity, ETA, tags, duplicate warning) |
 | `src/pages/MyReports.jsx` | **Citizen dashboard** — fetches user's reports, status filter tabs (All/Reported/In Progress/Resolved/Closed), expand/collapse report details + status timeline, pagination |
 
 ### Key Details:
@@ -131,19 +131,51 @@ Everything below is built, tested, and working.
 
 ---
 
-### Minor Fixes Applied:
+## ✅ Phase 5 — AI Intelligence Layer (COMPLETE)
+
+### What was built:
+
+#### Backend AI Engine
+| File | What it does |
+|:---|:---|
+| `server/services/aiService.js` | **Rule-based NLP engine** — keyword extraction & auto-tagging (`extractTags`), priority & severity scoring (`assessPriority`), smart department routing with override logic (`suggestDepartment`), spam / low-quality filtering (`detectSpam`), Jaccard-similarity duplicate detection against recent open reports (`findDuplicates`), historical-average-aware ETA estimation (`estimateResolutionTime`), orchestrating `analyzeReport` entry point |
+
+#### Report Model — AI Fields
+| Field | Type | Purpose |
+|:---|:---|:---|
+| `aiTags` | `[String]` | Auto-extracted keywords from title + description (up to 8) |
+| `aiConfidence` | `Number` | Confidence score (0–1) for priority assessment |
+| `isDuplicate` | `Boolean` | Whether AI flagged report as likely duplicate |
+| `duplicateOf` | `ObjectId → Report` | Reference to the matched duplicate report |
+| `spamScore` | `Number` | Spam / low-quality score (0–1) |
+| `aiDepartmentSuggestion` | `{ department, overridden }` | AI's department suggestion and whether it overrode the category |
+| `estimatedResolutionTime` | `Date` | ETA based on category base hours × priority multiplier ± historical avg |
+
+#### Report Controller — AI Integration
+| Endpoint | AI Behaviour |
+|:---|:---|
+| `POST /api/reports` | Runs full `analyzeReport` on submission; spam-blocks with 400; applies AI priority, severity, tags, department, ETA, duplicate flag; returns `aiInsights` to client |
+| `POST /api/reports/:id/analyze` | Admin-only re-run of AI analysis on existing report; updates all AI fields and optionally overrides department |
+
+#### Frontend AI Panels
+| File | AI UI |
+|:---|:---|
+| `src/pages/ReportIssue.jsx` | **Post-submission AI panel** — 4-cell grid (Priority, Severity, Department, Est. Resolution), auto-tags chip row, duplicate warning badge, confidence pill; shown only when `aiInsights` is returned |
+| `src/pages/TrackReport.jsx` | **Inline AI insights** — severity, ETA (hidden when resolved/closed), AI tag chips, duplicate warning; shown when `aiTags`, `estimatedResolutionTime`, or `isDuplicate` is present |
+
+### Key Details:
+- All AI analysis is **rule-based NLP** (no external ML API), runs synchronously server-side, is **non-blocking** (AI failure never breaks report submission)
+- Spam filter rejects reports with score ≥ 0.6 before saving (e.g. test data, excessively short content, repetitive words)
+- Duplicate detection uses **Jaccard similarity** (unigrams) against all open reports in the same department created in the last 30 days; threshold: ≥ 0.45
+- Department routing overrides category mapping only if AI-detected department scores **2+ more keywords** than the user-selected category
+- ETA uses MongoDB aggregation for historical averages when ≥ 3 resolved reports exist for the category; falls back to hardcoded base hours
+
+### Minor Fixes Applied (during Phase 4 → 5):
 - **Branding:** Fixed "CivicConnect" → "CivicFix" in Footer (both logo text and copyright)
 - **HTML Title:** Fixed `<title>crowdsourcing</title>` → `<title>CivicFix — Civic Issue Tracker</title>` with proper meta description
 - **Server .env:** Added missing `JWT_SECRET` and `NODE_ENV` variables
 
 ---
-
-## ⬜ Phase 5 — AI Intelligence Layer
-- Image classification (Computer Vision)
-- Duplicate detection & spam filtering
-- NLP auto-tagging
-- Smart department routing
-- Priority & risk scoring engine
 
 ## ⬜ Phase 6 — Map Visualization & AR
 - Leaflet/Mapbox interactive map with clustering
@@ -179,9 +211,10 @@ Everything below is built, tested, and working.
 | Storage | Base64 (temporary) → Firebase/Cloudinary (planned) | 🔄 Partial |
 | Real-Time | Socket.io | ✅ Active |
 | Notifications | In-app (Socket.io + MongoDB) | ✅ Active |
+| AI / NLP | Rule-based NLP engine (aiService.js) | ✅ Active |
 | Maps | Leaflet.js / Mapbox GL | ⬜ Phase 6 |
-| AI/ML | TensorFlow.js, OpenAI | ⬜ Phase 5 |
-| Notifications | FCM, Twilio (External push/SMS) | ⬜ Phase 5+ |
+| AI/ML (ext.) | TensorFlow.js, OpenAI | ⬜ Phase 7+ |
+| Push/SMS | FCM, Twilio | ⬜ Phase 7+ |
 | Deployment | Vercel + Railway/AWS | ⬜ Phase 8 |
 
 ---
@@ -215,8 +248,8 @@ src/
     ├── Home.jsx                         # Landing page (hero, steps, features, CTA)
     ├── Login.jsx                        # Login form
     ├── Register.jsx                     # Register form
-    ├── ReportIssue.jsx                  # Submit report (GPS, images, anon)
-    ├── TrackReport.jsx                  # Track by ID
+    ├── ReportIssue.jsx                  # Submit report (GPS, images, anon, AI insights panel)
+    ├── TrackReport.jsx                  # Track by ID (+ AI insights panel)
     ├── MyReports.jsx                    # Citizen's reports
     ├── PublicFeed.jsx                   # Community issue feed + upvotes
     ├── DepartmentDashboard.jsx          # Department management
@@ -233,18 +266,20 @@ server/
 │   └── generateToken.js                 # JWT helper
 ├── models/
 │   ├── User.js                          # User schema
-│   ├── Report.js                        # Report schema
+│   ├── Report.js                        # Report schema (+ AI metadata fields)
 │   └── Notification.js                  # Notification schema (6 types)
 ├── middleware/
 │   └── auth.js                          # Auth middleware
+├── services/
+│   └── aiService.js                     # AI NLP engine (Phase 5) — tagging, priority, routing, spam, dedup, ETA
 ├── controllers/
 │   ├── authController.js                # Auth logic
-│   ├── reportController.js              # Report CRUD + notification triggers
+│   ├── reportController.js              # Report CRUD + AI integration + notification triggers
 │   ├── userController.js                # User management
 │   └── notificationController.js        # Notification CRUD
 └── routes/
     ├── auth.js                          # Auth routes
-    ├── reports.js                       # Report routes
+    ├── reports.js                       # Report routes (+ POST /:id/analyze)
     ├── users.js                         # User routes
     └── notifications.js                 # Notification routes
 ```

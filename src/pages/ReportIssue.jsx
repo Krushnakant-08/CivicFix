@@ -5,13 +5,13 @@ import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
 
 const CATEGORIES = [
-  { value: 'roads', label: 'Roads & Potholes', icon: '🛣️' },
-  { value: 'sanitation', label: 'Sanitation & Garbage', icon: '🗑️' },
-  { value: 'water', label: 'Water Supply & Leaks', icon: '💧' },
-  { value: 'electricity', label: 'Streetlights & Power', icon: '💡' },
-  { value: 'parks', label: 'Parks & Recreation', icon: '🌳' },
-  { value: 'traffic', label: 'Traffic & Signals', icon: '🚦' },
-  { value: 'other', label: 'Other / Miscellaneous', icon: '📋' },
+  { value: 'roads', label: 'Roads & Potholes', icon: '\u{1F6E3}\uFE0F' },
+  { value: 'sanitation', label: 'Sanitation & Garbage', icon: '\u{1F5D1}\uFE0F' },
+  { value: 'water', label: 'Water Supply & Leaks', icon: '\u{1F4A7}' },
+  { value: 'electricity', label: 'Streetlights & Power', icon: '\u{1F4A1}' },
+  { value: 'parks', label: 'Parks & Recreation', icon: '\u{1F333}' },
+  { value: 'traffic', label: 'Traffic & Signals', icon: '\u{1F6A6}' },
+  { value: 'other', label: 'Other / Miscellaneous', icon: '\u{1F4CB}' },
 ];
 
 export default function ReportIssue() {
@@ -212,6 +212,7 @@ export default function ReportIssue() {
       setSuccess({
         trackingId: data.trackingId,
         message: data.message,
+        aiInsights: data.aiInsights || null,
       });
     } catch (err) {
       setError(err.message || 'Failed to submit report. Please try again.');
@@ -269,6 +270,71 @@ export default function ReportIssue() {
               </button>
             </div>
           </div>
+
+          {/* AI Insights Panel */}
+          {success.aiInsights && (
+            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-2xl p-5 mb-6 text-left animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">{'\u{1F916}'}</span>
+                <h3 className="font-bold text-slate-800 text-sm">AI Analysis</h3>
+                {success.aiInsights.confidence && (
+                  <span className="ml-auto text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
+                    {Math.round(success.aiInsights.confidence * 100)}% confidence
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="bg-white/60 rounded-xl p-3">
+                  <p className="text-xs text-slate-400 font-medium mb-0.5">Priority</p>
+                  <p className={`text-sm font-bold capitalize ${
+                    { critical: 'text-red-600', high: 'text-orange-600', medium: 'text-amber-600', low: 'text-green-600' }[success.aiInsights.priority] || 'text-slate-700'
+                  }`}>{success.aiInsights.priority}</p>
+                </div>
+                <div className="bg-white/60 rounded-xl p-3">
+                  <p className="text-xs text-slate-400 font-medium mb-0.5">Severity</p>
+                  <p className="text-sm font-bold text-slate-700">{success.aiInsights.severity}/10</p>
+                </div>
+                <div className="bg-white/60 rounded-xl p-3">
+                  <p className="text-xs text-slate-400 font-medium mb-0.5">Department</p>
+                  <p className="text-sm font-bold text-slate-700 capitalize">
+                    {success.aiInsights.suggestedDepartment}
+                    {success.aiInsights.departmentOverridden && (
+                      <span className="ml-1 text-xs font-normal text-indigo-500">(AI-routed)</span>
+                    )}
+                  </p>
+                </div>
+                <div className="bg-white/60 rounded-xl p-3">
+                  <p className="text-xs text-slate-400 font-medium mb-0.5">Est. Resolution</p>
+                  <p className="text-sm font-bold text-slate-700">
+                    {success.aiInsights.estimatedResolution
+                      ? new Date(success.aiInsights.estimatedResolution).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+                      : 'N/A'}
+                  </p>
+                </div>
+              </div>
+
+              {success.aiInsights.tags?.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs text-slate-400 font-medium mb-1.5">Auto-Tags</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {success.aiInsights.tags.map((tag) => (
+                      <span key={tag} className="px-2 py-0.5 bg-white/80 border border-slate-200 rounded-full text-xs text-slate-600 capitalize">
+                        {tag.replace(/-/g, ' ')}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {success.aiInsights.duplicate && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-xs">
+                  <span className="font-semibold">Possible duplicate</span>{' of report '}
+                  <span className="font-mono font-bold">{success.aiInsights.duplicate.trackingId}</span>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link to={`/track`} className="flex-1">
@@ -361,7 +427,7 @@ export default function ReportIssue() {
                 value={formData.location}
                 onChange={handleChange}
                 className={`${lightInputClass} flex-1`}
-                placeholder="Enter address or use GPS →"
+                placeholder="Enter address or use GPS"
               />
               <button
                 type="button"
@@ -401,7 +467,7 @@ export default function ReportIssue() {
               value={formData.description}
               onChange={handleChange}
               className={`${lightInputClass} resize-none`}
-              placeholder="Describe the issue in detail — what's the problem, how severe is it, how long has it been there?"
+              placeholder="Describe the issue in detail"
               maxLength={2000}
             ></textarea>
             <p className="text-xs text-slate-400 text-right">{formData.description.length}/2000</p>
@@ -428,7 +494,7 @@ export default function ReportIssue() {
                       onClick={() => removeImage(idx)}
                       className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                     >
-                      ✕
+                      X
                     </button>
                   </div>
                 ))}
@@ -467,7 +533,7 @@ export default function ReportIssue() {
                     <>Drag and drop images, or <span className="text-blue-600 underline decoration-blue-200 underline-offset-4">click to browse</span></>
                   )}
                 </p>
-                <p className="text-xs text-slate-400 mt-1">PNG, JPG, WebP • Max 5 MB each</p>
+                <p className="text-xs text-slate-400 mt-1">PNG, JPG, WebP - Max 5 MB each</p>
               </div>
             )}
           </div>

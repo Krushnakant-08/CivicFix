@@ -112,6 +112,11 @@ export const reportsAPI = {
     }),
 
   getStats: () => request('/reports/stats/overview'),
+
+  reanalyze: (id) =>
+    request(`/reports/${id}/analyze`, {
+      method: 'POST',
+    }),
 };
 
 // ─── Health Check ────────────────────────────────────────

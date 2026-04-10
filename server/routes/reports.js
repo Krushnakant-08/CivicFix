@@ -9,6 +9,7 @@ import {
   assignReport,
   upvoteReport,
   getReportStats,
+  reanalyzeReport,
 } from '../controllers/reportController.js';
 import { protect, optionalAuth, authorize } from '../middleware/auth.js';
 
@@ -27,6 +28,7 @@ router.put('/:id/upvote', protect, upvoteReport);      // Upvote toggle
 // ─── Department / Admin ──────────────────────────────────
 router.put('/:id/status', protect, authorize('department', 'admin'), updateReportStatus);
 router.put('/:id/assign', protect, authorize('admin'), assignReport);
+router.post('/:id/analyze', protect, authorize('admin'), reanalyzeReport);  // AI re-analysis
 
 // ─── Single report (must be last — :id catch-all) ────────
 router.get('/:id', getReportById);

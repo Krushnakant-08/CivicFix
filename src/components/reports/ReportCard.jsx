@@ -101,6 +101,29 @@ export default function ReportCard({
           <span>👍 {report.upvotes || 0}</span>
         </div>
 
+        {/* AI Tags */}
+        {report.aiTags?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {report.aiTags.slice(0, 5).map((tag) => (
+              <span key={tag} className="px-1.5 py-0.5 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded text-[10px] font-medium capitalize">
+                {tag.replace(/-/g, ' ')}
+              </span>
+            ))}
+            {report.aiConfidence && (
+              <span className="px-1.5 py-0.5 bg-slate-50 text-slate-400 rounded text-[10px] font-medium">
+                🤖 {Math.round(report.aiConfidence * 100)}%
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* ETA */}
+        {report.estimatedResolutionTime && report.status !== 'resolved' && report.status !== 'closed' && (
+          <p className="text-[11px] text-slate-400 mt-2">
+            ⏱️ Est. resolution: {new Date(report.estimatedResolutionTime).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+          </p>
+        )}
+
         {/* Images thumbnails */}
         {report.images && report.images.length > 0 && (
           <div className="flex gap-2 mt-3">
