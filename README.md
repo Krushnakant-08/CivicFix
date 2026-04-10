@@ -338,11 +338,13 @@ Using **Computer Vision + rule-based mapping** to:
 | Item | Description | Status |
 |:---|:---|:---:|
 | Project scaffolding | React + Vite + TailwindCSS setup | ✅ Done |
-| Folder & file structure | Components, pages, services, utils | 🔄 In Progress |
-| Authentication system | Firebase Auth (Email, Google, Anonymous) | ⬜ Pending |
-| Database schema design | MongoDB/PostgreSQL collections & relations | ⬜ Pending |
-| Role-based access control | Citizen / Department / Admin roles | ⬜ Pending |
-| Basic API endpoints | User CRUD, Report CRUD | ⬜ Pending |
+| Folder & file structure | Components, pages, services, utils | ✅ Done |
+| Authentication system | JWT Auth (Email/Password + Protected Routes) | ✅ Done |
+| Database schema design | MongoDB Atlas — User & Report models | ✅ Done |
+| Role-based access control | Citizen / Department / Admin roles + middleware | ✅ Done |
+| Basic API endpoints | Auth, Users, Reports — full CRUD | ✅ Done |
+| Backend migration | Separated to `Latrobe-Backend/` (clean architecture) | ✅ Done |
+| Frontend-backend integration | API service layer + AuthContext | ✅ Done |
 
 ---
 
@@ -443,9 +445,9 @@ Using **Computer Vision + rule-based mapping** to:
 | Layer | Technology |
 |:---|:---|
 | **Frontend** | React 19, Vite 7, TailwindCSS 4, React Router 7 |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB (NoSQL) / PostgreSQL (relational) |
-| **Auth** | Firebase Authentication (Email, Google, Anonymous) |
+| **Backend** | Node.js, Express.js (separate `Latrobe-Backend/` repo) |
+| **Database** | MongoDB Atlas (Cloud NoSQL) |
+| **Auth** | JWT Authentication (bcrypt + jsonwebtoken) |
 | **Storage** | Firebase Storage / Cloudinary (images) |
 | **Real-Time** | Socket.io (WebSockets) |
 | **Maps** | Leaflet.js / Mapbox GL |
@@ -463,55 +465,51 @@ Using **Computer Vision + rule-based mapping** to:
 
 ```
 CivicFix/
-└── Latrobe-Crowdsourcing/
-    ├── docs/                         # 📖 Project documentation
-    │   ├── assets/                   # Images, diagrams, banners
-    │   ├── PROJECT_LOG.md            # Development log (phase-wise)
-    │   └── OUTPUT_NOTES.md           # Sequential output observations
-    │
-    ├── public/                       # Static public assets
-    │
-    ├── src/
-    │   ├── components/
-    │   │   ├── layout/               # Navbar, Footer, Sidebar
-    │   │   ├── ui/                   # Reusable UI primitives (Button, Card, Modal)
-    │   │   ├── dashboard/            # Dashboard-specific components
-    │   │   ├── map/                  # Map & AR visualization
-    │   │   └── chatbot/              # AI chatbot widget
-    │   │
-    │   ├── pages/
-    │   │   ├── Home.jsx              # Landing page + Problem Feed
-    │   │   ├── ReportIssue.jsx       # Issue submission form
-    │   │   ├── TrackReport.jsx       # Status tracking page
-    │   │   ├── CitizenDashboard.jsx  # Citizen's personal dashboard
-    │   │   ├── DeptDashboard.jsx     # Department dashboard
-    │   │   ├── AdminDashboard.jsx    # Admin analytics portal
-    │   │   ├── MapView.jsx           # Interactive issue map
-    │   │   ├── Login.jsx             # Authentication page
-    │   │   └── Register.jsx          # Registration page
-    │   │
-    │   ├── services/                 # API calls, Firebase, AI services
-    │   ├── hooks/                    # Custom React hooks
-    │   ├── context/                  # React Context (Auth, Theme, etc.)
-    │   ├── utils/                    # Helpers, constants, validators
-    │   ├── assets/                   # Icons, images, fonts
-    │   │
-    │   ├── App.jsx                   # Root component with routing
-    │   ├── main.jsx                  # Entry point
-    │   └── index.css                 # Global styles
-    │
-    ├── server/                       # Backend (Express.js) — future
-    │   ├── routes/
-    │   ├── controllers/
-    │   ├── models/
-    │   ├── middleware/
-    │   └── services/
-    │
-    ├── .env                          # Environment variables
-    ├── .gitignore
-    ├── package.json
-    ├── vite.config.js
-    └── README.md                     # ← You are here
+├── Latrobe-Crowdsourcing/            # 📱 Frontend (React + Vite)
+│   ├── docs/                         # 📖 Project documentation
+│   │   ├── assets/                   # Images, diagrams, banners
+│   │   ├── PROJECT_LOG.md            # Development log (phase-wise)
+│   │   └── OUTPUT_NOTES.md           # Sequential output observations
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── auth/                 # ProtectedRoute
+│   │   │   ├── layout/               # Navbar, Footer, Sidebar
+│   │   │   └── ui/                   # Reusable UI (Button, Card, Modal)
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Home.jsx              # Landing page + Problem Feed
+│   │   │   ├── ReportIssue.jsx       # Issue submission form
+│   │   │   ├── TrackReport.jsx       # Status tracking page
+│   │   │   ├── Login.jsx             # Authentication page
+│   │   │   └── Register.jsx          # Registration page
+│   │   │
+│   │   ├── services/                 # API service layer (api.js)
+│   │   ├── context/                  # React Context (AuthContext)
+│   │   ├── App.jsx                   # Root component with routing
+│   │   ├── main.jsx                  # Entry point
+│   │   └── index.css                 # Global styles
+│   │
+│   ├── .env                          # Frontend env (VITE_API_URL)
+│   ├── package.json
+│   ├── vite.config.js
+│   └── README.md                     # ← You are here
+│
+├── Latrobe-Backend/                  # ⚙️ Backend API (Express.js)
+│   ├── src/
+│   │   ├── config/db.js              # MongoDB Atlas connection
+│   │   ├── controllers/              # authController, reportController, userController
+│   │   ├── middleware/auth.js        # protect, optionalAuth, authorize
+│   │   ├── models/                   # User.js, Report.js (Mongoose)
+│   │   ├── routes/                   # auth, users, reports routes
+│   │   ├── utils/generateToken.js    # JWT token utility
+│   │   ├── app.js                    # Express app setup
+│   │   └── server.js                 # Server entry point
+│   │
+│   ├── .env.example                  # Backend env template
+│   └── package.json
+│
+└── LaTrobe-Departments/              # 🏢 Department Portal (future)
 ```
 
 ---
@@ -557,11 +555,11 @@ VITE_OPENAI_API_KEY=your_openai_key
 
 ## 📊 Development Progress
 
-> Last updated: **April 6, 2026**
+> Last updated: **April 7, 2026**
 
 | Phase | Name | Status | Progress |
 |:---:|:---|:---:|:---:|
-| 1 | Foundation & Core Infrastructure | 🔄 In Progress | ██░░░░░░░░ 20% |
+| 1 | Foundation & Core Infrastructure | ✅ Complete | ████████░░ 90% |
 | 2 | Citizen Report Submission & Tracking | ⬜ Pending | ░░░░░░░░░░ 0% |
 | 3 | Multi-Role Dashboards & Admin Portal | ⬜ Pending | ░░░░░░░░░░ 0% |
 | 4 | Real-Time Communication & Notifications | ⬜ Pending | ░░░░░░░░░░ 0% |

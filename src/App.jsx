@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -10,11 +11,16 @@ import ReportIssue from './pages/ReportIssue';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import TrackReport from './pages/TrackReport';
+import MyReports from './pages/MyReports';
+import PublicFeed from './pages/PublicFeed';
+import DepartmentDashboard from './pages/DepartmentDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+        <NotificationProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="grow pt-20">
@@ -25,13 +31,14 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/track" element={<TrackReport />} />
               <Route path="/report" element={<ReportIssue />} />
+              <Route path="/feed" element={<PublicFeed />} />
 
               {/* Protected Routes — Any authenticated user */}
               <Route
                 path="/my-reports"
                 element={
                   <ProtectedRoute>
-                    <MyReportsPlaceholder />
+                    <MyReports />
                   </ProtectedRoute>
                 }
               />
@@ -41,7 +48,7 @@ function App() {
                 path="/dashboard/department"
                 element={
                   <ProtectedRoute roles={['department', 'admin']}>
-                    <DashboardPlaceholder title="Department Dashboard" />
+                    <DepartmentDashboard />
                   </ProtectedRoute>
                 }
               />
@@ -51,7 +58,7 @@ function App() {
                 path="/dashboard/admin"
                 element={
                   <ProtectedRoute roles={['admin']}>
-                    <DashboardPlaceholder title="Admin Dashboard" />
+                    <AdminDashboard />
                   </ProtectedRoute>
                 }
               />
@@ -62,33 +69,9 @@ function App() {
           </main>
           <Footer />
         </div>
+        </NotificationProvider>
       </AuthProvider>
     </Router>
-  );
-}
-
-// ─── Placeholder pages (will be replaced in Phase 2 & 3) ──
-function MyReportsPlaceholder() {
-  return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-mesh">
-      <div className="glass-card p-12 text-center max-w-md animate-slide-up">
-        <div className="text-5xl mb-4">📋</div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">My Reports</h2>
-        <p className="text-slate-500">Your submitted reports will appear here. Coming in Phase 2.</p>
-      </div>
-    </div>
-  );
-}
-
-function DashboardPlaceholder({ title }) {
-  return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-mesh">
-      <div className="glass-card p-12 text-center max-w-md animate-slide-up">
-        <div className="text-5xl mb-4">📊</div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">{title}</h2>
-        <p className="text-slate-500">This dashboard will be built in Phase 3.</p>
-      </div>
-    </div>
   );
 }
 

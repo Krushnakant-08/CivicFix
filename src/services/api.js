@@ -49,6 +49,12 @@ export const authAPI = {
     }),
 
   getMe: () => request('/auth/me'),
+
+  createStaff: (data) =>
+    request('/auth/create-staff', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 };
 
 // ─── Users API ───────────────────────────────────────────

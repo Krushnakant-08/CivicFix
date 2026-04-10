@@ -1,4 +1,6 @@
 import Report from '../models/Report.js';
+import Notification from '../models/Notification.js';
+import { emitToUser, emitToDepartment, broadcast } from '../socket.js';
 
 // ─── Department mapping for auto-routing ─────────────────
 const CATEGORY_TO_DEPARTMENT = {
@@ -233,6 +235,47 @@ export const updateReportStatus = async (req, res) => {
 
     await report.save();
 
+    // ─── Emit real-time notification to reporter ──────
+    if (report.reporter) {
+      const STATUS_LABELS = {
+        acknowledged: 'Acknowledged',
+        assigned: 'Assigned',
+        in_progress: 'In Progress',
+        resolved: 'Resolved',
+        closed: 'Closed',
+        rejected: 'Rejected',
+      };
+
+      const notifType = status === 'resolved' ? 'report_resolved' : 'status_change';
+      const notification = await Notification.createNotification({
+        recipient: report.reporter,
+        type: notifType,
+        title: status === 'resolved'
+          ? '🎉 Your report has been resolved!'
+          : `Report status updated`,
+        message: `Your report "${report.title}" (${report.trackingId}) is now ${STATUS_LABELS[status] || status}.${note ? ' Note: ' + note : ''}`,
+        relatedReport: report._id,
+        trackingId: report.trackingId,
+        metadata: {
+          oldStatus: req.body.previousStatus || null,
+          newStatus: status,
+          category: report.category,
+          department: report.assignedDepartment,
+          actionBy: req.user._id,
+        },
+      });
+
+      // Push via WebSocket
+      emitToUser(report.reporter.toString(), 'notification:new', notification);
+    }
+
+    // Broadcast report update to public feed listeners
+    broadcast('report:updated', {
+      reportId: report._id,
+      trackingId: report.trackingId,
+      status,
+    });
+
     res.json({
       message: `Report status updated to '${status}'`,
       report,
@@ -271,6 +314,35 @@ export const assignReport = async (req, res) => {
     }
 
     await report.save();
+
+    // ─── Notify department about new assignment ────────
+    if (assignedDepartment) {
+      emitToDepartment(assignedDepartment, 'report:assigned', {
+        reportId: report._id,
+        trackingId: report.trackingId,
+        title: report.title,
+        category: report.category,
+        priority: report.priority,
+      });
+    }
+
+    // Notify reporter if they exist
+    if (report.reporter) {
+      const notification = await Notification.createNotification({
+        recipient: report.reporter,
+        type: 'report_assigned',
+        title: 'Report assigned to department',
+        message: `Your report "${report.title}" (${report.trackingId}) has been assigned to the ${assignedDepartment || 'appropriate'} department.`,
+        relatedReport: report._id,
+        trackingId: report.trackingId,
+        metadata: {
+          department: assignedDepartment,
+          actionBy: req.user._id,
+        },
+      });
+
+      emitToUser(report.reporter.toString(), 'notification:new', notification);
+    }
 
     res.json({
       message: 'Report assigned successfully',

@@ -34,7 +34,7 @@ export default function Footer() {
                 <Link to="/report" className="text-slate-500 hover:text-blue-600 transition-colors">Report an Issue</Link>
               </li>
               <li>
-                <span className="text-slate-500 hover:text-blue-600 transition-colors cursor-pointer">Issue Feed</span>
+                <Link to="/feed" className="text-slate-500 hover:text-blue-600 transition-colors">Issue Feed</Link>
               </li>
               <li>
                 <span className="text-slate-500 hover:text-blue-600 transition-colors cursor-pointer">Live Map</span>

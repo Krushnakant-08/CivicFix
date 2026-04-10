@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
+import NotificationBell from '../ui/NotificationBell';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -67,6 +68,7 @@ export default function Navbar() {
             <Link to="/" className={navLinkClass('/')}>Home</Link>
             <Link to="/report" className={navLinkClass('/report')}>Report Issue</Link>
             <Link to="/track" className={navLinkClass('/track')}>Track</Link>
+            <Link to="/feed" className={navLinkClass('/feed')}>Feed</Link>
 
             {isAuthenticated && (
               <Link to="/my-reports" className={navLinkClass('/my-reports')}>My Reports</Link>
@@ -79,6 +81,10 @@ export default function Navbar() {
               >
                 Dashboard
               </Link>
+            )}
+
+            {isAuthenticated && (
+              <NotificationBell />
             )}
 
             <div className="w-px h-6 bg-slate-200"></div>
@@ -155,9 +161,12 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-3">
             {isAuthenticated && (
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-teal-400 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                {user?.name?.charAt(0).toUpperCase()}
-              </div>
+              <>
+                <NotificationBell />
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-teal-400 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                  {user?.name?.charAt(0).toUpperCase()}
+                </div>
+              </>
             )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -185,6 +194,7 @@ export default function Navbar() {
               <Link to="/" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Home</Link>
               <Link to="/report" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Report Issue</Link>
               <Link to="/track" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Track Report</Link>
+              <Link to="/feed" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Community Feed</Link>
 
               {isAuthenticated && (
                 <>
