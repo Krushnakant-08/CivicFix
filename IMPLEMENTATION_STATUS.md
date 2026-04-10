@@ -1,7 +1,7 @@
 # CivicFix — Implementation Status
 
 > **Last Updated:** April 10, 2026
-> **Resume From:** Phase 4 — Real-Time Communication & Notifications
+> **Resume From:** Phase 4 — Real-Time Communication (Finalizing FCM/Twilio)
 
 ---
 
@@ -103,29 +103,34 @@ Everything below is built, tested, and working.
 
 ---
 
-## ⬜ Phase 4 — Real-Time Communication & Notifications (NEXT)
+## 🔄 Phase 4 — Real-Time Communication & Notifications (IN PROGRESS)
 
-> **START HERE** when you resume.
+> **CURRENT FOCUS:** Finalizing Push Notifications (FCM) and External Alerts (Twilio).
+
+### What has been built:
+1. **WebSocket integration** — Socket.io server and client integration ✅
+2. **In-App Notifications** — Real-time notification feed with unread count ✅
+3. **Notification Persistence** — Database model and API endpoints for alerts ✅
 
 ### What needs to be built:
-1. **WebSocket integration** — Socket.io for real-time status update push
-2. **Push notifications** — Firebase Cloud Messaging (FCM)
-3. **Email/SMS notifications** — Twilio for status change alerts
-4. **Live map updates** — Real-time issue markers
-5. **Estimated resolution time** — ETA display based on historical data
+1. **Push notifications** — Firebase Cloud Messaging (FCM) ⬜
+2. **Email/SMS notifications** — Twilio for status change alerts ⬜
+3. **Live map updates** — Real-time issue markers ⬜
+4. **Estimated resolution time** — ETA display based on historical data ⬜
 
 ### Prerequisites:
 - Install `socket.io` (server) and `socket.io-client` (frontend)
 - Set up Firebase project for FCM
 - Set up Twilio account for SMS
 
-### Files to create/modify:
-- `server/socket.js` — **NEW** (Socket.io server setup)
-- `server/index.js` — **MODIFY** (integrate socket server)
-- `src/services/socket.js` — **NEW** (Socket.io client)
-- `src/context/NotificationContext.jsx` — **NEW** (notification state)
-- `src/components/ui/NotificationBell.jsx` — **NEW** (navbar bell icon)
-- Update dashboard pages to subscribe to real-time events
+### Files created/modified:
+- `server/socket.js` — **COMPLETE** (Socket.io handlers)
+- `server/index.js` — **COMPLETE** (Integrated socket server)
+- `server/models/Notification.js` — **COMPLETE** (Schema for alerts)
+- `server/routes/notifications.js` — **COMPLETE** (CRUD for alerts)
+- `src/services/socket.js` — **COMPLETE** (Socket.io client service)
+- `src/context/NotificationContext.jsx` — **COMPLETE** (Global notification state)
+- `src/components/ui/NotificationBell.jsx` — **COMPLETE** (Navbar component)
 
 ---
 
@@ -168,10 +173,11 @@ Everything below is built, tested, and working.
 | Database | MongoDB Atlas (Mongoose 8) | ✅ Active |
 | Auth | JWT (bcrypt + jsonwebtoken) | ✅ Active |
 | Storage | Base64 (temporary) → Firebase/Cloudinary (planned) | 🔄 Partial |
-| Real-Time | Socket.io | ⬜ Phase 4 |
+| Real-Time | Socket.io | ✅ Active |
 | Maps | Leaflet.js / Mapbox GL | ⬜ Phase 6 |
 | AI/ML | TensorFlow.js, OpenAI | ⬜ Phase 5 |
-| Notifications | FCM, Twilio | ⬜ Phase 4 |
+| Notifications | Socket.io (In-app) | ✅ Active |
+| Notifications | FCM, Twilio (External) | ⬜ Phase 4 |
 | Deployment | Vercel + Railway/AWS | ⬜ Phase 8 |
 
 ---

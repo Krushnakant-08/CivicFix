@@ -332,7 +332,7 @@ Using **Computer Vision + rule-based mapping** to:
 
 > Phases are ordered by **priority** — foundational features first, advanced intelligence later.
 
-### Phase 1 — Foundation & Core Infrastructure *(Current)*
+### Phase 1 — Foundation & Core Infrastructure ✅
 > *"Build the skeleton — auth, database, project structure."*
 
 | Item | Description | Status |
@@ -348,41 +348,41 @@ Using **Computer Vision + rule-based mapping** to:
 
 ---
 
-### Phase 2 — Citizen Report Submission & Tracking
+### Phase 2 — Citizen Report Submission & Tracking ✅
 > *"The core user journey — report an issue & track it."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Report submission form | Photo upload, category, location, description | 🔄 Partial |
-| Auto location tagging | GPS-based auto-fill via Geolocation API | ⬜ Pending |
-| Image upload pipeline | Firebase Storage / Cloudinary integration | ⬜ Pending |
-| Report tracking dashboard | Status timeline (Reported → Resolved) | ⬜ Pending |
-| Unique tracking IDs | Auto-generated per report | ⬜ Pending |
-| Anonymous reporting mode | Toggle anonymous submission | ⬜ Pending |
+| Report submission form | Photo upload, category, location, description | ✅ Done |
+| Auto location tagging | GPS-based auto-fill via Geolocation API | ✅ Done |
+| Image upload pipeline | Client-side base64 with preview mechanism | ✅ Done |
+| Report tracking dashboard | Status timeline (Reported → Resolved) | ✅ Done |
+| Unique tracking IDs | Auto-generated per report (`CF-YYMMDD-XXXXX`) | ✅ Done |
+| Anonymous reporting mode | Toggle anonymous submission | ✅ Done |
 
 ---
 
-### Phase 3 — Multi-Role Dashboards & Admin Portal
+### Phase 3 — Multi-Role Dashboards & Admin Portal ✅
 > *"Separate views for Citizens, Departments, and Admins."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Citizen dashboard | My reports, status timeline, notifications | ⬜ Pending |
-| Department dashboard | Assigned tasks, workload, status updates | ⬜ Pending |
-| Admin dashboard | System overview, analytics, user management | ⬜ Pending |
-| Centralized problem feed | Trending issues, nearby complaints, hotspots | ⬜ Pending |
-| Report filtering & search | By category, location, priority, date | ⬜ Pending |
+| Citizen dashboard | My reports, status timeline, notifications | ✅ Done |
+| Department dashboard | Assigned tasks, workload, status updates | ✅ Done |
+| Admin dashboard | System overview, analytics, user management | ✅ Done |
+| Centralized problem feed | Trending issues, nearby complaints, hotspots | ✅ Done |
+| Report filtering & search | By category, location, priority, date | ✅ Done |
 
 ---
 
-### Phase 4 — Real-Time Communication & Notifications
+### Phase 4 — Real-Time Communication & Notifications 🔄
 > *"Keep everyone in the loop — live updates & alerts."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| WebSocket integration | Socket.io for real-time status updates | ⬜ Pending |
-| Push notifications | Firebase Cloud Messaging (FCM) | ⬜ Pending |
-| Email/SMS notifications | Status change alerts to citizens | ⬜ Pending |
+| WebSocket integration | Socket.io for real-time status updates | ✅ Done |
+| Push notifications | Event-driven in-app alerts via Socket.io | ✅ Done |
+| Email/SMS notifications | Status change alerts to citizens (Twilio) | ⬜ Pending |
 | Live map updates | Real-time issue markers on interactive map | ⬜ Pending |
 | Estimated resolution time | Display ETA based on historical data | ⬜ Pending |
 
@@ -465,51 +465,43 @@ Using **Computer Vision + rule-based mapping** to:
 
 ```
 CivicFix/
-├── Latrobe-Crowdsourcing/            # 📱 Frontend (React + Vite)
-│   ├── docs/                         # 📖 Project documentation
-│   │   ├── assets/                   # Images, diagrams, banners
-│   │   ├── PROJECT_LOG.md            # Development log (phase-wise)
-│   │   └── OUTPUT_NOTES.md           # Sequential output observations
-│   │
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── auth/                 # ProtectedRoute
-│   │   │   ├── layout/               # Navbar, Footer, Sidebar
-│   │   │   └── ui/                   # Reusable UI (Button, Card, Modal)
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── Home.jsx              # Landing page + Problem Feed
-│   │   │   ├── ReportIssue.jsx       # Issue submission form
-│   │   │   ├── TrackReport.jsx       # Status tracking page
-│   │   │   ├── Login.jsx             # Authentication page
-│   │   │   └── Register.jsx          # Registration page
-│   │   │
-│   │   ├── services/                 # API service layer (api.js)
-│   │   ├── context/                  # React Context (AuthContext)
-│   │   ├── App.jsx                   # Root component with routing
-│   │   ├── main.jsx                  # Entry point
-│   │   └── index.css                 # Global styles
-│   │
-│   ├── .env                          # Frontend env (VITE_API_URL)
-│   ├── package.json
-│   ├── vite.config.js
-│   └── README.md                     # ← You are here
-│
-├── Latrobe-Backend/                  # ⚙️ Backend API (Express.js)
-│   ├── src/
-│   │   ├── config/db.js              # MongoDB Atlas connection
-│   │   ├── controllers/              # authController, reportController, userController
-│   │   ├── middleware/auth.js        # protect, optionalAuth, authorize
-│   │   ├── models/                   # User.js, Report.js (Mongoose)
-│   │   ├── routes/                   # auth, users, reports routes
-│   │   ├── utils/generateToken.js    # JWT token utility
-│   │   ├── app.js                    # Express app setup
-│   │   └── server.js                 # Server entry point
-│   │
-│   ├── .env.example                  # Backend env template
-│   └── package.json
-│
-└── LaTrobe-Departments/              # 🏢 Department Portal (future)
+└── Latrobe-Crowdsourcing/            # 🏙️ Monolith Repository
+    ├── server/                       # ⚙️ Backend API (Express.js)
+    │   ├── config/db.js              # MongoDB Atlas connection
+    │   ├── controllers/              # Auth, Report, User, Notification logic
+    │   ├── middleware/auth.js        # protect, optionalAuth, authorize
+    │   ├── models/                   # User, Report, Notification (Mongoose)
+    │   ├── routes/                   # auth, users, reports, notification routes
+    │   ├── socket.js                 # Socket.io event handlers
+    │   ├── utils/generateToken.js    # JWT token utility
+    │   └── index.js                  # Server entry point
+    │
+    ├── src/
+    │   ├── components/
+    │   │   ├── auth/                 # ProtectedRoute
+    │   │   ├── layout/               # Navbar, Footer
+    │   │   ├── ui/                   # Button, NotificationBell, Card
+    │   │   └── reports/              # ReportCard, FilterBar
+    │   │
+    │   ├── pages/
+    │   │   ├── Home.jsx              # Landing page
+    │   │   ├── ReportIssue.jsx       # Issue submission (GPS, images)
+    │   │   ├── TrackReport.jsx       # Status tracking
+    │   │   ├── MyReports.jsx         # Citizen dashboard
+    │   │   ├── PublicFeed.jsx        # Community issue feed
+    │   │   ├── DepartmentDashboard.jsx# Dept task management
+    │   │   ├── AdminDashboard.jsx    # Admin portal (4 tabs)
+    │   │   ├── Login.jsx             # Auth pages
+    │   │   └── Register.jsx
+    │   │
+    │   ├── services/                 # API (api.js), Socket (socket.js)
+    │   ├── context/                  # AuthContext, NotificationContext
+    │   ├── App.jsx                   # Router & Global Layout
+    │   ├── main.jsx                  # React entry
+    │   └── index.css                 # Design system (TW4 + Vanilla)
+    │
+    ├── docs/                         # 📖 Project documentation
+    └── .env                          # Frontend & Backend secrets
 ```
 
 ---
@@ -555,14 +547,14 @@ VITE_OPENAI_API_KEY=your_openai_key
 
 ## 📊 Development Progress
 
-> Last updated: **April 7, 2026**
+> Last updated: **April 10, 2026**
 
 | Phase | Name | Status | Progress |
 |:---:|:---|:---:|:---:|
-| 1 | Foundation & Core Infrastructure | ✅ Complete | ████████░░ 90% |
-| 2 | Citizen Report Submission & Tracking | ⬜ Pending | ░░░░░░░░░░ 0% |
-| 3 | Multi-Role Dashboards & Admin Portal | ⬜ Pending | ░░░░░░░░░░ 0% |
-| 4 | Real-Time Communication & Notifications | ⬜ Pending | ░░░░░░░░░░ 0% |
+| 1 | Foundation & Core Infrastructure | ✅ Complete | ██████████ 100% |
+| 2 | Citizen Report Submission & Tracking | ✅ Complete | ██████████ 100% |
+| 3 | Multi-Role Dashboards & Admin Portal | ✅ Complete | ██████████ 100% |
+| 4 | Real-Time Communication & Notifications | 🔄 In Progress | █████░░░░░ 50% |
 | 5 | AI Intelligence Layer | ⬜ Pending | ░░░░░░░░░░ 0% |
 | 6 | Map Visualization & AR Features | ⬜ Pending | ░░░░░░░░░░ 0% |
 | 7 | Analytics, Predictions & Accessibility | ⬜ Pending | ░░░░░░░░░░ 0% |
