@@ -119,6 +119,10 @@ export const reportsAPI = {
     request(`/reports/${id}/analyze`, {
       method: 'POST',
     }),
+
+  getAnalytics: () => request('/reports/analytics'),
+
+  getPredictions: () => request('/reports/predictions'),
 };
 
 // ─── Health Check ────────────────────────────────────────

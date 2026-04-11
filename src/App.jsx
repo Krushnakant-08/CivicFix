@@ -4,6 +4,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ChatBot from './components/ui/ChatBot';
 
 // Pages
 import Home from './pages/Home';
@@ -16,6 +17,7 @@ import PublicFeed from './pages/PublicFeed';
 import DepartmentDashboard from './pages/DepartmentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import MapView from './pages/MapView';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 
 function App() {
   return (
@@ -23,8 +25,16 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
         <div className="flex flex-col min-h-screen">
+          {/* Skip to content link — accessibility */}
+          <a
+            href="#main-content"
+            className="skip-to-content"
+          >
+            Skip to main content
+          </a>
+
           <Navbar />
-          <main className="grow pt-20">
+          <main id="main-content" className="grow pt-20" role="main" aria-label="Main content">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -65,11 +75,23 @@ function App() {
                 }
               />
 
+              <Route
+                path="/dashboard/analytics"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <AnalyticsDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />
+
+          {/* AI Chatbot Assistant — Phase 7 */}
+          <ChatBot />
         </div>
         </NotificationProvider>
       </AuthProvider>
@@ -96,3 +118,4 @@ function NotFound() {
 }
 
 export default App;
+

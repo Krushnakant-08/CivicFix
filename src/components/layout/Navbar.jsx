@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
@@ -24,6 +24,18 @@ export default function Navbar() {
     setDropdownOpen(false);
   }, [location]);
 
+  // Keyboard: Escape key closes dropdown/mobile menu
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        setDropdownOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, []);
+
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
@@ -45,6 +57,8 @@ export default function Navbar() {
 
   return (
     <nav
+      role="navigation"
+      aria-label="Main navigation"
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-white/70 backdrop-blur-lg border-b border-slate-200/50 shadow-sm'
@@ -96,6 +110,9 @@ export default function Navbar() {
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 hover:bg-slate-100 px-3 py-2 rounded-xl transition-colors"
+                  aria-expanded={dropdownOpen}
+                  aria-haspopup="true"
+                  aria-label="User menu"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-teal-400 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                     {user?.name?.charAt(0).toUpperCase()}
@@ -122,9 +139,14 @@ export default function Navbar() {
                       📋 My Reports
                     </Link>
                     {isAdmin && (
-                      <Link to="/dashboard/admin" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
-                        📊 Admin Dashboard
-                      </Link>
+                      <>
+                        <Link to="/dashboard/admin" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                          📊 Admin Dashboard
+                        </Link>
+                        <Link to="/dashboard/analytics" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                          📈 Analytics
+                        </Link>
+                      </>
                     )}
                     {isDepartment && (
                       <Link to="/dashboard/department" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
@@ -171,9 +193,11 @@ export default function Navbar() {
             )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-slate-600 hover:text-slate-900 focus:outline-none"
+              className="text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-lg"
               type="button"
               aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               {mobileMenuOpen ? (
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -190,13 +214,13 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 rounded-b-2xl shadow-lg animate-slide-up">
+          <div id="mobile-menu" className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 rounded-b-2xl shadow-lg animate-slide-up" role="menu">
             <div className="px-4 py-4 space-y-2">
-              <Link to="/" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Home</Link>
-              <Link to="/report" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Report Issue</Link>
-              <Link to="/track" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Track Report</Link>
-              <Link to="/feed" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Community Feed</Link>
-              <Link to="/map" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Map</Link>
+              <Link to="/" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50" role="menuitem">Home</Link>
+              <Link to="/report" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50" role="menuitem">Report Issue</Link>
+              <Link to="/track" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50" role="menuitem">Track Report</Link>
+              <Link to="/feed" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50" role="menuitem">Community Feed</Link>
+              <Link to="/map" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50" role="menuitem">Map</Link>
 
               {isAuthenticated && (
                 <>

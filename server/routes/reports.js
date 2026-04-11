@@ -11,6 +11,8 @@ import {
   getReportStats,
   reanalyzeReport,
   getMapReports,
+  getAnalytics,
+  getPredictions,
 } from '../controllers/reportController.js';
 import { protect, optionalAuth, authorize } from '../middleware/auth.js';
 
@@ -21,6 +23,10 @@ router.post('/', optionalAuth, createReport);         // Create report (anonymou
 router.get('/', getReports);                           // List all reports (public feed)
 router.get('/track/:trackingId', trackReport);         // Track by tracking ID (public)
 router.get('/stats/overview', protect, authorize('admin'), getReportStats);  // Admin stats
+
+// ─── Analytics & Predictions (Admin) ─────────────────────
+router.get('/analytics', protect, authorize('admin'), getAnalytics);       // Analytics dashboard data
+router.get('/predictions', protect, authorize('admin'), getPredictions);    // Hotspot predictions
 
 // ─── Authenticated ───────────────────────────────────────
 router.get('/my/reports', protect, getMyReports);      // My reports
@@ -38,3 +44,4 @@ router.get('/map', getMapReports);  // Public — lightweight geo data
 router.get('/:id', getReportById);
 
 export default router;
+

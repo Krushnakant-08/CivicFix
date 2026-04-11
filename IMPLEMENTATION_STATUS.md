@@ -1,7 +1,7 @@
 # CivicFix — Implementation Status
 
-> **Last Updated:** April 11, 2026 (10:35 IST)
-> **Resume From:** Phase 7 — Analytics, Predictions & Accessibility
+> **Last Updated:** April 11, 2026 (12:55 IST)
+> **Resume From:** Phase 8 — Advanced Features & Hardening
 
 ---
 
@@ -12,13 +12,13 @@ Everything below is built, tested, and working.
 ### Frontend (React 19 + Vite 7 + TailwindCSS 4)
 | File | Purpose |
 |:---|:---|
-| `src/App.jsx` | Main router — public routes, protected routes (role-gated), 404 |
+| `src/App.jsx` | Main router — public routes, protected routes (role-gated), 404, skip-to-content link, ChatBot |
 | `src/main.jsx` | React entry point |
-| `src/index.css` | Design system — Inter font, card/button utilities, slide-up animation, skeleton shimmer |
+| `src/index.css` | Design system — Inter font, card/button utilities, slide-up animation, skeleton shimmer, accessibility, chatbot styles |
 | `src/context/AuthContext.jsx` | Auth state (login, register, logout, getMe, role checks) |
 | `src/services/api.js` | Fetch wrapper — authAPI, usersAPI, reportsAPI, healthCheck |
 | `src/components/auth/ProtectedRoute.jsx` | Route guard (auth + role check + loading state) |
-| `src/components/layout/Navbar.jsx` | Responsive nav with scroll effect, user dropdown, role badges |
+| `src/components/layout/Navbar.jsx` | Responsive nav with scroll effect, user dropdown, role badges, ARIA attributes |
 | `src/components/layout/Footer.jsx` | Site footer with quick links, social icons (GitHub, X) |
 | `src/components/ui/Button.jsx` | Reusable button (primary / secondary variants) |
 | `src/pages/Home.jsx` | Landing page — hero + "How it works" steps + feature grid + dark CTA |
@@ -35,10 +35,10 @@ Everything below is built, tested, and working.
 | `server/models/Report.js` | Report schema — tracking ID, location, images, status history, AI fields |
 | `server/middleware/auth.js` | `protect`, `optionalAuth`, `authorize` middleware |
 | `server/controllers/authController.js` | Register, login, getMe, createStaffAccount |
-| `server/controllers/reportController.js` | CRUD + track, upvote (with notification), assign, stats |
+| `server/controllers/reportController.js` | CRUD + track, upvote (with notification), assign, stats, analytics, predictions |
 | `server/controllers/userController.js` | getAllUsers, getById, updateProfile, updateRole, toggleStatus |
 | `server/routes/auth.js` | POST register/login, GET me, POST create-staff (admin) |
-| `server/routes/reports.js` | Full report routes with role guards |
+| `server/routes/reports.js` | Full report routes with role guards, analytics & predictions |
 | `server/routes/users.js` | User management routes (admin-gated) |
 
 ### Key Architecture Decisions
@@ -56,7 +56,7 @@ Everything below is built, tested, and working.
 ### What was built:
 | File | What it does |
 |:---|:---|
-| `src/pages/ReportIssue.jsx` | **Full report submission form** — title, category selector (7 types), description with char counter, GPS auto-location via Geolocation API + reverse geocoding (OpenStreetMap Nominatim), drag-and-drop image upload with previews (up to 3 images), anonymous reporting toggle, success state with tracking ID + copy-to-clipboard, **AI insights panel** (priority, severity, department, ETA, auto-tags, duplicate flag) |
+| `src/pages/ReportIssue.jsx` | **Full report submission form** — title, category selector (7 types), description with char counter, GPS auto-location via Geolocation API + reverse geocoding (OpenStreetMap Nominatim), drag-and-drop image upload with previews (up to 3 images), anonymous reporting toggle, success state with tracking ID + copy-to-clipboard, **AI insights panel** (priority, severity, department, ETA, auto-tags, duplicate flag), **voice-to-text input** (Phase 7) |
 | `src/pages/TrackReport.jsx` | **Report tracker** — search by tracking ID, displays status badge with colored dot, detail grid, status timeline with connector dots, **AI insights panel** (severity, ETA, tags, duplicate warning) |
 | `src/pages/MyReports.jsx` | **Citizen dashboard** — fetches user's reports, status filter tabs (All/Reported/In Progress/Resolved/Closed), expand/collapse report details + status timeline, pagination |
 
@@ -222,12 +222,61 @@ Everything below is built, tested, and working.
 - Leaflet CSS overrides placed outside `@layer` to avoid Tailwind specificity conflicts
 - Mobile-first responsive: filter panel becomes a slide-out drawer with backdrop on < 768px
 
-## ⬜ Phase 7 — Analytics, Predictions & Accessibility
-- Analytics dashboard (trends, response times)
-- Predictive hotspot forecasting
-- Voice-based reporting (speech-to-text)
-- Accessibility features (screen reader, large buttons)
-- AI chatbot assistant
+---
+
+## ✅ Phase 7 — Analytics, Predictions & Accessibility (COMPLETE)
+
+### What was built:
+
+#### Backend — Analytics & Predictions Engine
+| File | What it does |
+|:---|:---|
+| `server/controllers/reportController.js` | **`getAnalytics`** — Returns: daily report trend (last 30 days), avg resolution time by category & priority, resolution rate, status/category/priority breakdowns, hourly activity distribution, top 10 reported areas, monthly comparison (this month vs last month with % change) |
+| `server/controllers/reportController.js` | **`getPredictions`** — Returns: hotspot clusters (areas with 3+ reports in 60 days, grouped by ~500m grid, with dominant category/priority, unresolved count, confidence score, risk level), day-of-week pattern, category trends (4-week comparison with up/down/stable indicators) |
+| `server/routes/reports.js` | `GET /api/reports/analytics` and `GET /api/reports/predictions` — Admin-only routes |
+
+#### Frontend — Analytics Dashboard
+| File | What it does |
+|:---|:---|
+| `src/pages/AnalyticsDashboard.jsx` | **Full analytics dashboard** (`/dashboard/analytics`) — 2-tab interface: **Analytics** (4 metric cards with monthly comparison, SVG line chart for daily trends, progress ring for resolution rate, bar charts for hourly activity, horizontal bars for resolution times by category/priority, category/status breakdowns, ranked top areas), **Predictions** (hotspot cards with risk levels and confidence scores, day-of-week bar chart, 4-week category trend comparison with directional arrows) |
+| `src/services/api.js` | **`getAnalytics`** and **`getPredictions`** — API helpers for analytics endpoints |
+
+#### Voice-based Reporting (Speech-to-Text)
+| File | What it does |
+|:---|:---|
+| `src/pages/ReportIssue.jsx` | **Web Speech API voice input** — Microphone toggle button next to description field, continuous recognition mode, pulsing red indicator when recording, appends transcribed text to description, graceful fallback for unsupported browsers, permission error handling |
+
+#### Accessibility Features
+| File | What it does |
+|:---|:---|
+| `src/App.jsx` | **Skip-to-content link** (visible on Tab focus), `id="main-content"` on `<main>`, `role="main"` and `aria-label` attributes |
+| `src/components/layout/Navbar.jsx` | `role="navigation"`, `aria-label="Main navigation"`, `aria-expanded` / `aria-haspopup` on dropdown buttons, `aria-controls` on mobile toggle, `role="menu"` / `role="menuitem"` on mobile nav, Escape key closes dropdowns, `focus-visible` ring styles |
+| `src/index.css` | **`.skip-to-content`** — hidden until focused; **`.sr-only`** — screen-reader-only utility; **focus-visible rings** for all interactive elements; **reduced motion** — `prefers-reduced-motion: reduce` disables all animations |
+
+#### AI Chatbot Assistant
+| File | What it does |
+|:---|:---|
+| `src/components/ui/ChatBot.jsx` | **Floating chatbot** — fixed-position FAB button (bottom-right), expandable glassmorphism chat panel, rule-based FAQ engine (15+ topic patterns covering reporting, tracking, categories, statuses, GPS, map, feed, upvotes, anonymous, AI analysis, notifications, contact), markdown-like bold rendering, quick-reply chip buttons, navigation link buttons, typing indicator with bouncing dots, auto-scroll, focus management, fully responsive (full-width on mobile) |
+| `src/index.css` | **~240 lines** of chatbot CSS — floating FAB with gradient + hover lift, chat panel with glassmorphism + slide-up animation, gradient header, user/bot message bubbles, typing dots animation, quick-reply chips, link buttons, input area with send button, mobile responsive breakpoints |
+
+#### Environment Files
+| File | What it does |
+|:---|:---|
+| `.env.example` | Frontend env template — `VITE_API_URL` |
+| `server/.env.example` | Backend env template — `MONGO_URI`, `JWT_SECRET`, `NODE_ENV`, `PORT`, `CLIENT_URL` |
+
+### Key Details:
+- **Zero new NPM dependencies** — All charts use inline SVG, speech uses Web Speech API, chatbot is rule-based pattern matching
+- Analytics dashboard uses custom `MiniLineChart`, `MiniBarChart`, and `ProgressRing` SVG components — no charting library
+- Predictive hotspot clustering rounds GPS coordinates to ~500m grid cells and requires ≥ 3 reports per cluster
+- Confidence scores combine recency (40%), density (40%), and unresolved ratio (20%), capped at 95%
+- Risk levels: ≥ 70% = high, ≥ 40% = medium, < 40% = low
+- Speech-to-text uses `webkitSpeechRecognition` / `SpeechRecognition` (Chrome, Edge, Safari supported)
+- Chatbot FAQ engine matches 15+ topic patterns with prioritized keyword matching and fallback responses
+- All new features follow the existing design system (glassmorphism, gradient buttons, slide-up animations, Inter font)
+- `.env.example` files created for both frontend and server directories
+
+---
 
 ## ⬜ Phase 8 — Advanced Features & Hardening
 - PWA with offline sync (Workbox)
@@ -252,8 +301,11 @@ Everything below is built, tested, and working.
 | Notifications | In-app (Socket.io + MongoDB) | ✅ Active |
 | AI / NLP | Rule-based NLP engine (aiService.js) | ✅ Active |
 | Maps | Leaflet.js + react-leaflet + leaflet.heat + clustering | ✅ Active |
-| AI/ML (ext.) | TensorFlow.js, OpenAI | ⬜ Phase 7+ |
-| Push/SMS | FCM, Twilio | ⬜ Phase 7+ |
+| Analytics | Custom SVG charts + MongoDB aggregation | ✅ Active |
+| Predictions | Rule-based hotspot clustering | ✅ Active |
+| Voice Input | Web Speech API (browser-native) | ✅ Active |
+| Chatbot | Rule-based FAQ engine (ChatBot.jsx) | ✅ Active |
+| Accessibility | ARIA, skip links, focus-visible, reduced motion | ✅ Active |
 | Deployment | Vercel + Railway/AWS | ⬜ Phase 8 |
 
 ---
@@ -262,24 +314,25 @@ Everything below is built, tested, and working.
 
 ```
 src/
-├── App.jsx                              # Router with all routes + 404
+├── App.jsx                              # Router with all routes + 404 + skip-to-content + ChatBot
 ├── main.jsx                             # React entry
-├── index.css                            # Design system (card, btn, input, animations)
+├── index.css                            # Design system (card, btn, input, animations, map, accessibility, chatbot)
 ├── context/
 │   ├── AuthContext.jsx                  # Auth state management
 │   └── NotificationContext.jsx          # Global notification state + WebSocket
 ├── services/
-│   ├── api.js                           # API service layer
+│   ├── api.js                           # API service layer (+ analytics, predictions)
 │   └── socket.js                        # Socket.io client
 ├── components/
 │   ├── auth/
 │   │   └── ProtectedRoute.jsx           # Route guard
 │   ├── layout/
-│   │   ├── Navbar.jsx                   # Top navigation (CivicFix branding)
+│   │   ├── Navbar.jsx                   # Top navigation (ARIA-accessible, Analytics link)
 │   │   └── Footer.jsx                   # Footer with SVG social icons
 │   ├── ui/
 │   │   ├── Button.jsx                   # Reusable button (primary/secondary)
-│   │   └── NotificationBell.jsx         # Notification dropdown
+│   │   ├── NotificationBell.jsx         # Notification dropdown
+│   │   └── ChatBot.jsx                  # AI chatbot assistant (Phase 7)
 │   └── reports/
 │       ├── ReportCard.jsx               # Report card (3 variants, colored-dot badges)
 │       └── FilterBar.jsx                # Filter dropdowns
@@ -287,11 +340,12 @@ src/
     ├── Home.jsx                         # Landing page (hero, steps, features, CTA)
     ├── Login.jsx                        # Login form
     ├── Register.jsx                     # Register form
-    ├── ReportIssue.jsx                  # Submit report (GPS, images, anon, AI insights panel)
+    ├── ReportIssue.jsx                  # Submit report (GPS, images, anon, AI insights, voice input)
     ├── TrackReport.jsx                  # Track by ID (+ AI insights panel)
     ├── MyReports.jsx                    # Citizen's reports
     ├── PublicFeed.jsx                   # Community issue feed + upvotes
     ├── MapView.jsx                      # Interactive map + heatmap (Phase 6)
+    ├── AnalyticsDashboard.jsx           # Analytics & predictions dashboard (Phase 7)
     ├── DepartmentDashboard.jsx          # Department management
     └── AdminDashboard.jsx               # Admin portal (4 tabs)
 
@@ -300,6 +354,7 @@ server/
 ├── socket.js                            # Socket.io handlers (JWT auth, rooms)
 ├── package.json                         # Backend deps
 ├── .env                                 # MONGO_URI, JWT_SECRET, NODE_ENV
+├── .env.example                         # Environment template (Phase 7)
 ├── config/
 │   └── db.js                            # MongoDB connection
 ├── utils/
@@ -311,15 +366,22 @@ server/
 ├── middleware/
 │   └── auth.js                          # Auth middleware
 ├── services/
-│   └── aiService.js                     # AI NLP engine (Phase 5) — tagging, priority, routing, spam, dedup, ETA
+│   └── aiService.js                     # AI NLP engine (Phase 5)
 ├── controllers/
 │   ├── authController.js                # Auth logic
-│   ├── reportController.js              # Report CRUD + AI integration + notification triggers
+│   ├── reportController.js              # Report CRUD + AI + notifications + analytics + predictions
 │   ├── userController.js                # User management
 │   └── notificationController.js        # Notification CRUD
 └── routes/
     ├── auth.js                          # Auth routes
-    ├── reports.js                       # Report routes (+ POST /:id/analyze)
+    ├── reports.js                       # Report routes (+ analytics, predictions)
     ├── users.js                         # User routes
     └── notifications.js                 # Notification routes
+
+# Root
+├── .env                                 # Frontend env (VITE_API_URL)
+├── .env.example                         # Frontend env template (Phase 7)
+├── package.json                         # Frontend deps
+├── vite.config.js                       # Vite config
+└── IMPLEMENTATION_STATUS.md             # This file
 ```

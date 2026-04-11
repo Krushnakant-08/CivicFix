@@ -34,6 +34,59 @@ export default function ReportIssue() {
   const [success, setSuccess] = useState(null); // { trackingId }
   const [dragActive, setDragActive] = useState(false);
 
+  // ─── Speech-to-Text (Phase 7) ─────────────────────────
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+  const speechSupported = typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+
+  const toggleSpeech = useCallback(() => {
+    if (!speechSupported) return;
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event) => {
+      let finalTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        }
+      }
+      if (finalTranscript) {
+        setFormData((prev) => ({
+          ...prev,
+          description: prev.description + (prev.description ? ' ' : '') + finalTranscript,
+        }));
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+      if (event.error === 'not-allowed') {
+        setError('Microphone access denied. Please allow microphone access in your browser.');
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+    setError(null);
+  }, [isListening, speechSupported]);
+
   // ─── Form handlers ─────────────────────────────────────
   const handleChange = (e) => {
     setError(null);
@@ -457,20 +510,53 @@ export default function ReportIssue() {
             )}
           </div>
 
-          {/* Description */}
+          {/* Description with Voice Input */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Description</label>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Description</label>
+              {speechSupported && (
+                <button
+                  type="button"
+                  onClick={toggleSpeech}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
+                    isListening
+                      ? 'bg-red-50 border border-red-300 text-red-600 animate-pulse'
+                      : 'bg-slate-50 border border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                  aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+                >
+                  {isListening ? (
+                    <>
+                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                      Listening...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-14 0m14 0a7 7 0 00-14 0m14 0v1a7 7 0 01-14 0v-1m14 0H5m7 7v4m-4 0h8" />
+                      </svg>
+                      Voice
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
             <textarea
               required
               name="description"
               rows="4"
               value={formData.description}
               onChange={handleChange}
-              className={`${lightInputClass} resize-none`}
-              placeholder="Describe the issue in detail"
+              className={`${lightInputClass} resize-none ${isListening ? 'ring-2 ring-red-300 border-red-300' : ''}`}
+              placeholder={isListening ? 'Speak now... your voice will appear here' : 'Describe the issue in detail'}
               maxLength={2000}
             ></textarea>
-            <p className="text-xs text-slate-400 text-right">{formData.description.length}/2000</p>
+            <div className="flex items-center justify-between">
+              {!speechSupported && (
+                <p className="text-xs text-slate-400">Voice input not supported in this browser</p>
+              )}
+              <p className="text-xs text-slate-400 text-right ml-auto">{formData.description.length}/2000</p>
+            </div>
           </div>
 
           {/* Image Upload */}

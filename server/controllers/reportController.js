@@ -563,3 +563,295 @@ export const getMapReports = async (req, res) => {
     res.status(500).json({ message: 'Server error retrieving map data' });
   }
 };
+
+/**
+ * @route   GET /api/reports/analytics
+ * @desc    Get analytics data — trends, response times, breakdowns
+ * @access  Private (admin)
+ */
+export const getAnalytics = async (req, res) => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // ─── 1. Daily trend (reports created per day, last 30 days) ───
+    const dailyTrend = await Report.aggregate([
+      { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // ─── 2. Avg resolution time by category (hours) ──────────────
+    const avgResolutionByCategory = await Report.aggregate([
+      {
+        $match: {
+          status: 'resolved',
+          'resolution.resolvedAt': { $ne: null },
+        },
+      },
+      {
+        $project: {
+          category: 1,
+          resolutionHours: {
+            $divide: [
+              { $subtract: ['$resolution.resolvedAt', '$createdAt'] },
+              3600000,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$category',
+          avgHours: { $avg: '$resolutionHours' },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { avgHours: 1 } },
+    ]);
+
+    // ─── 3. Avg resolution time by priority ──────────────────────
+    const avgResolutionByPriority = await Report.aggregate([
+      {
+        $match: {
+          status: 'resolved',
+          'resolution.resolvedAt': { $ne: null },
+        },
+      },
+      {
+        $project: {
+          priority: 1,
+          resolutionHours: {
+            $divide: [
+              { $subtract: ['$resolution.resolvedAt', '$createdAt'] },
+              3600000,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$priority',
+          avgHours: { $avg: '$resolutionHours' },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // ─── 4. Resolution rate ──────────────────────────────────────
+    const [totalReports, resolvedReports] = await Promise.all([
+      Report.countDocuments(),
+      Report.countDocuments({ status: 'resolved' }),
+    ]);
+    const resolutionRate = totalReports > 0 ? parseFloat(((resolvedReports / totalReports) * 100).toFixed(1)) : 0;
+
+    // ─── 5. Status / Category / Priority breakdowns ──────────────
+    const [byStatus, byCategory, byPriority] = await Promise.all([
+      Report.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
+      Report.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }]),
+      Report.aggregate([{ $group: { _id: '$priority', count: { $sum: 1 } } }]),
+    ]);
+
+    // ─── 6. Hourly distribution ──────────────────────────────────
+    const hourlyDistribution = await Report.aggregate([
+      {
+        $group: {
+          _id: { $hour: '$createdAt' },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // ─── 7. Top areas by report volume ───────────────────────────
+    const topAreas = await Report.aggregate([
+      { $match: { 'location.address': { $ne: null } } },
+      {
+        $group: {
+          _id: '$location.address',
+          count: { $sum: 1 },
+          categories: { $addToSet: '$category' },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+    ]);
+
+    // ─── 8. Monthly comparison (this month vs last month) ────────
+    const thisMonthStart = new Date();
+    thisMonthStart.setDate(1);
+    thisMonthStart.setHours(0, 0, 0, 0);
+    const lastMonthStart = new Date(thisMonthStart);
+    lastMonthStart.setMonth(lastMonthStart.getMonth() - 1);
+
+    const [thisMonthCount, lastMonthCount] = await Promise.all([
+      Report.countDocuments({ createdAt: { $gte: thisMonthStart } }),
+      Report.countDocuments({ createdAt: { $gte: lastMonthStart, $lt: thisMonthStart } }),
+    ]);
+
+    res.json({
+      dailyTrend,
+      avgResolutionByCategory,
+      avgResolutionByPriority,
+      resolutionRate,
+      totalReports,
+      resolvedReports,
+      byStatus,
+      byCategory,
+      byPriority,
+      hourlyDistribution,
+      topAreas,
+      monthlyComparison: {
+        thisMonth: thisMonthCount,
+        lastMonth: lastMonthCount,
+        change: lastMonthCount > 0
+          ? parseFloat((((thisMonthCount - lastMonthCount) / lastMonthCount) * 100).toFixed(1))
+          : 0,
+      },
+    });
+  } catch (error) {
+    console.error('GetAnalytics error:', error);
+    res.status(500).json({ message: 'Server error fetching analytics' });
+  }
+};
+
+/**
+ * @route   GET /api/reports/predictions
+ * @desc    Predictive hotspot forecasting — identifies recurring problem areas
+ * @access  Private (admin)
+ */
+export const getPredictions = async (req, res) => {
+  try {
+    const sixtyDaysAgo = new Date();
+    sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+    // ─── 1. Hotspot clusters: areas with 3+ reports in last 60 days ─
+    const hotspots = await Report.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: sixtyDaysAgo },
+          'location.coordinates.lat': { $ne: null },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            // Round coordinates to ~500m grid for clustering
+            lat: { $round: [{ $multiply: ['$location.coordinates.lat', 100] }, 0] },
+            lng: { $round: [{ $multiply: ['$location.coordinates.lng', 100] }, 0] },
+          },
+          count: { $sum: 1 },
+          avgLat: { $avg: '$location.coordinates.lat' },
+          avgLng: { $avg: '$location.coordinates.lng' },
+          categories: { $push: '$category' },
+          statuses: { $push: '$status' },
+          addresses: { $addToSet: '$location.address' },
+          latestReport: { $max: '$createdAt' },
+          priorities: { $push: '$priority' },
+        },
+      },
+      { $match: { count: { $gte: 3 } } },
+      { $sort: { count: -1 } },
+      { $limit: 15 },
+    ]);
+
+    // Process hotspots for response
+    const processedHotspots = hotspots.map((h) => {
+      // Determine dominant category
+      const catCounts = {};
+      h.categories.forEach((c) => { catCounts[c] = (catCounts[c] || 0) + 1; });
+      const dominantCategory = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'other';
+
+      // Determine dominant priority
+      const priCounts = {};
+      h.priorities.forEach((p) => { priCounts[p] = (priCounts[p] || 0) + 1; });
+      const dominantPriority = Object.entries(priCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'medium';
+
+      // Calculate unresolved ratio
+      const unresolvedCount = h.statuses.filter((s) => !['resolved', 'closed'].includes(s)).length;
+      const unresolvedRatio = h.count > 0 ? unresolvedCount / h.count : 0;
+
+      // Confidence score: based on report density and recency
+      const daysSinceLatest = (Date.now() - new Date(h.latestReport).getTime()) / 86400000;
+      const recencyFactor = Math.max(0, 1 - daysSinceLatest / 60);
+      const densityFactor = Math.min(h.count / 10, 1);
+      const confidence = parseFloat(((recencyFactor * 0.4 + densityFactor * 0.4 + unresolvedRatio * 0.2) * 100).toFixed(0));
+
+      return {
+        coordinates: { lat: h.avgLat, lng: h.avgLng },
+        reportCount: h.count,
+        dominantCategory,
+        dominantPriority,
+        unresolvedCount,
+        address: h.addresses[0] || 'Unknown area',
+        confidence: Math.min(confidence, 95),
+        lastReported: h.latestReport,
+        riskLevel: confidence >= 70 ? 'high' : confidence >= 40 ? 'medium' : 'low',
+      };
+    });
+
+    // ─── 2. Day-of-week trend ─────────────────────────────────────
+    const dayOfWeekTrend = await Report.aggregate([
+      { $match: { createdAt: { $gte: sixtyDaysAgo } } },
+      {
+        $group: {
+          _id: { $dayOfWeek: '$createdAt' }, // 1=Sun, 7=Sat
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayTrend = dayOfWeekTrend.map((d) => ({
+      day: dayNames[d._id - 1],
+      dayIndex: d._id,
+      count: d.count,
+    }));
+
+    // ─── 3. Category trend (last 4 weeks vs previous 4 weeks) ─────
+    const fourWeeksAgo = new Date();
+    fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+    const eightWeeksAgo = new Date();
+    eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56);
+
+    const [recentCatCounts, olderCatCounts] = await Promise.all([
+      Report.aggregate([
+        { $match: { createdAt: { $gte: fourWeeksAgo } } },
+        { $group: { _id: '$category', count: { $sum: 1 } } },
+      ]),
+      Report.aggregate([
+        { $match: { createdAt: { $gte: eightWeeksAgo, $lt: fourWeeksAgo } } },
+        { $group: { _id: '$category', count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    const recentMap = {};
+    recentCatCounts.forEach((c) => { recentMap[c._id] = c.count; });
+    const olderMap = {};
+    olderCatCounts.forEach((c) => { olderMap[c._id] = c.count; });
+
+    const categories = ['roads', 'sanitation', 'water', 'electricity', 'parks', 'traffic', 'other'];
+    const categoryTrends = categories.map((cat) => {
+      const recent = recentMap[cat] || 0;
+      const older = olderMap[cat] || 0;
+      const change = older > 0 ? parseFloat((((recent - older) / older) * 100).toFixed(1)) : (recent > 0 ? 100 : 0);
+      return { category: cat, recentCount: recent, previousCount: older, changePercent: change, trending: change > 10 ? 'up' : change < -10 ? 'down' : 'stable' };
+    });
+
+    res.json({
+      hotspots: processedHotspots,
+      dayOfWeekTrend: dayTrend,
+      categoryTrends,
+      generatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('GetPredictions error:', error);
+    res.status(500).json({ message: 'Server error generating predictions' });
+  }
+};
