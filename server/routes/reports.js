@@ -10,6 +10,7 @@ import {
   upvoteReport,
   getReportStats,
   reanalyzeReport,
+  getMapReports,
 } from '../controllers/reportController.js';
 import { protect, optionalAuth, authorize } from '../middleware/auth.js';
 
@@ -29,6 +30,9 @@ router.put('/:id/upvote', protect, upvoteReport);      // Upvote toggle
 router.put('/:id/status', protect, authorize('department', 'admin'), updateReportStatus);
 router.put('/:id/assign', protect, authorize('admin'), assignReport);
 router.post('/:id/analyze', protect, authorize('admin'), reanalyzeReport);  // AI re-analysis
+
+// ─── Map route ──────────────────────────────────────────
+router.get('/map', getMapReports);  // Public — lightweight geo data
 
 // ─── Single report (must be last — :id catch-all) ────────
 router.get('/:id', getReportById);
