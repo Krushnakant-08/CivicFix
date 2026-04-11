@@ -87,6 +87,8 @@ export const reportsAPI = {
 
   getAll: (params = '') => request(`/reports${params ? `?${params}` : ''}`),
 
+  getMapData: (params = '') => request(`/reports/map${params ? `?${params}` : ''}`),
+
   getById: (id) => request(`/reports/${id}`),
 
   track: (trackingId) => request(`/reports/track/${trackingId}`),

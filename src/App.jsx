@@ -15,6 +15,7 @@ import MyReports from './pages/MyReports';
 import PublicFeed from './pages/PublicFeed';
 import DepartmentDashboard from './pages/DepartmentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import MapView from './pages/MapView';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
               <Route path="/track" element={<TrackReport />} />
               <Route path="/report" element={<ReportIssue />} />
               <Route path="/feed" element={<PublicFeed />} />
+              <Route path="/map" element={<MapView />} />
 
               {/* Protected Routes — Any authenticated user */}
               <Route

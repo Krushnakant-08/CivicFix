@@ -540,3 +540,26 @@ export const reanalyzeReport = async (req, res) => {
     res.status(500).json({ message: 'Server error during AI analysis' });
   }
 };
+
+/**
+ * @route   GET /api/reports/map
+ * @desc    returns geo-optimized report data
+ * @access  Public
+ */
+export const getMapReports = async (req, res) => {
+  try {
+    const { status, category, priority } = req.query;
+    const filter = { 'location.coordinates.lat': { $ne: null } };
+    if (status) filter.status = status;
+    if (category) filter.category = category;
+    if (priority) filter.priority = priority;
+
+    const reports = await Report.find(filter)
+      .select('trackingId title category status priority location.coordinates location.address createdAt upvotes')
+      .lean();
+    res.json({ reports });
+  } catch (error) {
+    console.error('GetMapReports error:', error);
+    res.status(500).json({ message: 'Server error retrieving map data' });
+  }
+};

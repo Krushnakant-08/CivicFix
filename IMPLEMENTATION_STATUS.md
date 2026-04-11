@@ -1,7 +1,7 @@
 # CivicFix — Implementation Status
 
-> **Last Updated:** April 10, 2026 (23:47 IST)
-> **Resume From:** Phase 6 — Map Visualization & AR
+> **Last Updated:** April 11, 2026 (10:35 IST)
+> **Resume From:** Phase 7 — Analytics, Predictions & Accessibility
 
 ---
 
@@ -177,11 +177,50 @@ Everything below is built, tested, and working.
 
 ---
 
-## ⬜ Phase 6 — Map Visualization & AR
-- Leaflet/Mapbox interactive map with clustering
-- Heatmap layer for issue hotspots
-- AR.js/WebXR camera overlay
-- Location-based radius filtering
+## ✅ Phase 6 — Interactive Map & Heatmap (COMPLETE)
+
+### What was built:
+
+#### Backend — Lightweight Map Endpoint
+| File | What it does |
+|:---|:---|
+| `server/controllers/reportController.js` | **`getMapReports`** — Returns geo-optimized report data (only trackingId, title, category, status, priority, coordinates, address, createdAt, upvotes). Filters by `status`, `category`, `priority` query params. Excludes reports without GPS coordinates. Uses `.lean()` for performance. |
+| `server/routes/reports.js` | `GET /api/reports/map` — Public route placed before the `:id` catch-all |
+
+#### Frontend — Full-Screen Interactive Map
+| File | What it does |
+|:---|:---|
+| `src/pages/MapView.jsx` | **Full-screen map page** (`/map`) — Leaflet + react-leaflet with Carto Light tiles, custom SVG drop-pin markers color-coded by category (🔴 Roads, 🟢 Sanitation, 🔵 Water, 🟡 Electricity, 🟣 Parks, 🟠 Traffic, ⚪ Other), density-based cluster icons (teal→blue→indigo gradient), canvas heatmap layer with Blue→Cyan→Green→Yellow→Red gradient weighted by upvotes, glassmorphism filter sidebar (category/status/priority dropdowns), interactive legend that doubles as quick filter, "Near Me" geolocation with smooth flyTo animation, stats floating card, mode indicator badge, error toast, loading overlay |
+| `src/services/api.js` | **`getMapData`** — API helper for `GET /reports/map` with query param support |
+| `src/App.jsx` | Added `/map` public route |
+| `src/components/layout/Navbar.jsx` | Added "Map" link in both desktop and mobile navigation (between Feed and My Reports) |
+| `src/index.css` | **~580 lines** of map-specific CSS — filter panel with glassmorphism, responsive slide-out drawer on mobile, view mode pill toggle, custom select dropdowns, Near Me button, category legend grid, stats card, mode badge, loading spinner, error toast, Leaflet overrides (popup card, zoom controls, attribution, marker/cluster reset, popup inner layout with Track Report gradient button) |
+
+#### Map Features
+| Feature | Implementation |
+|:---|:---|
+| **Marker Clustering** | `react-leaflet-cluster` with custom `iconCreateFunction` — density-based sizing (40/48/56px), teal→blue→indigo gradient, count labels |
+| **Heatmap Toggle** | `leaflet.heat` canvas layer — Blue→Cyan→Green→Yellow→Red gradient, radius 25px, blur 15px, intensity weighted by upvotes |
+| **Filter Sidebar** | Glassmorphism panel (desktop static, mobile slide-out drawer), category/status/priority dropdowns, "Clear all filters" button |
+| **Marker Popups** | Glass-card popup with category emoji + label, status badge, title (2-line clamp), address with pin icon, priority badge, upvote count, date, gradient "Track Report →" button |
+| **Interactive Legend** | Click any category to toggle filter — highlighted with active ring |
+| **Near Me** | Browser Geolocation API → `map.flyTo()` with smooth 1.5s animation |
+| **Stats Card** | Floating bottom-right card showing issue count, context-aware label |
+| **Error Handling** | Red toast with dismiss button for API errors and geolocation failures |
+
+### Dependencies Added:
+- `react-leaflet-cluster` — React wrapper for Leaflet.markercluster
+- (Already had: `leaflet`, `react-leaflet`, `leaflet.markercluster`, `leaflet.heat`)
+
+### Key Details:
+- Map defaults to **Pune, India** (`[18.5204, 73.8567]`) at zoom level 12
+- Map page is **public** (no authentication required), consistent with the Public Feed pattern
+- Reports without GPS coordinates are silently excluded (backend filter + frontend guard)
+- Heatmap intensity is weighted by upvotes: `Math.min((upvotes * 0.15) + 0.5, 1)`
+- Custom SVG drop-pin markers with category-colored fill, white inner ring, and drop shadow
+- Cluster icons scale in size and color intensity based on child count (< 10 / < 50 / 50+)
+- Leaflet CSS overrides placed outside `@layer` to avoid Tailwind specificity conflicts
+- Mobile-first responsive: filter panel becomes a slide-out drawer with backdrop on < 768px
 
 ## ⬜ Phase 7 — Analytics, Predictions & Accessibility
 - Analytics dashboard (trends, response times)
@@ -212,7 +251,7 @@ Everything below is built, tested, and working.
 | Real-Time | Socket.io | ✅ Active |
 | Notifications | In-app (Socket.io + MongoDB) | ✅ Active |
 | AI / NLP | Rule-based NLP engine (aiService.js) | ✅ Active |
-| Maps | Leaflet.js / Mapbox GL | ⬜ Phase 6 |
+| Maps | Leaflet.js + react-leaflet + leaflet.heat + clustering | ✅ Active |
 | AI/ML (ext.) | TensorFlow.js, OpenAI | ⬜ Phase 7+ |
 | Push/SMS | FCM, Twilio | ⬜ Phase 7+ |
 | Deployment | Vercel + Railway/AWS | ⬜ Phase 8 |
@@ -252,6 +291,7 @@ src/
     ├── TrackReport.jsx                  # Track by ID (+ AI insights panel)
     ├── MyReports.jsx                    # Citizen's reports
     ├── PublicFeed.jsx                   # Community issue feed + upvotes
+    ├── MapView.jsx                      # Interactive map + heatmap (Phase 6)
     ├── DepartmentDashboard.jsx          # Department management
     └── AdminDashboard.jsx               # Admin portal (4 tabs)
 
