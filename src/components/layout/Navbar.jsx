@@ -69,6 +69,7 @@ export default function Navbar() {
             <Link to="/report" className={navLinkClass('/report')}>Report Issue</Link>
             <Link to="/track" className={navLinkClass('/track')}>Track</Link>
             <Link to="/feed" className={navLinkClass('/feed')}>Feed</Link>
+            <Link to="/map" className={navLinkClass('/map')}>Map</Link>
 
             {isAuthenticated && (
               <Link to="/my-reports" className={navLinkClass('/my-reports')}>My Reports</Link>
@@ -195,6 +196,7 @@ export default function Navbar() {
               <Link to="/report" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Report Issue</Link>
               <Link to="/track" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Track Report</Link>
               <Link to="/feed" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Community Feed</Link>
+              <Link to="/map" className="block px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-slate-50">Map</Link>
 
               {isAuthenticated && (
                 <>
