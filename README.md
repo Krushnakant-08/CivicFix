@@ -12,8 +12,9 @@
   <img src="https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
   <img src="https://img.shields.io/badge/Vite-7.x-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
   <img src="https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
-  <img src="https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white" />
-  <img src="https://img.shields.io/badge/Firebase-Cloud-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Socket.io-Real--Time-010101?style=for-the-badge&logo=socket.io&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
 </p>
 
@@ -108,44 +109,39 @@ The final deliverable includes:
 ```mermaid
 graph TB
     subgraph "👤 Client Layer"
-        A["📱 Mobile App<br/>(React + PWA + Offline-First)"]
+        A["📱 Mobile App<br/>(React + Vite + TailwindCSS)"]
         B["💻 Admin Portal<br/>(React Dashboard)"]
         C["🏢 Dept Portal<br/>(React Dashboard)"]
     end
 
     subgraph "🌐 API Gateway & Auth"
-        D["🔐 Authentication<br/>(Firebase Auth / JWT)"]
+        D["🔐 Authentication<br/>(JWT + bcrypt)"]
         E["🚪 API Gateway<br/>(Express.js / Node.js)"]
         F["🛡️ Role-Based<br/>Access Control"]
     end
 
     subgraph "🧠 AI & Intelligence Layer"
-        G["🖼️ Computer Vision<br/>(Image Classification)"]
-        H["📝 NLP Engine<br/>(Text Analysis + Auto-Tag)"]
+        H["📝 NLP Engine<br/>(Rule-Based Auto-Tag)"]
         I["🎯 Priority Engine<br/>(Risk Assessment)"]
-        J["🤖 AI Chatbot<br/>(Multi-Language)"]
-        K["📊 Predictive Analytics<br/>(Forecasting Engine)"]
+        J["🤖 AI Chatbot<br/>(Rule-Based FAQ)"]
+        K["📊 Predictive Analytics<br/>(Hotspot Forecasting)"]
         L["🔀 Auto-Routing<br/>(Dept Assignment)"]
     end
 
     subgraph "⚙️ Core Backend Services"
         M["📋 Report Service<br/>(CRUD + Workflow)"]
-        N["🔔 Notification Service<br/>(Push + SMS + Email)"]
+        N["🔔 Notification Service<br/>(In-App + WebSocket)"]
         O["📍 Geolocation Service<br/>(Maps + Clustering)"]
-        P["📁 Media Service<br/>(Image Upload + CDN)"]
+        P["📁 Media Service<br/>(Base64 Upload)"]
         Q["👻 Anonymous Report<br/>Handler"]
     end
 
     subgraph "💾 Data Layer"
-        R[("🗄️ Primary Database<br/>(MongoDB / PostgreSQL)")]
-        S[("📦 Media Storage<br/>(Firebase Storage / S3)")]
-        T[("⚡ Cache Layer<br/>(Redis)")]
-        U[("🔗 Blockchain Ledger<br/>(Optional)")]
+        R[("🗄️ Primary Database<br/>(MongoDB Atlas)")]
     end
 
     subgraph "📡 Real-Time Layer"
         V["🔄 WebSocket Server<br/>(Socket.io)"]
-        W["📢 Event Bus<br/>(Pub/Sub)"]
     end
 
     A --> D
@@ -159,23 +155,19 @@ graph TB
     F --> P
     F --> Q
 
-    M --> G
     M --> H
     M --> I
     M --> L
     A --> J
 
     M --> R
-    P --> S
-    M --> T
-    M --> U
+    P --> R
 
     M --> V
-    N --> W
+    N --> V
     V --> A
     V --> B
     V --> C
-    W --> N
 ```
 
 ### Data Flow — Report Lifecycle
@@ -192,7 +184,7 @@ sequenceDiagram
 
     C->>App: Capture Photo + Location + Description
     App->>API: Submit Report (Multimedia Payload)
-    API->>AI: Validate & Classify Image
+    API->>AI: Validate & Classify (NLP)
     AI-->>API: Issue Type + Severity + Duplicate Check
     API->>AI: Calculate Priority Score
     AI-->>API: Priority Level + Dept Assignment
@@ -223,108 +215,116 @@ sequenceDiagram
 ### 1. 🎛️ Multi-Role Dashboard System
 | Role | Capabilities |
 |:---|:---|
-| **Citizens (Users)** | Submit complaints, track status, receive updates, view community feed |
-| **Departments** | View assigned tasks, update progress, manage workloads, report resolution |
-| **Admins** | Monitor overall system, analytics, inter-department coordination, user management |
+| **Citizens** | Submit complaints, track status via tracking ID, receive real-time updates, view community feed, upvote issues |
+| **Departments** | View assigned tasks, update progress (Acknowledge → Start Work → Resolve), manage workloads |
+| **Admins** | System overview with analytics, user management (role change, activate/deactivate), department assignment, staff account creation |
 
-Role-based access ensures better management and streamlined operations.
+Role-based access control via JWT middleware ensures data isolation and streamlined operations.
 
 ---
 
-### 2. 📰 Centralized Problem Feed (Homepage Insights)
-- **Most reported issues** (e.g., potholes, garbage hotspots)
-- **Nearby active complaints** based on user location
-- **Trending civic problems** in the locality
+### 2. 📰 Community Problem Feed
+- **Public feed** of all reported issues with category, status, and priority filters
+- **Upvote system** for authenticated users to prioritize community issues
+- **2-column responsive grid** with expandable report cards
 - Increases awareness, transparency, and community engagement
 
 ---
 
 ### 3. 🔄 Real-Time Tracking & Status Updates
-- **Live status pipeline:** `Reported → Assigned → In Progress → Resolved`
-- Push notifications at each stage of resolution
-- Estimated resolution time tracking
-- Builds trust and keeps users informed
+- **Live status pipeline:** `Reported → Acknowledged → In Progress → Resolved → Closed`
+- **WebSocket notifications** (Socket.io) at each stage of resolution
+- **AI-estimated resolution time** displayed on tracking page
+- **Unique tracking IDs** (`CF-YYMMDD-XXXXX`) with copy-to-clipboard
+- Builds trust and keeps users informed in real-time
 
 ---
 
 ### 4. 🤖 AI-Powered Chatbot Assistant
-- Guide users in filing complaints step-by-step
-- Answer queries about complaint status and procedures
-- Provide suggestions and FAQs in **multiple languages**
-- Improves accessibility and reduces manual support dependency
+- **Rule-based FAQ engine** with 15+ topic patterns covering reporting, tracking, categories, statuses, GPS, map, feed, upvotes, and more
+- **Quick-reply chip buttons** for common queries
+- **Navigation link buttons** that direct to relevant pages
+- **Glassmorphism UI** with floating FAB button, typing indicator, and slide-up animation
+- Reduces manual support dependency
 
 ---
 
 ### 5. 👻 Anonymous Reporting System
-- Submit complaints **anonymously** while retaining issue tracking
+- Submit complaints **anonymously** with toggle checkbox for logged-in users
+- **Auto-anonymous mode** for guest (unauthenticated) users
 - Secure and confidential data handling
 - Encourages more participation and honest reporting without fear
 
 ---
 
 ### 6. 🧠 AI-Powered Smart Validation of Reports
-Using **Computer Vision + NLP** to:
-- Detect if an issue is **already reported nearby** (duplicate detection)
-- Flag **spam/irrelevant photos** (selfies, memes, etc.)
-- **Auto-tag issue type** (pothole, garbage, traffic light) from image + text
+Using a **rule-based NLP engine** to:
+- Detect if an issue is **already reported nearby** (Jaccard similarity-based duplicate detection)
+- Flag **spam/low-quality reports** (score ≥ 0.6 blocks submission)
+- **Auto-tag issue type** (up to 8 keywords) from title + description text analysis
 - Reduces junk data and workload for municipal staff
 
 ---
 
 ### 7. 🎯 Priority & Risk Assessment Engine
-Not all issues are equal — *a pothole near a hospital ≠ pothole in an empty field*.
-- **Location sensitivity** scoring (schools, hospitals, highways)
-- **Report frequency** (more complaints = higher priority)
-- **Severity estimation** (AI-powered from image analysis)
+- **Keyword-based severity scoring** from report content
+- **Priority assessment** with confidence scores (0–1)
+- **Auto-department routing** that overrides category mapping when AI-detected department scores 2+ more keywords
+- AI analysis is **non-blocking** — failures never break report submission
 - Ensures smarter resource allocation beyond "first come first serve"
 
 ---
 
-### 8. 📴 Offline-First Mobile App
-- Capture **photo + location offline** in rural/low-connectivity areas
-- Data **auto-syncs** when network comes back
-- Progressive Web App (PWA) capabilities
-
----
-
-### 9. 📈 Predictive Analytics for Governance
-AI-powered forecasting:
-- Which areas are most likely to face **garbage overflow next week**?
-- Which ward has the **slowest response time** historically?
-- **Seasonal issue prediction** (e.g., monsoon potholes)
+### 8. 📈 Predictive Analytics for Governance
+AI-powered forecasting built on MongoDB aggregation:
+- **Hotspot clustering** — GPS grid-based area grouping (≥ 3 reports per cluster, ~500m grid cells)
+- **Risk levels** — high (≥ 70%), medium (≥ 40%), low (< 40%) with confidence scores
+- **Day-of-week patterns** — peak reporting day analysis
+- **Category trends** — 4-week comparison with directional indicators (up/down/stable)
+- **Monthly comparisons** — this month vs. last month with % change
 - Helps government move from **reactive → proactive** governance
 
 ---
 
+### 9. 🗺️ Interactive Map & Heatmap Visualization
+- **Full-screen Leaflet map** with Carto Light tiles, centered on Pune, India
+- **Custom SVG markers** color-coded by category (Roads 🔴, Sanitation 🟢, Water 🔵, Electricity 🟡, Parks 🟣, Traffic 🟠)
+- **Density-based marker clustering** with teal→blue→indigo gradient icons
+- **Canvas heatmap layer** (Blue→Cyan→Green→Yellow→Red gradient) weighted by upvotes
+- **Glassmorphism filter sidebar** with category, status, and priority dropdowns
+- **Interactive legend** that doubles as a quick filter
+- **"Near Me" geolocation** with smooth flyTo animation
+- Mobile-responsive slide-out drawer on < 768px
+
+---
+
 ### 10. ♿ Accessibility & Inclusivity Features
-- **Voice-based reporting** (Hindi + regional languages)
-- Support for **visually impaired** (voice prompts, speech-to-text)
-- **Senior-citizen-friendly** interface (big buttons, simple flow)
-- Not just techy — but truly **citizen-centric**
+- **Voice-based reporting** via Web Speech API (speech-to-text for report descriptions)
+- **Skip-to-content link** visible on Tab focus
+- **ARIA attributes** — `role`, `aria-label`, `aria-expanded`, `aria-haspopup`, `aria-controls` throughout navigation
+- **Screen reader support** — `.sr-only` utility class
+- **Focus-visible rings** on all interactive elements
+- **Reduced motion** — `prefers-reduced-motion: reduce` disables all animations
+- **Keyboard navigation** — Escape key closes dropdowns and modals
 
 ---
 
-### 11. 🔀 AI-Based Automatic Department Routing
-Using **Computer Vision + rule-based mapping** to:
-- Identify issue type from uploaded images
-- Automatically **map to correct department** (PWD, Sanitation, Electricity Board)
-- Route complaints **without user intervention**
-- Use location data to assign to the **nearest responsible office**
-- Eliminates user confusion, reduces misreported complaints
+### 11. 🔔 In-App Notification System
+- **6 notification types:** `status_change`, `report_assigned`, `report_upvoted`, `new_report`, `report_resolved`, `system`
+- **Real-time delivery** via Socket.io WebSocket with JWT authentication
+- **Persistent storage** in MongoDB with read/unread state
+- **Navbar dropdown** with emoji indicators, timeAgo display, mark-read, delete, and clear actions
+- **Room-based targeting** — user, role, and department rooms for scoped delivery
 
 ---
 
-### 12. 🗺️ AR / Map-Based Issue Visualization
-- Interactive **map with real-time clustering** instead of boring lists
-- **AR mode** (camera + GPS) → see nearby unresolved issues projected on screen
-- Spatial clarity for municipalities and engaging UX for citizens
-
----
-
-### 13. 🔗 Blockchain-Based Transparency Layer *(Optional)*
-- Store timestamps of `Report → Acknowledgment → Resolution` on a lightweight blockchain ledger
-- Citizens can **verify** that their report wasn't deleted or manipulated
-- Builds immutable **trust + accountability**
+### 12. 📊 Analytics Dashboard
+- **4 metric cards** with monthly comparison and trend indicators
+- **Custom SVG charts** — `MiniLineChart` (daily trends), `MiniBarChart` (hourly activity), `ProgressRing` (resolution rate)
+- **Horizontal bar charts** for resolution times by category and priority
+- **Category/status breakdowns** with progress bars
+- **Top 10 reported areas** ranked list
+- **Zero charting library dependencies** — all visualizations use inline SVG
 
 ---
 
@@ -337,14 +337,14 @@ Using **Computer Vision + rule-based mapping** to:
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Project scaffolding | React + Vite + TailwindCSS setup | ✅ Done |
-| Folder & file structure | Components, pages, services, utils | ✅ Done |
+| Project scaffolding | React 19 + Vite 7 + TailwindCSS 4 setup | ✅ Done |
+| Folder & file structure | Components, pages, services, context | ✅ Done |
 | Authentication system | JWT Auth (Email/Password + Protected Routes) | ✅ Done |
-| Database schema design | MongoDB Atlas — User & Report models | ✅ Done |
+| Database schema design | MongoDB Atlas — User & Report models (Mongoose 8) | ✅ Done |
 | Role-based access control | Citizen / Department / Admin roles + middleware | ✅ Done |
 | Basic API endpoints | Auth, Users, Reports — full CRUD | ✅ Done |
-| Backend migration | Separated to `Latrobe-Backend/` (clean architecture) | ✅ Done |
 | Frontend-backend integration | API service layer + AuthContext | ✅ Done |
+| UI components | Navbar, Footer, Button, Landing page (hero + steps + features + CTA) | ✅ Done |
 
 ---
 
@@ -353,12 +353,13 @@ Using **Computer Vision + rule-based mapping** to:
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Report submission form | Photo upload, category, location, description | ✅ Done |
-| Auto location tagging | GPS-based auto-fill via Geolocation API | ✅ Done |
-| Image upload pipeline | Client-side base64 with preview mechanism | ✅ Done |
-| Report tracking dashboard | Status timeline (Reported → Resolved) | ✅ Done |
-| Unique tracking IDs | Auto-generated per report (`CF-YYMMDD-XXXXX`) | ✅ Done |
-| Anonymous reporting mode | Toggle anonymous submission | ✅ Done |
+| Report submission form | Title, category (7 types), description with char counter | ✅ Done |
+| Auto location tagging | GPS via Geolocation API + OpenStreetMap Nominatim reverse geocoding | ✅ Done |
+| Image upload pipeline | Client-side base64, drag-and-drop + click, max 3 images (5 MB), previews | ✅ Done |
+| Report tracking page | Search by tracking ID, status badge, detail grid, status timeline | ✅ Done |
+| Unique tracking IDs | Auto-generated `CF-YYMMDD-XXXXX` format | ✅ Done |
+| Anonymous reporting | Toggle for logged-in users; auto-anonymous for guests | ✅ Done |
+| My Reports dashboard | Status filter tabs, expand/collapse details, pagination | ✅ Done |
 
 ---
 
@@ -367,74 +368,82 @@ Using **Computer Vision + rule-based mapping** to:
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Citizen dashboard | My reports, status timeline, notifications | ✅ Done |
-| Department dashboard | Assigned tasks, workload, status updates | ✅ Done |
-| Admin dashboard | System overview, analytics, user management | ✅ Done |
-| Centralized problem feed | Trending issues, nearby complaints, hotspots | ✅ Done |
-| Report filtering & search | By category, location, priority, date | ✅ Done |
+| Department dashboard | Stats cards, status filter, department-scoped reports with action buttons, pagination | ✅ Done |
+| Admin dashboard | 4-tab interface: Overview, All Reports, Users, Create Staff | ✅ Done |
+| Community feed | 2-column grid, full filter bar, upvote buttons, pagination | ✅ Done |
+| Reusable components | ReportCard (3 variants), FilterBar (category/status/priority/sort) | ✅ Done |
+| User management | Admin can change roles, activate/deactivate accounts | ✅ Done |
+| Department assignment | Admin modal to reassign reports to any department | ✅ Done |
 
 ---
 
-### Phase 4 — Real-Time Communication & Notifications 🔄
+### Phase 4 — Real-Time Communication & Notifications ✅
 > *"Keep everyone in the loop — live updates & alerts."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| WebSocket integration | Socket.io for real-time status updates | ✅ Done |
-| Push notifications | Event-driven in-app alerts via Socket.io | ✅ Done |
-| Email/SMS notifications | Status change alerts to citizens (Twilio) | ⬜ Pending |
-| Live map updates | Real-time issue markers on interactive map | ⬜ Pending |
-| Estimated resolution time | Display ETA based on historical data | ⬜ Pending |
+| WebSocket infrastructure | Socket.io server with JWT auth middleware, room management | ✅ Done |
+| Socket.io client | Authenticated connection, event subscription/emission | ✅ Done |
+| Notification model | 6 types, recipient, title, message, relatedReport, isRead, metadata | ✅ Done |
+| Notification API | Paginated fetch, unread count, mark read, delete, clear | ✅ Done |
+| Notification UI | Navbar dropdown with emoji indicators, timeAgo, mark read, delete | ✅ Done |
+| Real-time triggers | Status change, assignment, upvote events → in-app + WebSocket delivery | ✅ Done |
 
 ---
 
-### Phase 5 — AI Intelligence Layer
+### Phase 5 — AI Intelligence Layer ✅
 > *"Make the system smart — auto-classify, validate, and route."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Image classification model | Auto-detect issue type from photo (CV) | ⬜ Pending |
-| Smart validation | Duplicate detection, spam filtering | ⬜ Pending |
-| Auto-tagging (NLP) | Extract issue type from text + image | ⬜ Pending |
-| Auto department routing | Map issue → department via AI + rules | ⬜ Pending |
-| Priority & risk engine | Score based on location, severity, frequency | ⬜ Pending |
+| NLP engine | Rule-based keyword extraction, auto-tagging (up to 8 tags) | ✅ Done |
+| Smart validation | Jaccard-similarity duplicate detection (≥ 0.45 threshold, 30-day window) | ✅ Done |
+| Spam filtering | Score-based rejection (≥ 0.6) for test data, short content, repetitive words | ✅ Done |
+| Auto department routing | AI override when detected department scores 2+ more keywords | ✅ Done |
+| Priority & risk engine | Keyword-based severity scoring with confidence (0–1) | ✅ Done |
+| ETA estimation | Category base hours × priority multiplier ± historical average from MongoDB | ✅ Done |
+| AI insights UI | Post-submission panel (priority, severity, dept, ETA, tags, duplicates) | ✅ Done |
 
 ---
 
-### Phase 6 — Map Visualization & AR Features
+### Phase 6 — Interactive Map & Heatmap ✅
 > *"See the city's issues — spatially and interactively."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Interactive issue map | Leaflet/Mapbox with clustering | ⬜ Pending |
-| Heatmap layer | Density visualization of issue hotspots | ⬜ Pending |
-| AR mode | Camera + GPS overlay of nearby issues | ⬜ Pending |
-| Location-based filtering | Show issues within a radius | ⬜ Pending |
+| Map API endpoint | Geo-optimized report data with filters, `.lean()` for performance | ✅ Done |
+| Interactive Leaflet map | Full-screen with Carto Light tiles, custom SVG markers by category | ✅ Done |
+| Marker clustering | `react-leaflet-cluster` with density-based sizing and color gradients | ✅ Done |
+| Heatmap layer | `leaflet.heat` canvas layer (Blue→Red gradient), weighted by upvotes | ✅ Done |
+| Filter sidebar | Glassmorphism panel, category/status/priority dropdowns, mobile drawer | ✅ Done |
+| Near Me geolocation | Browser Geolocation API → `map.flyTo()` with smooth animation | ✅ Done |
+| Interactive legend | Click category to toggle filter with active ring highlight | ✅ Done |
 
 ---
 
-### Phase 7 — Analytics, Predictions & Accessibility
+### Phase 7 — Analytics, Predictions & Accessibility ✅
 > *"Data-driven governance + inclusive design."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Analytics dashboard | Trends, response times, department performance | ⬜ Pending |
-| Predictive engine | Forecast issue hotspots & seasonal patterns | ⬜ Pending |
-| Voice-based reporting | Speech-to-text in multiple languages | ⬜ Pending |
-| Accessibility features | Large buttons, screen reader, voice prompts | ⬜ Pending |
-| AI chatbot assistant | Multi-language help, status queries, FAQs | ⬜ Pending |
+| Analytics dashboard | Daily trends, resolution rate, hourly activity, category breakdowns, top areas | ✅ Done |
+| Predictive engine | Hotspot clusters with risk levels and confidence scores | ✅ Done |
+| Voice-based reporting | Web Speech API speech-to-text for description field | ✅ Done |
+| Accessibility features | Skip-to-content, ARIA attributes, focus-visible, reduced motion, .sr-only | ✅ Done |
+| AI chatbot assistant | Rule-based FAQ engine (15+ topics), quick replies, navigation links | ✅ Done |
+| Environment templates | `.env.example` for both frontend and server | ✅ Done |
 
 ---
 
-### Phase 8 — Advanced Features & Hardening
+### Phase 8 — Advanced Features & Hardening ⬜
 > *"Polish, trust, and future-proof the platform."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Offline-first (PWA) | Service workers, IndexedDB, auto-sync | ⬜ Pending |
+| Offline-first (PWA) | Service workers, IndexedDB, auto-sync (Workbox) | ⬜ Pending |
 | Blockchain transparency | Immutable audit trail for reports | ⬜ Pending |
 | Performance optimization | Code splitting, lazy loading, CDN | ⬜ Pending |
-| Security hardening | Rate limiting, input sanitization, CORS | ⬜ Pending |
+| Security hardening | Rate limiting, input sanitization, CORS tightening | ⬜ Pending |
 | API documentation | Swagger/OpenAPI specs | ⬜ Pending |
 | Deployment & CI/CD | Vercel/AWS + GitHub Actions pipeline | ⬜ Pending |
 
@@ -442,66 +451,100 @@ Using **Computer Vision + rule-based mapping** to:
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|:---|:---|
-| **Frontend** | React 19, Vite 7, TailwindCSS 4, React Router 7 |
-| **Backend** | Node.js, Express.js (separate `Latrobe-Backend/` repo) |
-| **Database** | MongoDB Atlas (Cloud NoSQL) |
-| **Auth** | JWT Authentication (bcrypt + jsonwebtoken) |
-| **Storage** | Firebase Storage / Cloudinary (images) |
-| **Real-Time** | Socket.io (WebSockets) |
-| **Maps** | Leaflet.js / Mapbox GL |
-| **AI/ML** | TensorFlow.js, Google Cloud Vision, OpenAI API |
-| **Notifications** | Firebase Cloud Messaging (FCM), Twilio (SMS) |
-| **AR** | AR.js / WebXR |
-| **Blockchain** | Hyperledger Fabric (optional) |
-| **PWA** | Workbox (Service Workers) |
-| **Deployment** | Vercel (Frontend), Railway/AWS (Backend) |
-| **CI/CD** | GitHub Actions |
+| Layer | Technology | Status |
+|:---|:---|:---:|
+| **Frontend** | React 19, Vite 7, TailwindCSS 4, React Router 7 | ✅ Active |
+| **Backend** | Node.js, Express.js 4 | ✅ Active |
+| **Database** | MongoDB Atlas (Mongoose 8) | ✅ Active |
+| **Auth** | JWT (bcrypt + jsonwebtoken) | ✅ Active |
+| **Real-Time** | Socket.io 4 (WebSockets) | ✅ Active |
+| **Maps** | Leaflet.js + react-leaflet + leaflet.heat + react-leaflet-cluster | ✅ Active |
+| **AI / NLP** | Rule-based NLP engine (`aiService.js`) — zero external ML APIs | ✅ Active |
+| **Analytics** | Custom inline SVG charts + MongoDB aggregation pipelines | ✅ Active |
+| **Predictions** | Rule-based hotspot clustering (~500m GPS grid) | ✅ Active |
+| **Notifications** | In-app notifications (Socket.io + MongoDB) | ✅ Active |
+| **Voice Input** | Web Speech API (browser-native, Chrome/Edge/Safari) | ✅ Active |
+| **Chatbot** | Rule-based FAQ engine (15+ topics, `ChatBot.jsx`) | ✅ Active |
+| **Accessibility** | ARIA, skip links, focus-visible, reduced motion, `.sr-only` | ✅ Active |
+| **Storage** | Base64 encoding (client-side) | 🔄 Temporary |
+| **Deployment** | Vercel + Railway/AWS | ⬜ Phase 8 |
 
 ---
 
 ## 📂 Project Structure
 
 ```
-CivicFix/
-└── Latrobe-Crowdsourcing/            # 🏙️ Monolith Repository
-    ├── server/                       # ⚙️ Backend API (Express.js)
-    │   ├── config/db.js              # MongoDB Atlas connection
-    │   ├── controllers/              # Auth, Report, User, Notification logic
-    │   ├── middleware/auth.js        # protect, optionalAuth, authorize
-    │   ├── models/                   # User, Report, Notification (Mongoose)
-    │   ├── routes/                   # auth, users, reports, notification routes
-    │   ├── socket.js                 # Socket.io event handlers
-    │   ├── utils/generateToken.js    # JWT token utility
-    │   └── index.js                  # Server entry point
-    │
-    ├── src/
-    │   ├── components/
-    │   │   ├── auth/                 # ProtectedRoute
-    │   │   ├── layout/               # Navbar, Footer
-    │   │   ├── ui/                   # Button, NotificationBell, Card
-    │   │   └── reports/              # ReportCard, FilterBar
-    │   │
-    │   ├── pages/
-    │   │   ├── Home.jsx              # Landing page
-    │   │   ├── ReportIssue.jsx       # Issue submission (GPS, images)
-    │   │   ├── TrackReport.jsx       # Status tracking
-    │   │   ├── MyReports.jsx         # Citizen dashboard
-    │   │   ├── PublicFeed.jsx        # Community issue feed
-    │   │   ├── DepartmentDashboard.jsx# Dept task management
-    │   │   ├── AdminDashboard.jsx    # Admin portal (4 tabs)
-    │   │   ├── Login.jsx             # Auth pages
-    │   │   └── Register.jsx
-    │   │
-    │   ├── services/                 # API (api.js), Socket (socket.js)
-    │   ├── context/                  # AuthContext, NotificationContext
-    │   ├── App.jsx                   # Router & Global Layout
-    │   ├── main.jsx                  # React entry
-    │   └── index.css                 # Design system (TW4 + Vanilla)
-    │
-    ├── docs/                         # 📖 Project documentation
-    └── .env                          # Frontend & Backend secrets
+Latrobe-CivicFix/
+├── src/
+│   ├── App.jsx                          # Router with all routes + 404 + skip-to-content + ChatBot
+│   ├── main.jsx                         # React entry point
+│   ├── index.css                        # Design system (card, btn, input, animations, map, accessibility, chatbot)
+│   ├── context/
+│   │   ├── AuthContext.jsx              # Auth state management (login, register, logout, getMe)
+│   │   └── NotificationContext.jsx      # Global notification state + WebSocket listeners
+│   ├── services/
+│   │   ├── api.js                       # API service layer (auth, users, reports, analytics, predictions, map)
+│   │   └── socket.js                    # Socket.io client (JWT auth, event subscription)
+│   ├── components/
+│   │   ├── auth/
+│   │   │   └── ProtectedRoute.jsx       # Route guard (auth + role check + loading state)
+│   │   ├── layout/
+│   │   │   ├── Navbar.jsx               # Top navigation (ARIA-accessible, scroll effect, user dropdown)
+│   │   │   └── Footer.jsx               # Footer with quick links and SVG social icons
+│   │   ├── ui/
+│   │   │   ├── Button.jsx               # Reusable button (primary/secondary variants)
+│   │   │   ├── NotificationBell.jsx     # Notification dropdown (emoji indicators, timeAgo)
+│   │   │   └── ChatBot.jsx              # AI chatbot assistant (rule-based FAQ, 15+ topics)
+│   │   └── reports/
+│   │       ├── ReportCard.jsx           # Report card (3 variants: default, compact, admin)
+│   │       └── FilterBar.jsx            # Filter dropdowns (category, status, priority, sort)
+│   └── pages/
+│       ├── Home.jsx                     # Landing page (hero, steps, features, CTA)
+│       ├── Login.jsx                    # Login form (email/password, error display)
+│       ├── Register.jsx                 # Register form (name, email, phone, password)
+│       ├── ReportIssue.jsx              # Submit report (GPS, images, anon, AI insights, voice input)
+│       ├── TrackReport.jsx              # Track by ID (status timeline + AI insights panel)
+│       ├── MyReports.jsx                # Citizen's reports (filter tabs, pagination)
+│       ├── PublicFeed.jsx               # Community issue feed (upvotes, filters)
+│       ├── MapView.jsx                  # Interactive map + heatmap + clustering (Leaflet)
+│       ├── AnalyticsDashboard.jsx       # Analytics & predictions dashboard (SVG charts)
+│       ├── DepartmentDashboard.jsx      # Department task management
+│       └── AdminDashboard.jsx           # Admin portal (Overview, Reports, Users, Create Staff)
+│
+├── server/
+│   ├── index.js                         # Express app entry + Socket.io setup
+│   ├── socket.js                        # Socket.io handlers (JWT auth, room management)
+│   ├── package.json                     # Backend dependencies
+│   ├── .env.example                     # Environment template (MONGO_URI, JWT_SECRET, etc.)
+│   ├── config/
+│   │   └── db.js                        # MongoDB Atlas connection (Mongoose)
+│   ├── utils/
+│   │   └── generateToken.js             # JWT token generator
+│   ├── models/
+│   │   ├── User.js                      # User schema (name, email, password, role, department)
+│   │   ├── Report.js                    # Report schema (tracking ID, location, images, AI fields)
+│   │   └── Notification.js              # Notification schema (6 types, read/unread)
+│   ├── middleware/
+│   │   └── auth.js                      # protect, optionalAuth, authorize middleware
+│   ├── services/
+│   │   └── aiService.js                 # AI NLP engine (tags, priority, routing, spam, duplicates, ETA)
+│   ├── controllers/
+│   │   ├── authController.js            # Register, login, getMe, createStaffAccount
+│   │   ├── reportController.js          # Report CRUD + AI + notifications + analytics + predictions
+│   │   ├── userController.js            # User management (list, update, role change, toggle status)
+│   │   └── notificationController.js    # Notification CRUD (paginated, mark read, delete, clear)
+│   └── routes/
+│       ├── auth.js                      # POST register/login, GET me, POST create-staff
+│       ├── reports.js                   # Report routes (+ /map, /analytics, /predictions)
+│       ├── users.js                     # User routes (admin-gated)
+│       └── notifications.js             # Notification routes (auth-required)
+│
+├── .env.example                         # Frontend env template (VITE_API_URL)
+├── package.json                         # Frontend dependencies
+├── vite.config.js                       # Vite configuration
+├── index.html                           # HTML entry point
+├── IMPLEMENTATION_STATUS.md             # Detailed implementation log
+└── README.md                            # This file
 ```
 
 ---
@@ -512,56 +555,81 @@ CivicFix/
 - **Node.js** ≥ 18.x
 - **npm** ≥ 9.x
 - **Git**
+- **MongoDB Atlas** account (free tier works)
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/CivicFix.git
-cd CivicFix/Latrobe-Crowdsourcing
+git clone https://github.com/Krushnakant-08/Latrobe-CivicFix.git
+cd Latrobe-CivicFix
 
-# Install dependencies
+# Install frontend dependencies
 npm install
 
-# Start development server
-npm run dev
+# Install backend dependencies
+cd server
+npm install
+cd ..
 ```
 
-The app will be available at `http://localhost:5173`
+### Environment Setup
 
-### Environment Variables
-
-Create a `.env` file in the project root:
+**Frontend** — Create `.env` in the project root:
 ```env
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_MAPBOX_TOKEN=your_mapbox_token
-VITE_OPENAI_API_KEY=your_openai_key
+# Backend API base URL (must include /api suffix)
+VITE_API_URL=http://localhost:5000/api
+```
+
+**Backend** — Create `server/.env`:
+```env
+# MongoDB Atlas connection string
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>
+
+# JWT secret key (use a strong random string in production)
+JWT_SECRET=your_jwt_secret_key_here
+
+# Environment: development | production
+NODE_ENV=development
+
+# Server port
+PORT=5000
+
+# Frontend URL (used for CORS origin)
+CLIENT_URL=http://localhost:5173
+```
+
+### Running the App
+
+```bash
+# Terminal 1 — Start the backend server
+cd server
+npm run dev
+# Server starts at http://localhost:5000
+
+# Terminal 2 — Start the frontend dev server
+npm run dev
+# App available at http://localhost:5173
 ```
 
 ---
 
 ## 📊 Development Progress
 
-> Last updated: **April 10, 2026**
+> Last updated: **April 13, 2026**
 
 | Phase | Name | Status | Progress |
 |:---:|:---|:---:|:---:|
 | 1 | Foundation & Core Infrastructure | ✅ Complete | ██████████ 100% |
 | 2 | Citizen Report Submission & Tracking | ✅ Complete | ██████████ 100% |
 | 3 | Multi-Role Dashboards & Admin Portal | ✅ Complete | ██████████ 100% |
-| 4 | Real-Time Communication & Notifications | 🔄 In Progress | █████░░░░░ 50% |
-| 5 | AI Intelligence Layer | ⬜ Pending | ░░░░░░░░░░ 0% |
-| 6 | Map Visualization & AR Features | ⬜ Pending | ░░░░░░░░░░ 0% |
-| 7 | Analytics, Predictions & Accessibility | ⬜ Pending | ░░░░░░░░░░ 0% |
+| 4 | Real-Time Communication & Notifications | ✅ Complete | ██████████ 100% |
+| 5 | AI Intelligence Layer | ✅ Complete | ██████████ 100% |
+| 6 | Interactive Map & Heatmap | ✅ Complete | ██████████ 100% |
+| 7 | Analytics, Predictions & Accessibility | ✅ Complete | ██████████ 100% |
 | 8 | Advanced Features & Hardening | ⬜ Pending | ░░░░░░░░░░ 0% |
 
-> 📝 Detailed logs: [`docs/PROJECT_LOG.md`](docs/PROJECT_LOG.md)
-> 📋 Output notes: [`docs/OUTPUT_NOTES.md`](docs/OUTPUT_NOTES.md)
+> 📋 Detailed implementation log: [`IMPLEMENTATION_STATUS.md`](IMPLEMENTATION_STATUS.md)
 
 ---
 
