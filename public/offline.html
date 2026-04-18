@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're Offline — CivicFix</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f1f5f9;
+    }
+    .card {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+    .icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.75rem; }
+    p { color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
+    .badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      border-radius: 9999px;
+      padding: 0.25rem 0.875rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .tips {
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-align: left;
+      margin-bottom: 1.75rem;
+    }
+    .tips h3 { font-size: 0.875rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.5rem; }
+    .tips ul { list-style: none; }
+    .tips li { font-size: 0.813rem; color: #64748b; padding: 0.2rem 0; }
+    .tips li::before { content: '✓ '; color: #22c55e; }
+    button {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 12px;
+      font-size: 0.938rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      width: 100%;
+    }
+    button:hover { opacity: 0.9; }
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .logo-dot { width: 10px; height: 10px; background: #2563eb; border-radius: 50%; }
+    .logo-text { font-weight: 800; font-size: 1.1rem; color: #e2e8f0; letter-spacing: -0.02em; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">CivicFix</span>
+    </div>
+    <div class="icon">📡</div>
+    <div class="badge">Offline Mode</div>
+    <h1>You're offline</h1>
+    <p>No internet connection detected. Some features may be unavailable, but previously loaded content is still accessible.</p>
+    <div class="tips">
+      <h3>What still works offline:</h3>
+      <ul>
+        <li>Browse cached reports</li>
+        <li>View saved map tiles</li>
+        <li>Read your report history</li>
+        <li>Queue new report submissions</li>
+      </ul>
+    </div>
+    <button onclick="window.location.reload()">🔄 Try Again</button>
+  </div>
+</body>
+</html>

@@ -160,7 +160,6 @@ const reportSchema = new mongoose.Schema(
 );
 
 // Indexes for performance
-reportSchema.index({ trackingId: 1 });
 reportSchema.index({ status: 1 });
 reportSchema.index({ category: 1 });
 reportSchema.index({ assignedDepartment: 1 });

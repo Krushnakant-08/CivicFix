@@ -1,7 +1,20 @@
 import Report from '../models/Report.js';
 import Notification from '../models/Notification.js';
+import AuditLog from '../models/AuditLog.js';
 import { emitToUser, emitToDepartment, broadcast } from '../socket.js';
 import { analyzeReport } from '../services/aiService.js';
+
+/**
+ * Fire-and-forget audit entry — never blocks the main response
+ */
+async function auditLog(reportId, action, actor = {}, metadata = {}) {
+  try {
+    await AuditLog.createEntry({ reportId, action, actor, metadata });
+  } catch (err) {
+    // Non-blocking — audit failure must never break the API
+    console.error('[AuditLog] Failed to write entry:', err.message);
+  }
+}
 
 // ─── Department mapping for auto-routing ─────────────────
 const CATEGORY_TO_DEPARTMENT = {
@@ -87,6 +100,14 @@ export const createReport = async (req, res) => {
         },
       ],
     });
+
+    // ─── Phase 8.2: Blockchain Audit ──────────────────
+    auditLog(report._id, 'REPORT_CREATED', {
+      userId: req.user?._id,
+      username: req.user?.name || 'anonymous',
+      role: req.user?.role || 'citizen',
+      ip: req.ip,
+    }, { category, assignedDepartment, trackingId: report.trackingId });
 
     res.status(201).json({
       message: 'Report submitted successfully',
@@ -277,6 +298,14 @@ export const updateReportStatus = async (req, res) => {
     }
 
     await report.save();
+
+    // ─── Phase 8.2: Blockchain Audit ──────────────────────
+    auditLog(report._id, 'STATUS_CHANGED', {
+      userId: req.user._id,
+      username: req.user.name,
+      role: req.user.role,
+      ip: req.ip,
+    }, { oldStatus: req.body.previousStatus, newStatus: status, note });
 
     // ─── Emit real-time notification to reporter ──────
     if (report.reporter) {
