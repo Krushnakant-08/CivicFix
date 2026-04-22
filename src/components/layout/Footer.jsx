@@ -1,19 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+const logoUrl = '/logo.svg';
 
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-slate-200 pt-16 pb-8 font-sans">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          
+
           {/* Brand Column */}
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-2 group mb-4 w-fit">
-              <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-md">
-                C
-              </div>
+              <img
+                src={logoUrl}
+                alt="CivicFix Logo"
+                className="w-8 h-8 shadow-md rounded-lg hover:scale-105 transition-transform"
+              />
               <span className="font-extrabold text-xl tracking-tight text-slate-900">
                 Civic<span className="text-blue-600">Fix</span>
               </span>

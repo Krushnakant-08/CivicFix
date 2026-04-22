@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import NotificationBell from '../ui/NotificationBell';
+const logoUrl = '/logo.svg';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,27 +52,27 @@ export default function Navbar() {
   };
 
   const navLinkClass = (path) =>
-    `font-medium transition-colors hover:text-blue-600 ${
-      isActive(path) ? 'text-blue-600' : 'text-slate-600'
+    `font-medium transition-colors hover:text-blue-600 ${isActive(path) ? 'text-blue-600' : 'text-slate-600'
     }`;
 
   return (
     <nav
       role="navigation"
       aria-label="Main navigation"
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/70 backdrop-blur-lg border-b border-slate-200/50 shadow-sm'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white/70 backdrop-blur-lg border-b border-slate-200/50 shadow-sm'
+        : 'bg-transparent'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
-              C
-            </div>
+            <img
+              src={logoUrl}
+              alt="CivicFix Logo"
+              className="w-10 h-10 shadow-lg group-hover:scale-105 transition-transform rounded-xl"
+            />
             <span className="font-extrabold text-2xl tracking-tight text-slate-900">
               Civic<span className="text-blue-600">Fix</span>
             </span>
