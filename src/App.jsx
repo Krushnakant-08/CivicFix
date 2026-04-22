@@ -5,6 +5,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ChatBot from './components/ui/ChatBot';
+import ToastContainer from './components/ui/Toast';
 
 // Pages
 import Home from './pages/Home';
@@ -92,6 +93,9 @@ function App() {
 
           {/* AI Chatbot Assistant — Phase 7 */}
           <ChatBot />
+
+          {/* Toast notification layer — Phase 8 */}
+          <ToastContainer />
         </div>
         </NotificationProvider>
       </AuthProvider>
@@ -103,7 +107,7 @@ function NotFound() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center bg-mesh">
       <div className="glass-card p-12 text-center max-w-md animate-slide-up">
-        <div className="text-6xl mb-4">🔍</div>
+        <div className="mb-4"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 mx-auto" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
         <h2 className="text-3xl font-bold text-slate-900 mb-3">404 — Page Not Found</h2>
         <p className="text-slate-500 mb-6">The page you're looking for doesn't exist.</p>
         <a

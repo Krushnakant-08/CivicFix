@@ -12,13 +12,13 @@ const DEFAULT_CENTER = [18.5204, 73.8567]; // Pune, India
 const DEFAULT_ZOOM = 12;
 
 const CATEGORIES = [
-  { value: 'roads',       label: 'Roads',       emoji: '🛣️' },
-  { value: 'sanitation',  label: 'Sanitation',  emoji: '🧹' },
-  { value: 'water',       label: 'Water',       emoji: '💧' },
-  { value: 'electricity', label: 'Electricity', emoji: '⚡' },
-  { value: 'parks',       label: 'Parks',       emoji: '🌳' },
-  { value: 'traffic',     label: 'Traffic',     emoji: '🚦' },
-  { value: 'other',       label: 'Other',       emoji: '📋' },
+  { value: 'roads',       label: 'Roads' },
+  { value: 'sanitation',  label: 'Sanitation' },
+  { value: 'water',       label: 'Water' },
+  { value: 'electricity', label: 'Electricity' },
+  { value: 'parks',       label: 'Parks' },
+  { value: 'traffic',     label: 'Traffic' },
+  { value: 'other',       label: 'Other' },
 ];
 
 const STATUSES = [
@@ -297,7 +297,7 @@ export default function MapView() {
             >
               <option value="">All Categories</option>
               {CATEGORIES.map(c => (
-                <option key={c.value} value={c.value}>{c.emoji} {c.label}</option>
+                <option key={c.value} value={c.value}>{c.label}</option>
               ))}
             </select>
           </div>
@@ -428,7 +428,6 @@ export default function MapView() {
                       {/* Header row */}
                       <div className="popup-header">
                         <span className="popup-category" style={{ color: CATEGORY_COLORS[report.category]?.bg }}>
-                          {CATEGORIES.find(c => c.value === report.category)?.emoji}{' '}
                           {formatLabel(report.category)}
                         </span>
                         <span className={`popup-badge ${statusStyle(report.status)}`}>
@@ -456,7 +455,7 @@ export default function MapView() {
                         </span>
                         {report.upvotes > 0 && (
                           <span className="popup-upvotes">
-                            👍 {report.upvotes}
+                            {report.upvotes}
                           </span>
                         )}
                         <span className="popup-date">
@@ -504,7 +503,7 @@ export default function MapView() {
 
         {/* Mode indicator badge */}
         <div className="map-mode-badge">
-          {isHeatmap ? '🔥 Heatmap Mode' : '📍 Pin Mode'}
+          {isHeatmap ? 'Heatmap Mode' : 'Pin Mode'}
         </div>
       </div>
     </div>

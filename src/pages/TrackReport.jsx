@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { reportsAPI } from '../services/api';
 import { Button } from '../components/ui/Button';
-
-const STATUS_CONFIG = {
-  reported: { label: 'Reported', color: 'bg-red-100 text-red-700', icon: '📝' },
-  acknowledged: { label: 'Acknowledged', color: 'bg-orange-100 text-orange-700', icon: '👁️' },
-  assigned: { label: 'Assigned', color: 'bg-amber-100 text-amber-700', icon: '📌' },
-  in_progress: { label: 'In Progress', color: 'bg-blue-100 text-blue-700', icon: '🔧' },
-  resolved: { label: 'Resolved', color: 'bg-green-100 text-green-700', icon: '✅' },
-  closed: { label: 'Closed', color: 'bg-slate-100 text-slate-700', icon: '📁' },
-  rejected: { label: 'Rejected', color: 'bg-red-100 text-red-700', icon: '❌' },
-};
+import {
+  STATUS_CONFIG, StatusIcon,
+  Bot, ThumbsUp, AlertTriangle,
+} from '../constants/icons';
 
 export default function TrackReport() {
   const [trackingId, setTrackingId] = useState('');
@@ -94,7 +88,7 @@ export default function TrackReport() {
                 <h3 className="text-2xl font-bold text-slate-900">{report.title}</h3>
               </div>
               <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${STATUS_CONFIG[report.status]?.color || 'bg-slate-100 text-slate-700'}`}>
-                {STATUS_CONFIG[report.status]?.icon} {STATUS_CONFIG[report.status]?.label || report.status}
+                <StatusIcon config={STATUS_CONFIG[report.status]} size={14} /> {STATUS_CONFIG[report.status]?.label || report.status}
               </span>
             </div>
 
@@ -153,7 +147,7 @@ export default function TrackReport() {
             {(report.aiTags?.length > 0 || report.estimatedResolutionTime || report.isDuplicate) && (
               <div className="mt-4 bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span>🤖</span>
+                  <Bot size={16} className="text-indigo-500" aria-hidden="true" />
                   <h4 className="text-xs font-bold text-slate-700">AI Analysis</h4>
                   {report.aiConfidence && (
                     <span className="text-[10px] font-medium text-indigo-600 bg-indigo-100 px-1.5 py-0.5 rounded-full ml-auto">
@@ -186,7 +180,7 @@ export default function TrackReport() {
                 )}
                 {report.isDuplicate && (
                   <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs">
-                    ⚠️ This report may be a duplicate of an existing issue.
+                    <AlertTriangle size={14} className="text-amber-500 shrink-0" aria-hidden="true" /> This report may be a duplicate of an existing issue.
                   </div>
                 )}
               </div>
@@ -195,7 +189,7 @@ export default function TrackReport() {
             {/* Submitted info */}
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-400">
               <span>Submitted: {new Date(report.createdAt).toLocaleDateString()}</span>
-              <span>👍 {report.upvotes || 0} upvotes</span>
+              <span className="inline-flex items-center gap-1"><ThumbsUp size={13} className="text-slate-400" aria-hidden="true" /> {report.upvotes || 0} upvotes</span>
             </div>
           </div>
         )}
