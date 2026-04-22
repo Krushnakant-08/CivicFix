@@ -2,13 +2,13 @@ import React from 'react';
 
 const CATEGORIES = [
   { value: '', label: 'All Categories' },
-  { value: 'roads', label: 'Roads', icon: '🛣️' },
-  { value: 'sanitation', label: 'Sanitation', icon: '🗑️' },
-  { value: 'water', label: 'Water', icon: '💧' },
-  { value: 'electricity', label: 'Electricity', icon: '💡' },
-  { value: 'parks', label: 'Parks', icon: '🌳' },
-  { value: 'traffic', label: 'Traffic', icon: '🚦' },
-  { value: 'other', label: 'Other', icon: '📋' },
+  { value: 'roads', label: 'Roads' },
+  { value: 'sanitation', label: 'Sanitation' },
+  { value: 'water', label: 'Water' },
+  { value: 'electricity', label: 'Electricity' },
+  { value: 'parks', label: 'Parks' },
+  { value: 'traffic', label: 'Traffic' },
+  { value: 'other', label: 'Other' },
 ];
 
 const STATUSES = [
@@ -73,7 +73,7 @@ export default function FilterBar({
           className={selectClass}
         >
           {CATEGORIES.map((c) => (
-            <option key={c.value} value={c.value}>{c.icon ? `${c.icon} ` : ''}{c.label}</option>
+            <option key={c.value} value={c.value}>{c.label}</option>
           ))}
         </select>
       )}

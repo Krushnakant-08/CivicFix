@@ -3,15 +3,18 @@ import { useAuth } from '../context/AuthContext';
 import { reportsAPI } from '../services/api';
 import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
+import {
+  Route, Trash2, Droplets, Lightbulb, TreePine, TrafficCone, ClipboardList, Bot,
+} from '../constants/icons';
 
 const CATEGORIES = [
-  { value: 'roads', label: 'Roads & Potholes', icon: '\u{1F6E3}\uFE0F' },
-  { value: 'sanitation', label: 'Sanitation & Garbage', icon: '\u{1F5D1}\uFE0F' },
-  { value: 'water', label: 'Water Supply & Leaks', icon: '\u{1F4A7}' },
-  { value: 'electricity', label: 'Streetlights & Power', icon: '\u{1F4A1}' },
-  { value: 'parks', label: 'Parks & Recreation', icon: '\u{1F333}' },
-  { value: 'traffic', label: 'Traffic & Signals', icon: '\u{1F6A6}' },
-  { value: 'other', label: 'Other / Miscellaneous', icon: '\u{1F4CB}' },
+  { value: 'roads', label: 'Roads & Potholes', Icon: Route },
+  { value: 'sanitation', label: 'Sanitation & Garbage', Icon: Trash2 },
+  { value: 'water', label: 'Water Supply & Leaks', Icon: Droplets },
+  { value: 'electricity', label: 'Streetlights & Power', Icon: Lightbulb },
+  { value: 'parks', label: 'Parks & Recreation', Icon: TreePine },
+  { value: 'traffic', label: 'Traffic & Signals', Icon: TrafficCone },
+  { value: 'other', label: 'Other / Miscellaneous', Icon: ClipboardList },
 ];
 
 export default function ReportIssue() {
@@ -328,7 +331,7 @@ export default function ReportIssue() {
           {success.aiInsights && (
             <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-2xl p-5 mb-6 text-left animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">{'\u{1F916}'}</span>
+                <Bot size={18} className="text-indigo-500" aria-hidden="true" />
                 <h3 className="font-bold text-slate-800 text-sm">AI Analysis</h3>
                 {success.aiInsights.confidence && (
                   <span className="ml-auto text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
@@ -462,7 +465,7 @@ export default function ReportIssue() {
                       : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                   }`}
                 >
-                  <span>{cat.icon}</span>
+                  <cat.Icon size={16} aria-hidden="true" />
                   <span className="truncate">{cat.label.split(' & ')[0]}</span>
                 </button>
               ))}

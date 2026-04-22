@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { reportsAPI } from '../services/api';
+import {
+  ANALYTICS_CATEGORIES, CategoryIcon,
+  BarChart3, ClipboardList, CheckCircle, Target, Calendar, Sparkles,
+  TrendingUp, TrendingDown, ArrowRight, FolderOpen, Zap, Timer,
+  Flame, MapPin, Map, Clock, ArrowUpRight, ArrowDownRight,
+} from '../constants/icons';
 
 // ─── SVG Mini-Chart helpers ──────────────────────────────
 function MiniLineChart({ data, width = 500, height = 180, color = '#2563eb' }) {
@@ -120,13 +126,13 @@ function ProgressRing({ value, max = 100, size = 120, color = '#2563eb' }) {
 
 // ─── Category styling ────────────────────────────────────
 const CATEGORY_CONFIG = {
-  roads: { icon: '🛣️', color: '#ef4444' },
-  sanitation: { icon: '🗑️', color: '#22c55e' },
-  water: { icon: '💧', color: '#3b82f6' },
-  electricity: { icon: '💡', color: '#eab308' },
-  parks: { icon: '🌳', color: '#a855f7' },
-  traffic: { icon: '🚦', color: '#f97316' },
-  other: { icon: '📋', color: '#64748b' },
+  roads: { Icon: ANALYTICS_CATEGORIES.roads.Icon, color: '#ef4444' },
+  sanitation: { Icon: ANALYTICS_CATEGORIES.sanitation.Icon, color: '#22c55e' },
+  water: { Icon: ANALYTICS_CATEGORIES.water.Icon, color: '#3b82f6' },
+  electricity: { Icon: ANALYTICS_CATEGORIES.electricity.Icon, color: '#eab308' },
+  parks: { Icon: ANALYTICS_CATEGORIES.parks.Icon, color: '#a855f7' },
+  traffic: { Icon: ANALYTICS_CATEGORIES.traffic.Icon, color: '#f97316' },
+  other: { Icon: ANALYTICS_CATEGORIES.other.Icon, color: '#64748b' },
 };
 
 const PRIORITY_COLORS = {
@@ -169,8 +175,8 @@ export default function AnalyticsDashboard() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   const tabs = [
-    { key: 'analytics', label: 'Analytics', icon: '📊' },
-    { key: 'predictions', label: 'Predictions', icon: '🔮' },
+    { key: 'analytics', label: 'Analytics', Icon: BarChart3 },
+    { key: 'predictions', label: 'Predictions', Icon: Sparkles },
   ];
 
   const formatHours = (h) => {
@@ -187,7 +193,7 @@ export default function AnalyticsDashboard() {
         <div className="mb-6 animate-slide-up">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-500 rounded-xl flex items-center justify-center text-white text-lg shadow-md">
-              📊
+              <BarChart3 size={20} className="text-white" aria-hidden="true" />
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Analytics & Predictions</h1>
@@ -208,7 +214,7 @@ export default function AnalyticsDashboard() {
                   : 'bg-white text-slate-600 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600'
               }`}
             >
-              <span>{tab.icon}</span>
+              <tab.Icon size={16} aria-hidden="true" />
               {tab.label}
             </button>
           ))}
@@ -240,19 +246,19 @@ export default function AnalyticsDashboard() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
                     {
-                      label: 'Total Reports', value: analytics.totalReports, icon: '📋',
+                      label: 'Total Reports', value: analytics.totalReports, Icon: ClipboardList,
                       color: 'from-blue-500 to-cyan-400',
                     },
                     {
-                      label: 'Resolved', value: analytics.resolvedReports, icon: '✅',
+                      label: 'Resolved', value: analytics.resolvedReports, Icon: CheckCircle,
                       color: 'from-green-500 to-emerald-400',
                     },
                     {
-                      label: 'Resolution Rate', value: `${analytics.resolutionRate}%`, icon: '🎯',
+                      label: 'Resolution Rate', value: `${analytics.resolutionRate}%`, Icon: Target,
                       color: 'from-indigo-500 to-purple-400',
                     },
                     {
-                      label: 'This Month', value: analytics.monthlyComparison?.thisMonth || 0, icon: '📅',
+                      label: 'This Month', value: analytics.monthlyComparison?.thisMonth || 0, Icon: Calendar,
                       color: 'from-amber-500 to-orange-400',
                       sub: analytics.monthlyComparison?.change
                         ? `${analytics.monthlyComparison.change > 0 ? '↑' : '↓'} ${Math.abs(analytics.monthlyComparison.change)}%`
@@ -262,7 +268,7 @@ export default function AnalyticsDashboard() {
                   ].map((stat, i) => (
                     <div key={stat.label} className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-5 shadow-sm animate-slide-up" style={{ animationDelay: `${i * 80}ms` }}>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl">{stat.icon}</span>
+                        <stat.Icon size={24} className="text-slate-700" aria-hidden="true" />
                         <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.color} opacity-20`}></div>
                       </div>
                       <p className="text-3xl font-extrabold text-slate-900">{stat.value}</p>
@@ -278,7 +284,7 @@ export default function AnalyticsDashboard() {
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="md:col-span-2 bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-1 flex items-center gap-2">
-                      <span>📈</span> Daily Report Trend
+                      <TrendingUp size={16} className="text-slate-500" aria-hidden="true" /> Daily Report Trend
                     </h3>
                     <p className="text-xs text-slate-400 mb-4">Reports submitted per day (last 30 days)</p>
                     {analytics.dailyTrend?.length > 0 ? (
@@ -289,7 +295,7 @@ export default function AnalyticsDashboard() {
                   </div>
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm flex flex-col items-center justify-center">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>🎯</span> Resolution Rate
+                      <Target size={16} className="text-slate-500" aria-hidden="true" /> Resolution Rate
                     </h3>
                     <ProgressRing value={analytics.resolutionRate} color="#2563eb" />
                     <p className="text-xs text-slate-400 mt-3">{analytics.resolvedReports} of {analytics.totalReports} reports</p>
@@ -300,7 +306,7 @@ export default function AnalyticsDashboard() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>⏱️</span> Avg. Resolution Time by Category
+                      <Timer size={16} className="text-slate-500" aria-hidden="true" /> Avg. Resolution Time by Category
                     </h3>
                     <div className="space-y-3">
                       {(analytics.avgResolutionByCategory || []).map((item) => {
@@ -309,7 +315,7 @@ export default function AnalyticsDashboard() {
                         const cat = CATEGORY_CONFIG[item._id] || CATEGORY_CONFIG.other;
                         return (
                           <div key={item._id} className="flex items-center gap-3">
-                            <span className="text-lg w-6">{cat.icon}</span>
+                            <cat.Icon size={18} style={{ color: cat.color }} aria-hidden="true" />
                             <span className="text-sm font-medium text-slate-700 capitalize w-20 truncate">{item._id}</span>
                             <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
                               <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: cat.color }}></div>
@@ -326,7 +332,7 @@ export default function AnalyticsDashboard() {
 
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>⚡</span> Avg. Resolution Time by Priority
+                      <Zap size={16} className="text-slate-500" aria-hidden="true" /> Avg. Resolution Time by Priority
                     </h3>
                     <div className="space-y-3">
                       {(analytics.avgResolutionByPriority || []).map((item) => {
@@ -352,7 +358,7 @@ export default function AnalyticsDashboard() {
                 {/* Hourly Distribution */}
                 <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                   <h3 className="font-bold text-slate-900 mb-1 flex items-center gap-2">
-                    <span>🕐</span> Hourly Activity Pattern
+                    <Clock size={16} className="text-slate-500" aria-hidden="true" /> Hourly Activity Pattern
                   </h3>
                   <p className="text-xs text-slate-400 mb-4">When do citizens report issues most?</p>
                   {analytics.hourlyDistribution?.length > 0 ? (
@@ -372,7 +378,7 @@ export default function AnalyticsDashboard() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>📂</span> Reports by Category
+                      <FolderOpen size={16} className="text-slate-500" aria-hidden="true" /> Reports by Category
                     </h3>
                     <div className="space-y-3">
                       {(analytics.byCategory || []).map((item) => {
@@ -380,7 +386,7 @@ export default function AnalyticsDashboard() {
                         const cat = CATEGORY_CONFIG[item._id] || CATEGORY_CONFIG.other;
                         return (
                           <div key={item._id} className="flex items-center gap-3">
-                            <span className="w-6 text-center">{cat.icon}</span>
+                            <cat.Icon size={14} style={{ color: cat.color }} aria-hidden="true" />
                             <span className="text-sm font-medium text-slate-700 capitalize w-20 truncate">{item._id}</span>
                             <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                               <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: cat.color }}></div>
@@ -394,7 +400,7 @@ export default function AnalyticsDashboard() {
 
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>📊</span> Reports by Status
+                      <BarChart3 size={16} className="text-slate-500" aria-hidden="true" /> Reports by Status
                     </h3>
                     <div className="space-y-3">
                       {(analytics.byStatus || []).map((item) => {
@@ -420,7 +426,7 @@ export default function AnalyticsDashboard() {
                 {/* Top Areas */}
                 <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                   <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <span>📍</span> Top Reported Areas
+                    <MapPin size={16} className="text-slate-500" aria-hidden="true" /> Top Reported Areas
                   </h3>
                   {(analytics.topAreas || []).length > 0 ? (
                     <div className="space-y-2">
@@ -432,7 +438,7 @@ export default function AnalyticsDashboard() {
                           <span className="text-sm text-slate-700 truncate flex-1">{area._id}</span>
                           <div className="flex gap-1 shrink-0">
                             {(area.categories || []).slice(0, 3).map((cat) => (
-                              <span key={cat} className="text-xs">{CATEGORY_CONFIG[cat]?.icon || '📋'}</span>
+                              <CategoryIcon category={cat} size={12} />
                             ))}
                           </div>
                           <span className="text-sm font-bold text-slate-900 shrink-0">{area.count}</span>
@@ -452,7 +458,7 @@ export default function AnalyticsDashboard() {
                 {/* Hotspots */}
                 <div>
                   <h3 className="font-bold text-slate-900 text-lg mb-1 flex items-center gap-2">
-                    <span>🔥</span> Predicted Hotspots
+                    <Flame size={18} className="text-orange-500" aria-hidden="true" /> Predicted Hotspots
                   </h3>
                   <p className="text-sm text-slate-400 mb-4">Areas with recurring issues likely to need attention</p>
 
@@ -465,7 +471,7 @@ export default function AnalyticsDashboard() {
                           <div key={i} className={`${risk.bg} border ${risk.border} rounded-2xl p-5 shadow-sm animate-slide-up`} style={{ animationDelay: `${i * 60}ms` }}>
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-2">
-                                <span className="text-xl">{cat.icon}</span>
+                                <cat.Icon size={20} style={{ color: cat.color }} aria-hidden="true" />
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${risk.badge}`}>
                                   {spot.riskLevel.toUpperCase()} RISK
                                 </span>
@@ -487,7 +493,7 @@ export default function AnalyticsDashboard() {
                     </div>
                   ) : (
                     <div className="bg-white/80 rounded-2xl border border-slate-100 p-12 text-center">
-                      <div className="text-5xl mb-4">🗺️</div>
+                      <div className="mb-4"><Map size={48} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
                       <p className="text-slate-500">Not enough data to generate hotspot predictions yet.</p>
                       <p className="text-slate-400 text-sm mt-1">Need at least 3 reports in an area within 60 days.</p>
                     </div>
@@ -497,7 +503,7 @@ export default function AnalyticsDashboard() {
                 {/* Day of Week Trend */}
                 <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                   <h3 className="font-bold text-slate-900 mb-1 flex items-center gap-2">
-                    <span>📅</span> Day-of-Week Pattern
+                    <Calendar size={16} className="text-slate-500" aria-hidden="true" /> Day-of-Week Pattern
                   </h3>
                   <p className="text-xs text-slate-400 mb-4">Which days see the most reports?</p>
                   {predictions.dayOfWeekTrend?.length > 0 ? (
@@ -513,24 +519,24 @@ export default function AnalyticsDashboard() {
                 {/* Category Trends */}
                 <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                   <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <span>📊</span> Category Trends (4-week comparison)
+                    <BarChart3 size={16} className="text-slate-500" aria-hidden="true" /> Category Trends (4-week comparison)
                   </h3>
                   {predictions.categoryTrends?.length > 0 ? (
                     <div className="space-y-3">
                       {predictions.categoryTrends.map((ct) => {
                         const cat = CATEGORY_CONFIG[ct.category] || CATEGORY_CONFIG.other;
-                        const trendArrow = ct.trending === 'up' ? '↗️' : ct.trending === 'down' ? '↘️' : '➡️';
+                        const TrendArrow = ct.trending === 'up' ? ArrowUpRight : ct.trending === 'down' ? ArrowDownRight : ArrowRight;
                         const trendColor = ct.trending === 'up' ? 'text-red-600' : ct.trending === 'down' ? 'text-green-600' : 'text-slate-500';
                         return (
                           <div key={ct.category} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                            <span className="text-lg">{cat.icon}</span>
+                            <cat.Icon size={18} style={{ color: cat.color }} aria-hidden="true" />
                             <span className="text-sm font-medium text-slate-700 capitalize w-24">{ct.category}</span>
                             <div className="flex-1 flex items-center gap-3">
                               <span className="text-xs text-slate-400">Previous: {ct.previousCount}</span>
                               <span className="text-xs text-slate-600 font-medium">→ Current: {ct.recentCount}</span>
                             </div>
                             <span className={`text-sm font-bold ${trendColor} flex items-center gap-1`}>
-                              {trendArrow} {ct.changePercent > 0 ? '+' : ''}{ct.changePercent}%
+                              <TrendArrow size={14} aria-hidden="true" /> {ct.changePercent > 0 ? '+' : ''}{ct.changePercent}%
                             </span>
                           </div>
                         );

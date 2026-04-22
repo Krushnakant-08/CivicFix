@@ -5,15 +5,15 @@ import { useAuth } from '../context/AuthContext';
 import ReportCard from '../components/reports/ReportCard';
 import FilterBar from '../components/reports/FilterBar';
 import { Button } from '../components/ui/Button';
+import { AlertTriangle, Building2 } from '../constants/icons';
 
 export default function PublicFeed() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({ sort: '-createdAt' });
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
-  const [upvotingId, setUpvotingId] = useState(null);
 
   const fetchReports = useCallback(async (page = 1) => {
     setLoading(true);
@@ -40,17 +40,6 @@ export default function PublicFeed() {
   useEffect(() => {
     fetchReports();
   }, [fetchReports]);
-
-  const handleUpvote = async (reportId) => {
-    if (!isAuthenticated) return;
-    setUpvotingId(reportId);
-    try {
-      await reportsAPI.upvote(reportId);
-      fetchReports(pagination.page);
-    } catch { /* silently fail */ } finally {
-      setUpvotingId(null);
-    }
-  };
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-mesh py-8 px-4 font-sans">
@@ -92,7 +81,7 @@ export default function PublicFeed() {
         {/* Error */}
         {error && !loading && (
           <div className="bg-white/80 rounded-2xl border border-red-100 p-8 text-center animate-slide-up">
-            <div className="text-4xl mb-4">⚠️</div>
+            <div className="mb-4"><AlertTriangle size={40} className="text-red-400 mx-auto" aria-hidden="true" /></div>
             <p className="text-slate-700 font-semibold mb-2">Failed to load feed</p>
             <p className="text-slate-500 text-sm mb-4">{error}</p>
             <button onClick={() => fetchReports()} className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors">Retry</button>
@@ -102,7 +91,7 @@ export default function PublicFeed() {
         {/* Empty */}
         {!loading && !error && reports.length === 0 && (
           <div className="bg-white/80 rounded-2xl border border-slate-100 p-12 text-center shadow-sm animate-slide-up">
-            <div className="text-5xl mb-4">🏙️</div>
+            <div className="mb-4"><Building2 size={48} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">No issues reported yet</h3>
             <p className="text-slate-500 mb-6">Be the first to report a civic issue in your area!</p>
             <Link to="/report">
@@ -111,27 +100,18 @@ export default function PublicFeed() {
           </div>
         )}
 
-        {/* Report Grid */}
+        {/* Report Grid — each ReportCard owns its own LikeButton (no parent re-render on upvote) */}
         {!loading && !error && reports.length > 0 && (
           <>
             <div className="grid md:grid-cols-2 gap-4">
               {reports.map((report, idx) => (
-                <div key={report._id} className="relative">
-                  <ReportCard
-                    report={report}
-                    animationDelay={idx * 50}
-                  />
-                  {/* Upvote overlay button */}
-                  {isAuthenticated && (
-                    <button
-                      onClick={() => handleUpvote(report._id)}
-                      disabled={upvotingId === report._id}
-                      className="absolute bottom-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition-all shadow-sm disabled:opacity-50"
-                    >
-                      👍 {report.upvotes || 0}
-                    </button>
-                  )}
-                </div>
+                <ReportCard
+                  key={report._id}
+                  report={report}
+                  showLikeButton={isAuthenticated}
+                  userId={user?._id}
+                  animationDelay={idx * 50}
+                />
               ))}
             </div>
 

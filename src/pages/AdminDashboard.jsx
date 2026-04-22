@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { reportsAPI, usersAPI, authAPI } from '../services/api';
 import ReportCard from '../components/reports/ReportCard';
 import FilterBar from '../components/reports/FilterBar';
+import { showToast } from '../components/ui/Toast';
+import {
+  BarChart3, ClipboardList, Users, Plus, Settings,
+  FileText, Wrench, CheckCircle, FolderOpen, Zap, Inbox,
+} from '../constants/icons';
 
 const DEPARTMENTS = ['roads', 'sanitation', 'water', 'electricity', 'parks', 'traffic', 'general'];
 
@@ -93,14 +98,24 @@ export default function AdminDashboard() {
     if (activeTab === 'users') fetchUsers();
   }, [activeTab, fetchStats, fetchReports, fetchUsers]);
 
-  // ─── Actions ───────────────────────────────────────────
+  // ─── Actions (optimistic local updates) ────────────────
   const handleStatusUpdate = async (reportId, status, note) => {
+    // Optimistic: patch the item in local state immediately
+    const prevReports = reports;
+    setReports((prev) =>
+      prev.map((r) =>
+        r._id === reportId ? { ...r, status, statusHistory: [...(r.statusHistory || []), { status, changedAt: new Date(), note }] } : r
+      )
+    );
     setActionLoading(reportId);
+
     try {
       await reportsAPI.updateStatus(reportId, { status, note });
-      fetchReports(reportPagination.page);
+      showToast(`Status updated to '${status}'`, 'success', 2500);
     } catch (err) {
-      alert(err.message || 'Failed to update');
+      // Revert on failure
+      setReports(prevReports);
+      showToast(err.message || 'Failed to update status', 'error');
     } finally {
       setActionLoading(null);
     }
@@ -108,34 +123,61 @@ export default function AdminDashboard() {
 
   const handleAssign = async () => {
     if (!assignModal || !assignDept) return;
-    setActionLoading(assignModal._id);
+    const targetId = assignModal._id;
+
+    // Optimistic: update dept + status locally
+    const prevReports = reports;
+    setReports((prev) =>
+      prev.map((r) =>
+        r._id === targetId
+          ? { ...r, assignedDepartment: assignDept, status: r.status === 'reported' ? 'assigned' : r.status }
+          : r
+      )
+    );
+    setAssignModal(null);
+    setAssignDept('');
+    setActionLoading(targetId);
+
     try {
-      await reportsAPI.assign(assignModal._id, { assignedDepartment: assignDept });
-      setAssignModal(null);
-      setAssignDept('');
-      fetchReports(reportPagination.page);
+      await reportsAPI.assign(targetId, { assignedDepartment: assignDept });
+      showToast('Report assigned successfully', 'success', 2500);
     } catch (err) {
-      alert(err.message || 'Failed to assign');
+      setReports(prevReports);
+      showToast(err.message || 'Failed to assign', 'error');
     } finally {
       setActionLoading(null);
     }
   };
 
   const handleToggleUser = async (userId) => {
+    // Optimistic: toggle isActive locally
+    const prevUsers = users;
+    setUsers((prev) =>
+      prev.map((u) => (u._id === userId ? { ...u, isActive: !u.isActive } : u))
+    );
+
     try {
       await usersAPI.toggleStatus(userId);
-      fetchUsers(userPagination.page);
     } catch (err) {
-      alert(err.message || 'Failed to toggle status');
+      setUsers(prevUsers);
+      showToast(err.message || 'Failed to toggle status', 'error');
     }
   };
 
   const handleRoleChange = async (userId, role, department = null) => {
+    // Optimistic: update role locally
+    const prevUsers = users;
+    setUsers((prev) =>
+      prev.map((u) =>
+        u._id === userId ? { ...u, role, ...(department ? { department } : {}) } : u
+      )
+    );
+
     try {
       await usersAPI.updateRole(userId, { role, department });
-      fetchUsers(userPagination.page);
     } catch (err) {
-      alert(err.message || 'Failed to update role');
+      setUsers(prevUsers);
+      showToast(err.message || 'Failed to update role', 'error');
     }
   };
 
@@ -164,10 +206,10 @@ export default function AdminDashboard() {
   };
 
   const tabs = [
-    { key: 'overview', label: 'Overview', icon: '📊' },
-    { key: 'reports', label: 'All Reports', icon: '📋' },
-    { key: 'users', label: 'Users', icon: '👥' },
-    { key: 'create-staff', label: 'Create Staff', icon: '➕' },
+    { key: 'overview', label: 'Overview', Icon: BarChart3 },
+    { key: 'reports', label: 'All Reports', Icon: ClipboardList },
+    { key: 'users', label: 'Users', Icon: Users },
+    { key: 'create-staff', label: 'Create Staff', Icon: Plus },
   ];
 
   const inputClass = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm';
@@ -179,7 +221,7 @@ export default function AdminDashboard() {
         <div className="mb-6 animate-slide-up">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-500 rounded-xl flex items-center justify-center text-white text-lg shadow-md">
-              ⚙️
+              <Settings size={20} aria-hidden="true" />
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Admin Dashboard</h1>
@@ -200,7 +242,7 @@ export default function AdminDashboard() {
                   : 'bg-white text-slate-600 border border-slate-200 hover:border-purple-300 hover:text-purple-600'
               }`}
             >
-              <span>{tab.icon}</span>
+              <tab.Icon size={16} aria-hidden="true" />
               {tab.label}
             </button>
           ))}
@@ -223,14 +265,14 @@ export default function AdminDashboard() {
                 {/* Top-level stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {[
-                    { label: 'Total Reports', value: stats.totalReports, icon: '📋', color: 'from-blue-500 to-cyan-400' },
-                    { label: 'Reported (New)', value: getStatValue(stats.byStatus, 'reported'), icon: '📝', color: 'from-red-500 to-orange-400' },
-                    { label: 'In Progress', value: getStatValue(stats.byStatus, 'in_progress'), icon: '🔧', color: 'from-amber-500 to-yellow-400' },
-                    { label: 'Resolved', value: getStatValue(stats.byStatus, 'resolved'), icon: '✅', color: 'from-green-500 to-emerald-400' },
+                    { label: 'Total Reports', value: stats.totalReports, Icon: ClipboardList, color: 'from-blue-500 to-cyan-400' },
+                    { label: 'Reported (New)', value: getStatValue(stats.byStatus, 'reported'), Icon: FileText, color: 'from-red-500 to-orange-400' },
+                    { label: 'In Progress', value: getStatValue(stats.byStatus, 'in_progress'), Icon: Wrench, color: 'from-amber-500 to-yellow-400' },
+                    { label: 'Resolved', value: getStatValue(stats.byStatus, 'resolved'), Icon: CheckCircle, color: 'from-green-500 to-emerald-400' },
                   ].map((stat, i) => (
                     <div key={stat.label} className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-5 shadow-sm animate-slide-up" style={{ animationDelay: `${i * 80}ms` }}>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl">{stat.icon}</span>
+                        <stat.Icon size={24} className="text-slate-700" aria-hidden="true" />
                         <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.color} opacity-20`}></div>
                       </div>
                       <p className="text-3xl font-extrabold text-slate-900">{stat.value}</p>
@@ -243,7 +285,7 @@ export default function AdminDashboard() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>📂</span> Reports by Category
+                      <FolderOpen size={16} className="text-slate-500" aria-hidden="true" /> Reports by Category
                     </h3>
                     <div className="space-y-3">
                       {(stats.byCategory || []).map((item) => {
@@ -263,7 +305,7 @@ export default function AdminDashboard() {
 
                   <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                      <span>⚡</span> Reports by Priority
+                      <Zap size={16} className="text-slate-500" aria-hidden="true" /> Reports by Priority
                     </h3>
                     <div className="space-y-3">
                       {(stats.byPriority || []).map((item) => {
@@ -285,7 +327,7 @@ export default function AdminDashboard() {
               </>
             ) : (
               <div className="bg-white/80 rounded-2xl border border-slate-100 p-12 text-center">
-                <div className="text-4xl mb-4">📊</div>
+                <div className="mb-4"><BarChart3 size={40} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
                 <p className="text-slate-500">No statistics available yet.</p>
               </div>
             )}
@@ -310,7 +352,7 @@ export default function AdminDashboard() {
               </div>
             ) : reports.length === 0 ? (
               <div className="bg-white/80 rounded-2xl border border-slate-100 p-12 text-center">
-                <div className="text-5xl mb-4">📭</div>
+                <div className="mb-4"><Inbox size={48} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
                 <p className="text-slate-500">No reports match the current filters.</p>
               </div>
             ) : (
@@ -370,7 +412,7 @@ export default function AdminDashboard() {
               </div>
             ) : users.length === 0 ? (
               <div className="bg-white/80 rounded-2xl border border-slate-100 p-12 text-center">
-                <div className="text-5xl mb-4">👥</div>
+                <div className="mb-4"><Users size={48} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
                 <p className="text-slate-500">No users found.</p>
               </div>
             ) : (
@@ -437,7 +479,7 @@ export default function AdminDashboard() {
           <div className="max-w-lg mx-auto animate-slide-up">
             <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-8 shadow-sm">
               <div className="text-center mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-indigo-500 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white text-2xl shadow-lg">➕</div>
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-indigo-500 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white shadow-lg"><Plus size={28} aria-hidden="true" /></div>
                 <h2 className="text-xl font-extrabold text-slate-900">Create Staff Account</h2>
                 <p className="text-sm text-slate-500 mt-1">Add department staff or admin users</p>
               </div>

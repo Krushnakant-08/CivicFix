@@ -2,16 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { reportsAPI } from '../services/api';
 import { Button } from '../components/ui/Button';
-
-const STATUS_CONFIG = {
-  reported: { label: 'Reported', color: 'bg-red-100 text-red-700', dot: 'bg-red-500', icon: '📝' },
-  acknowledged: { label: 'Acknowledged', color: 'bg-orange-100 text-orange-700', dot: 'bg-orange-500', icon: '👁️' },
-  assigned: { label: 'Assigned', color: 'bg-amber-100 text-amber-700', dot: 'bg-amber-500', icon: '📌' },
-  in_progress: { label: 'In Progress', color: 'bg-blue-100 text-blue-700', dot: 'bg-blue-500', icon: '🔧' },
-  resolved: { label: 'Resolved', color: 'bg-green-100 text-green-700', dot: 'bg-green-500', icon: '✅' },
-  closed: { label: 'Closed', color: 'bg-slate-100 text-slate-700', dot: 'bg-slate-500', icon: '📁' },
-  rejected: { label: 'Rejected', color: 'bg-red-100 text-red-700', dot: 'bg-red-500', icon: '❌' },
-};
+import {
+  STATUS_CONFIG, CATEGORY_ICONS, StatusIcon, CategoryIcon,
+  MapPin, ThumbsUp, ClipboardList, AlertTriangle,
+} from '../constants/icons';
 
 const FILTER_TABS = [
   { key: '', label: 'All Reports' },
@@ -21,15 +15,6 @@ const FILTER_TABS = [
   { key: 'closed', label: 'Closed' },
 ];
 
-const CATEGORY_ICONS = {
-  roads: '🛣️',
-  sanitation: '🗑️',
-  water: '💧',
-  electricity: '💡',
-  parks: '🌳',
-  traffic: '🚦',
-  other: '📋',
-};
 
 export default function MyReports() {
   const [reports, setReports] = useState([]);
@@ -137,7 +122,7 @@ export default function MyReports() {
         {/* Error State */}
         {error && !loading && (
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-red-100 p-8 text-center animate-slide-up">
-            <div className="text-4xl mb-4">⚠️</div>
+            <div className="mb-4"><AlertTriangle size={40} className="text-red-400 mx-auto" aria-hidden="true" /></div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Couldn't Load Reports</h3>
             <p className="text-slate-500 mb-6">{error}</p>
             <Button variant="primary" onClick={() => fetchReports(activeFilter)} className="px-6">
@@ -149,7 +134,7 @@ export default function MyReports() {
         {/* Empty State */}
         {!loading && !error && reports.length === 0 && (
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-12 text-center shadow-sm animate-slide-up">
-            <div className="text-5xl mb-4">📋</div>
+            <div className="mb-4"><ClipboardList size={48} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">
               {activeFilter ? `No ${STATUS_CONFIG[activeFilter]?.label || activeFilter} reports` : 'No reports yet'}
             </h3>
@@ -192,12 +177,12 @@ export default function MyReports() {
                         <h3 className="text-lg font-bold text-slate-900 truncate">{report.title}</h3>
                         <div className="flex items-center gap-3 mt-2">
                           <span className="text-sm text-slate-500 flex items-center gap-1">
-                            {CATEGORY_ICONS[report.category] || '📋'} {report.category}
+                            <CategoryIcon category={report.category} size={14} className="text-slate-400" /> {report.category}
                           </span>
                           {report.location?.address && (
                             <>
                               <span className="text-slate-300">•</span>
-                              <span className="text-sm text-slate-500 truncate max-w-[200px]">📍 {report.location.address}</span>
+                              <span className="text-sm text-slate-500 truncate max-w-[200px] inline-flex items-center gap-1"><MapPin size={13} className="text-slate-400 shrink-0" aria-hidden="true" /> {report.location.address}</span>
                             </>
                           )}
                         </div>
@@ -205,7 +190,7 @@ export default function MyReports() {
 
                       <div className="flex items-center gap-3 shrink-0">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${statusConfig.color}`}>
-                          {statusConfig.icon} {statusConfig.label}
+                          <StatusIcon config={statusConfig} size={12} /> {statusConfig.label}
                         </span>
                         <svg
                           className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
@@ -240,7 +225,7 @@ export default function MyReports() {
                         </div>
                         <div className="bg-slate-50 rounded-xl p-3">
                           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Upvotes</p>
-                          <p className="text-slate-900 font-medium text-sm">👍 {report.upvotes || 0}</p>
+                          <p className="text-slate-900 font-medium text-sm inline-flex items-center gap-1"><ThumbsUp size={13} className="text-slate-400" aria-hidden="true" /> {report.upvotes || 0}</p>
                         </div>
                         <div className="bg-slate-50 rounded-xl p-3">
                           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Submitted</p>

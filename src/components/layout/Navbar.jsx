@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import NotificationBell from '../ui/NotificationBell';
+import {
+  ClipboardList, BarChart3, TrendingUp, Building, LogOut,
+} from '../../constants/icons';
 const logoUrl = '/logo.svg';
 
 export default function Navbar() {
@@ -136,30 +139,30 @@ export default function Navbar() {
                         {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
                       </span>
                     </div>
-                    <Link to="/my-reports" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
-                      📋 My Reports
+                    <Link to="/my-reports" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                      <ClipboardList size={14} aria-hidden="true" /> My Reports
                     </Link>
                     {isAdmin && (
                       <>
-                        <Link to="/dashboard/admin" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
-                          📊 Admin Dashboard
+                        <Link to="/dashboard/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                          <BarChart3 size={14} aria-hidden="true" /> Admin Dashboard
                         </Link>
-                        <Link to="/dashboard/analytics" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
-                          📈 Analytics
+                        <Link to="/dashboard/analytics" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                          <TrendingUp size={14} aria-hidden="true" /> Analytics
                         </Link>
                       </>
                     )}
                     {isDepartment && (
-                      <Link to="/dashboard/department" className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
-                        🏢 Dept Dashboard
+                      <Link to="/dashboard/department" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                        <Building size={14} aria-hidden="true" /> Dept Dashboard
                       </Link>
                     )}
                     <div className="border-t border-slate-100 mt-1 pt-1">
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                       >
-                        🚪 Sign Out
+                        <LogOut size={14} aria-hidden="true" /> Sign Out
                       </button>
                     </div>
                   </div>

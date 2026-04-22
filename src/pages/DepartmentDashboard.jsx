@@ -3,6 +3,11 @@ import { useAuth } from '../context/AuthContext';
 import { reportsAPI } from '../services/api';
 import ReportCard from '../components/reports/ReportCard';
 import FilterBar from '../components/reports/FilterBar';
+import { showToast } from '../components/ui/Toast';
+import {
+  CircleDot, Wrench, CheckCircle, BarChart3,
+  Building, AlertTriangle, Inbox,
+} from '../constants/icons';
 
 const STATUS_COUNTS_INIT = { reported: 0, acknowledged: 0, assigned: 0, in_progress: 0, resolved: 0, closed: 0 };
 
@@ -52,12 +57,24 @@ export default function DepartmentDashboard() {
   }, [department, fetchReports]);
 
   const handleStatusUpdate = async (reportId, status, note) => {
+    // Optimistic: patch the item in local state immediately
+    const prevReports = reports;
+    setReports((prev) =>
+      prev.map((r) =>
+        r._id === reportId
+          ? { ...r, status, statusHistory: [...(r.statusHistory || []), { status, changedAt: new Date(), note }] }
+          : r
+      )
+    );
     setActionLoading(reportId);
+
     try {
       await reportsAPI.updateStatus(reportId, { status, note });
-      fetchReports(pagination.page);
+      showToast(`Status updated to '${status}'`, 'success', 2500);
     } catch (err) {
-      alert(err.message || 'Failed to update status');
+      // Revert on failure
+      setReports(prevReports);
+      showToast(err.message || 'Failed to update status', 'error');
     } finally {
       setActionLoading(null);
     }
@@ -67,10 +84,10 @@ export default function DepartmentDashboard() {
   const totalResolved = statusCounts.resolved + statusCounts.closed;
 
   const stats = [
-    { label: 'Open Issues', value: totalOpen, icon: '🔴', color: 'from-red-500 to-orange-400' },
-    { label: 'In Progress', value: statusCounts.in_progress, icon: '🔧', color: 'from-blue-500 to-cyan-400' },
-    { label: 'Resolved', value: totalResolved, icon: '✅', color: 'from-green-500 to-emerald-400' },
-    { label: 'Total Assigned', value: Object.values(statusCounts).reduce((a, b) => a + b, 0), icon: '📊', color: 'from-purple-500 to-indigo-400' },
+    { label: 'Open Issues', value: totalOpen, Icon: CircleDot, color: 'from-red-500 to-orange-400' },
+    { label: 'In Progress', value: statusCounts.in_progress, Icon: Wrench, color: 'from-blue-500 to-cyan-400' },
+    { label: 'Resolved', value: totalResolved, Icon: CheckCircle, color: 'from-green-500 to-emerald-400' },
+    { label: 'Total Assigned', value: Object.values(statusCounts).reduce((a, b) => a + b, 0), Icon: BarChart3, color: 'from-purple-500 to-indigo-400' },
   ];
 
   return (
@@ -80,7 +97,7 @@ export default function DepartmentDashboard() {
         <div className="mb-8 animate-slide-up">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-400 rounded-xl flex items-center justify-center text-white text-lg shadow-md">
-              🏢
+              <Building size={20} className="text-white" aria-hidden="true" />
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Department Dashboard</h1>
@@ -98,7 +115,7 @@ export default function DepartmentDashboard() {
               style={{ animationDelay: `${i * 80}ms` }}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-2xl">{stat.icon}</span>
+                <stat.Icon size={24} className="text-slate-700" aria-hidden="true" />
                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.color} opacity-20`}></div>
               </div>
               <p className="text-3xl font-extrabold text-slate-900">{stat.value}</p>
@@ -133,7 +150,7 @@ export default function DepartmentDashboard() {
         {/* Error */}
         {error && !loading && (
           <div className="bg-white/80 rounded-2xl border border-red-100 p-8 text-center">
-            <div className="text-4xl mb-4">⚠️</div>
+            <div className="mb-4"><AlertTriangle size={40} className="text-red-400 mx-auto" aria-hidden="true" /></div>
             <p className="text-slate-700 font-semibold mb-2">Failed to load reports</p>
             <p className="text-slate-500 text-sm mb-4">{error}</p>
             <button onClick={() => fetchReports()} className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors">
@@ -145,7 +162,7 @@ export default function DepartmentDashboard() {
         {/* Empty state */}
         {!loading && !error && reports.length === 0 && (
           <div className="bg-white/80 rounded-2xl border border-slate-100 p-12 text-center shadow-sm">
-            <div className="text-5xl mb-4">📭</div>
+            <div className="mb-4"><Inbox size={48} className="text-slate-400 mx-auto" aria-hidden="true" /></div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">No reports found</h3>
             <p className="text-slate-500">
               {filters.status

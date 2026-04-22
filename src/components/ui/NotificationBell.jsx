@@ -1,16 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNotifications } from '../../context/NotificationContext';
 import { useNavigate } from 'react-router-dom';
+import {
+  NOTIFICATION_ICONS,
+  RefreshCw, ClipboardList, ThumbsUp, FilePlus, CheckCircle2, Settings,
+  Bell, Trash2,
+} from '../../constants/icons';
 
-// ─── Notification type config ────────────────────────────
-const TYPE_CONFIG = {
-  status_change: { icon: '🔄', color: 'bg-blue-500' },
-  report_assigned: { icon: '📋', color: 'bg-amber-500' },
-  report_upvoted: { icon: '👍', color: 'bg-green-500' },
-  new_report: { icon: '🆕', color: 'bg-indigo-500' },
-  report_resolved: { icon: '🎉', color: 'bg-emerald-500' },
-  system: { icon: '⚙️', color: 'bg-slate-500' },
-};
+
 
 function timeAgo(dateString) {
   const now = new Date();
@@ -132,7 +129,7 @@ export default function NotificationBell() {
                   className="text-xs font-medium text-slate-400 hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors"
                   title="Clear read notifications"
                 >
-                  🗑️ Clear
+                  <Trash2 size={12} className="text-slate-400" aria-hidden="true" /> Clear
                 </button>
               )}
             </div>
@@ -147,13 +144,13 @@ export default function NotificationBell() {
               </div>
             ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-slate-400">
-                <div className="text-4xl mb-3">🔔</div>
+                <div className="mb-3"><Bell size={40} className="text-slate-300 mx-auto" aria-hidden="true" /></div>
                 <p className="font-medium text-slate-500">No notifications yet</p>
                 <p className="text-sm text-slate-400 mt-1">You&apos;re all caught up!</p>
               </div>
             ) : (
               notifications.map((notification) => {
-                const config = TYPE_CONFIG[notification.type] || TYPE_CONFIG.system;
+                const config = NOTIFICATION_ICONS[notification.type] || NOTIFICATION_ICONS.system;
                 return (
                   <div
                     key={notification._id}
@@ -166,7 +163,7 @@ export default function NotificationBell() {
                     <div
                       className={`flex-shrink-0 w-9 h-9 ${config.color} rounded-xl flex items-center justify-center text-white text-sm shadow-sm mt-0.5`}
                     >
-                      {config.icon}
+                      <config.Icon size={16} aria-hidden="true" />
                     </div>
 
                     {/* Content */}
