@@ -34,7 +34,7 @@ export default function ProtectedRoute({ children, roles }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-mesh">
         <div className="glass-card p-12 text-center max-w-md">
-          <div className="text-6xl mb-4">🚫</div>
+          <div className="mb-4"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400 mx-auto" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="4" y1="4" x2="20" y2="20"/></svg></div>
           <h2 className="text-2xl font-bold text-slate-900 mb-3">Access Denied</h2>
           <p className="text-slate-600 mb-6">
             You don't have permission to access this page.

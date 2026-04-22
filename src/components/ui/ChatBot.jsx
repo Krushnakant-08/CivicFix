@@ -5,93 +5,93 @@ import { Link } from 'react-router-dom';
 const FAQ_PATTERNS = [
   {
     patterns: ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good evening', 'good afternoon'],
-    response: "Hello! 👋 I'm CivicBot, your CivicFix assistant. How can I help you today?",
+    response: "Hello! I'm CivicBot, your CivicFix assistant. How can I help you today?",
     quickReplies: ['How to report?', 'Track a report', 'What categories?'],
   },
   {
     patterns: ['how to report', 'submit report', 'report issue', 'file complaint', 'report a problem', 'how do i report'],
-    response: "📝 **Reporting an issue is easy!**\n\n1. Go to the **Report Issue** page\n2. Enter a descriptive title\n3. Select a category (Roads, Water, etc.)\n4. Use GPS or type your location\n5. Describe the issue in detail\n6. Optionally attach up to 3 photos\n7. Submit! You'll get a tracking ID instantly.\n\n💡 You can report even without signing in (anonymously).",
+    response: "**Reporting an issue is easy!**\n\n1. Go to the **Report Issue** page\n2. Enter a descriptive title\n3. Select a category (Roads, Water, etc.)\n4. Use GPS or type your location\n5. Describe the issue in detail\n6. Optionally attach up to 3 photos\n7. Submit! You'll get a tracking ID instantly.\n\nTip: You can report even without signing in (anonymously).",
     quickReplies: ['Track a report', 'Categories', 'What is GPS?'],
     link: { to: '/report', text: 'Go to Report Page →' },
   },
   {
     patterns: ['track', 'tracking', 'track report', 'find report', 'check status', 'where is my report', 'tracking id'],
-    response: "🔍 **To track your report:**\n\n1. Go to the **Track Report** page\n2. Enter your Tracking ID (format: CF-YYMMDD-XXXXX)\n3. View the current status, timeline, and AI insights\n\nYour tracking ID was shown after submission. You can also find it in **My Reports** if you were logged in.",
+    response: "**To track your report:**\n\n1. Go to the **Track Report** page\n2. Enter your Tracking ID (format: CF-YYMMDD-XXXXX)\n3. View the current status, timeline, and AI insights\n\nYour tracking ID was shown after submission. You can also find it in **My Reports** if you were logged in.",
     quickReplies: ['Report statuses', 'My reports', 'Lost tracking ID'],
     link: { to: '/track', text: 'Go to Track Page →' },
   },
   {
     patterns: ['categories', 'what categories', 'category', 'types of issues', 'what can i report'],
-    response: "📂 **CivicFix supports 7 categories:**\n\n🛣️ **Roads** — Potholes, road damage, pavement\n🗑️ **Sanitation** — Garbage, dustbins, drains\n💧 **Water** — Leaks, supply issues, pipes\n💡 **Electricity** — Streetlights, power outages\n🌳 **Parks** — Park maintenance, playgrounds\n🚦 **Traffic** — Signals, signs, congestion\n📋 **Other** — Anything that doesn't fit above",
+    response: "**CivicFix supports 7 categories:**\n\n- **Roads** \u2014 Potholes, road damage, pavement\n- **Sanitation** \u2014 Garbage, dustbins, drains\n- **Water** \u2014 Leaks, supply issues, pipes\n- **Electricity** \u2014 Streetlights, power outages\n- **Parks** \u2014 Park maintenance, playgrounds\n- **Traffic** \u2014 Signals, signs, congestion\n- **Other** \u2014 Anything that doesn't fit above",
     quickReplies: ['How to report?', 'Track a report'],
   },
   {
     patterns: ['status', 'statuses', 'report status', 'what does status mean', 'status meaning'],
-    response: "📊 **Report Status Guide:**\n\n📝 **Reported** — Just submitted, awaiting review\n👀 **Acknowledged** — Department has seen it\n📋 **Assigned** — Assigned to a specific department\n🔧 **In Progress** — Work has started\n✅ **Resolved** — Issue has been fixed\n🔒 **Closed** — Finalized and archived\n❌ **Rejected** — Declined (with reason)",
+    response: "**Report Status Guide:**\n\n- **Reported** \u2014 Just submitted, awaiting review\n- **Acknowledged** \u2014 Department has seen it\n- **Assigned** \u2014 Assigned to a specific department\n- **In Progress** \u2014 Work has started\n- **Resolved** \u2014 Issue has been fixed\n- **Closed** \u2014 Finalized and archived\n- **Rejected** \u2014 Declined (with reason)",
     quickReplies: ['Track a report', 'How to report?'],
   },
   {
     patterns: ['my reports', 'view my reports', 'my submissions', 'my issues'],
-    response: "📋 **My Reports** shows all issues you've submitted (when logged in).\n\nYou can:\n- Filter by status (Reported, In Progress, Resolved, etc.)\n- Expand details and view timeline\n- See AI analysis for each report\n\nNote: Anonymous reports won't appear here.",
+    response: "**My Reports** shows all issues you've submitted (when logged in).\n\nYou can:\n- Filter by status (Reported, In Progress, Resolved, etc.)\n- Expand details and view timeline\n- See AI analysis for each report\n\nNote: Anonymous reports won't appear here.",
     quickReplies: ['Track a report', 'How to report?'],
     link: { to: '/my-reports', text: 'Go to My Reports →' },
   },
   {
     patterns: ['gps', 'location', 'where', 'auto detect', 'geolocation'],
-    response: "📍 **GPS Auto-Location:**\n\nWhen reporting, click the **GPS button** next to the location field. Your browser will ask for permission to access your location.\n\nOnce allowed, CivicFix will:\n1. Get your precise coordinates\n2. Reverse-geocode to show the street address\n3. Attach GPS data for the map view\n\nYou can also type the address manually.",
+    response: "**GPS Auto-Location:**\n\nWhen reporting, click the **GPS button** next to the location field. Your browser will ask for permission to access your location.\n\nOnce allowed, CivicFix will:\n1. Get your precise coordinates\n2. Reverse-geocode to show the street address\n3. Attach GPS data for the map view\n\nYou can also type the address manually.",
     quickReplies: ['How to report?', 'Map view'],
   },
   {
     patterns: ['map', 'map view', 'see map', 'heatmap', 'where are issues'],
-    response: "🗺️ **Interactive Map View:**\n\nSee all reported issues on an interactive map with:\n- 📍 Color-coded markers by category\n- 🔥 Heatmap mode for issue density\n- 🔍 Filter by category, status, priority\n- 📍 \"Near Me\" button for your area\n- 📊 Click markers for details\n\nThe map is publicly accessible — no login required.",
+    response: "**Interactive Map View:**\n\nSee all reported issues on an interactive map with:\n- Color-coded markers by category\n- Heatmap mode for issue density\n- Filter by category, status, priority\n- \"Near Me\" button for your area\n- Click markers for details\n\nThe map is publicly accessible \u2014 no login required.",
     quickReplies: ['How to report?', 'Categories'],
     link: { to: '/map', text: 'Open Map View →' },
   },
   {
     patterns: ['feed', 'community', 'public feed', 'see all reports', 'browse issues'],
-    response: "🌐 **Community Feed** shows all reported issues:\n\n- Browse in a 2-column grid\n- Filter by category, status, priority\n- Upvote issues you care about (login required)\n- Click to view full details\n\nUpvoting helps prioritize issues!",
+    response: "**Community Feed** shows all reported issues:\n\n- Browse in a 2-column grid\n- Filter by category, status, priority\n- Upvote issues you care about (login required)\n- Click to view full details\n\nUpvoting helps prioritize issues!",
     quickReplies: ['How to report?', 'Map view'],
     link: { to: '/feed', text: 'Go to Feed →' },
   },
   {
     patterns: ['upvote', 'vote', 'like', 'support'],
-    response: "👍 **Upvoting** helps highlight important issues!\n\n- Sign in and go to the **Community Feed**\n- Click the upvote button on any report\n- Higher upvote counts = higher priority\n- The reporter gets notified when you upvote\n\nYou can remove your upvote by clicking again.",
+    response: "**Upvoting** helps highlight important issues!\n\n- Sign in and go to the **Community Feed**\n- Click the upvote button on any report\n- Higher upvote counts = higher priority\n- The reporter gets notified when you upvote\n\nYou can remove your upvote by clicking again.",
     quickReplies: ['Community Feed', 'How to report?'],
   },
   {
     patterns: ['anonymous', 'privacy', 'without login', 'no account'],
-    response: "🔒 **Anonymous Reporting:**\n\nYou can submit reports without creating an account! Your report will be:\n- ✅ Accepted and processed normally\n- 🔒 Not linked to any identity\n- ⚠️ But you won't receive status updates\n\n💡 **Tip:** Create an account to track your reports and get notifications when status changes.",
+    response: "**Anonymous Reporting:**\n\nYou can submit reports without creating an account! Your report will be:\n- Accepted and processed normally\n- Not linked to any identity\n- But you won't receive status updates\n\n**Tip:** Create an account to track your reports and get notifications when status changes.",
     quickReplies: ['How to report?', 'Register'],
   },
   {
     patterns: ['ai', 'artificial intelligence', 'how does ai work', 'ai analysis', 'machine learning'],
-    response: "🤖 **CivicFix AI Intelligence:**\n\nWhen you submit a report, our AI automatically:\n- 🏷️ Extracts relevant tags\n- ⚡ Assesses priority & severity\n- 🏢 Suggests the right department\n- 📅 Estimates resolution time\n- 🔍 Checks for duplicate reports\n- 🛡️ Filters spam/low-quality submissions\n\nAll AI analysis is rule-based NLP — no external APIs needed!",
+    response: "**CivicFix AI Intelligence:**\n\nWhen you submit a report, our AI automatically:\n- Extracts relevant tags\n- Assesses priority & severity\n- Suggests the right department\n- Estimates resolution time\n- Checks for duplicate reports\n- Filters spam/low-quality submissions\n\nAll AI analysis is rule-based NLP \u2014 no external APIs needed!",
     quickReplies: ['How to report?', 'Categories'],
   },
   {
     patterns: ['notification', 'notifications', 'alerts', 'updates', 'bell'],
-    response: "🔔 **Notifications keep you updated:**\n\n- Status changes on your reports\n- Department assignment updates\n- When someone upvotes your report\n- Resolution confirmations\n\nView all notifications by clicking the 🔔 bell icon in the navbar. Real-time via WebSocket!",
+    response: "**Notifications keep you updated:**\n\n- Status changes on your reports\n- Department assignment updates\n- When someone upvotes your report\n- Resolution confirmations\n\nView all notifications by clicking the bell icon in the navbar. Real-time via WebSocket!",
     quickReplies: ['Track a report', 'My reports'],
   },
   {
     patterns: ['contact', 'help', 'support', 'phone', 'email'],
-    response: "📞 **Need more help?**\n\nCivicFix is a civic issue tracking platform. For urgent issues:\n- 🚨 Contact your local municipality directly\n- 📧 Report through the app for tracked resolution\n\nFor app-related queries, reach out to the admin through the platform.",
+    response: "**Need more help?**\n\nCivicFix is a civic issue tracking platform. For urgent issues:\n- Contact your local municipality directly\n- Report through the app for tracked resolution\n\nFor app-related queries, reach out to the admin through the platform.",
     quickReplies: ['How to report?', 'Categories'],
   },
   {
     patterns: ['thank', 'thanks', 'thank you', 'thx'],
-    response: "You're welcome! 😊 Happy to help. Is there anything else you'd like to know about CivicFix?",
+    response: "You're welcome! Happy to help. Is there anything else you'd like to know about CivicFix?",
     quickReplies: ['How to report?', 'Track a report', 'Categories'],
   },
   {
     patterns: ['lost tracking id', 'forgot tracking id', 'lost id'],
-    response: "😬 **Lost your Tracking ID?**\n\nIf you were **logged in** when you submitted:\n→ Go to **My Reports** to find it.\n\nIf you submitted **anonymously**:\n→ Unfortunately, there's no way to recover it. Next time, copy the tracking ID right after submission!\n\n💡 **Tip:** Always save your tracking ID somewhere safe.",
+    response: "**Lost your Tracking ID?**\n\nIf you were **logged in** when you submitted:\n\u2192 Go to **My Reports** to find it.\n\nIf you submitted **anonymously**:\n\u2192 Unfortunately, there's no way to recover it. Next time, copy the tracking ID right after submission!\n\n**Tip:** Always save your tracking ID somewhere safe.",
     quickReplies: ['My reports', 'How to report?'],
   },
 ];
 
 const FALLBACK_RESPONSE = {
-  response: "🤔 I'm not sure I understand. Try asking about:\n\n- How to **report** an issue\n- How to **track** a report\n- Available **categories**\n- Report **statuses**\n- The **map** view\n- **AI** analysis\n- **Notifications**\n\nOr just say **Hi** to start!",
+  response: "I'm not sure I understand. Try asking about:\n\n- How to **report** an issue\n- How to **track** a report\n- Available **categories**\n- Report **statuses**\n- The **map** view\n- **AI** analysis\n- **Notifications**\n\nOr just say **Hi** to start!",
   quickReplies: ['How to report?', 'Track a report', 'Categories', 'Help'],
 };
 
@@ -115,7 +115,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: "Hello! 👋 I'm **CivicBot**, your CivicFix assistant. Ask me anything about reporting issues, tracking, or using the platform!",
+      text: "Hello! I'm **CivicBot**, your CivicFix assistant. Ask me anything about reporting issues, tracking, or using the platform!",
       quickReplies: ['How to report?', 'Track a report', 'Categories'],
     },
   ]);
@@ -206,7 +206,9 @@ export default function ChatBot() {
           <div className="chatbot-header">
             <div className="flex items-center gap-3">
               <div className="chatbot-avatar">
-                <span>🤖</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/>
+                </svg>
               </div>
               <div>
                 <h3 className="chatbot-title">CivicBot</h3>
