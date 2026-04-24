@@ -36,12 +36,6 @@ export function useOfflineSync() {
     };
   }, []);
 
-  // Auto-sync when connection is restored
-  useEffect(() => {
-    if (isOnline && queue.length > 0) {
-      syncQueue();
-    }
-  }, [isOnline]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Add a report submission to the offline queue
@@ -95,6 +89,13 @@ export function useOfflineSync() {
 
     return results;
   }, [queue, isSyncing]);
+
+  // Auto-sync when connection is restored
+  useEffect(() => {
+    if (isOnline && queue.length > 0) {
+      syncQueue();
+    }
+  }, [isOnline]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const clearQueue = useCallback(() => {
     setQueue([]);
