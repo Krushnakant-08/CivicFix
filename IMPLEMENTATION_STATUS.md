@@ -1,7 +1,7 @@
 # CivicFix — Implementation Status
 
-> **Last Updated:** April 11, 2026 (12:55 IST)
-> **Resume From:** Phase 8 — Advanced Features & Hardening
+> **Last Updated:** April 24, 2026
+> **Resume From:** All Phases Complete
 
 ---
 
@@ -278,13 +278,58 @@ Everything below is built, tested, and working.
 
 ---
 
-## ⬜ Phase 8 — Advanced Features & Hardening
-- PWA with offline sync (Workbox)
-- Blockchain audit trail
-- Code splitting & lazy loading
-- Security hardening (rate limiting, CORS, sanitization)
-- Swagger/OpenAPI documentation
-- Vercel/AWS deployment + CI/CD
+## ✅ Phase 8 — Advanced Features & Hardening (COMPLETE)
+
+Everything below is built, tested, and working.
+
+### 8.1 Progressive Web App (PWA)
+| File | What it does |
+|:---|:---|
+| `vite.config.js` | `vite-plugin-pwa` configuration — manifest, service worker registration, and Workbox strategies (NetworkFirst for reports, CacheFirst for fonts/tiles) |
+| `src/components/ui/PWAInstallPrompt.jsx` | Smart install banner — detects `beforeinstallprompt` event, shows floating glassmorphism prompt with "Install" and "Maybe Later" buttons |
+| `public/icons/` | PWA icons (192, 512, maskable) |
+| `public/offline.html` | Fallback page for when the user is offline and the requested page isn't cached |
+
+### 8.2 Blockchain-inspired Audit Trail
+| File | What it does |
+|:---|:---|
+| `server/models/AuditLog.js` | **Hash-chained ledger** — SHA-256 hashing of entry data + previous block hash + index. Detects tampering if any record is changed. |
+| `server/routes/audit.js` | Routes for fetching log history and triggering chain verification |
+| `src/pages/AuditTrail.jsx` | **Admin audit dashboard** (`/dashboard/audit`) — Displays tamper-proof log of all system actions with activity-colored badges, block hashes, and "Verify Integrity" functionality |
+
+### 8.3 Performance Optimization
+| Mechanism | Implementation |
+|:---|:---|
+| **Code Splitting** | `src/App.jsx` — `lazy()` + `Suspense` for all major routes (MapView, Analytics, Dashboards, etc.) to reduce initial bundle size |
+| **Manual Chunking** | `vite.config.js` — Rollup manual chunks for `react-vendor`, `map-vendor`, and `socket-vendor` to optimize caching |
+| **Asset Optimization** | SVG-first designs; lean MongoDB queries with `.select()` and `.lean()` |
+
+### 8.4 Security Hardening
+| Layer | Security Feature |
+|:---|:---|
+| **HTTP Headers** | `helmet` — CSP (restricted for Swagger), HSTS, Clickjacking protection, etc. |
+| **Rate Limiting** | `express-rate-limit` — Multi-tier limits (General API: 200/15m, Auth: 20/15m, Submissions: 30/1h) |
+| **CORS** | Tightened to `process.env.CLIENT_URL` with credentials support |
+| **Injection Protection** | `express-mongo-sanitize` — strips `$` signs; `xss-clean` — strips malicious HTML/JS |
+
+### 8.5 API Documentation
+| File | What it does |
+|:---|:---|
+| `server/config/swagger.js` | Swagger JSDoc configuration with metadata and security schemes |
+| `server/index.js` | `/api/docs` — Interactive Swagger UI with custom branding; `/api/docs.json` for raw OpenAPI spec |
+
+### 8.6 Deployment & CI/CD
+| File | What it does |
+|:---|:---|
+| `.github/workflows/ci.yml` | Sets up automated CI pipeline on push/PR. Installs dependencies and runs frontend build verification (`npm run lint`, `npm run build`). |
+| `vercel.json` | Vercel platform routing configuration. Tells Vercel to route any unknown URLs to `index.html` ensuring clean client-side routing on React Router. |
+
+### Key Details:
+- **Zero-Trust Chain:** Audit logs are permanent; even an admin cannot modify a log without breaking the hash chain
+- **Offline Reliability:** Service worker caches OpenStreetMap tiles and Google Fonts for basic map/UI availability without internet
+- **Security First:** Application passes basic pen-test requirements for XSS and NoSQL injection
+- **API First:** Full Swagger documentation allows other Developers to easily integrate with CivicFix
+- **Deployment Ready:** Automated verification via GitHub Actions; Vercel routing fully configured out-of-the-box.
 
 ---
 

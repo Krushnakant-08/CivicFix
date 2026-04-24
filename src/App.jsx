@@ -6,7 +6,8 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ChatBot from './components/ui/ChatBot';
-
+import ToastContainer from './components/ui/Toast';
+import PWAInstallPrompt from './components/ui/PWAInstallPrompt';
 // ─── Phase 8.3: Route-based Code Splitting ───────────────
 // Eagerly load lightweight pages, lazy-load heavy ones
 import Home from './pages/Home';
@@ -121,6 +122,12 @@ function App() {
 
           {/* AI Chatbot Assistant — Phase 7 */}
           <ChatBot />
+
+          {/* Toast notification layer — Phase 8 */}
+          <ToastContainer />
+
+          {/* PWA Install Prompt — Phase 8.1 */}
+          <PWAInstallPrompt />
         </div>
         </NotificationProvider>
       </AuthProvider>

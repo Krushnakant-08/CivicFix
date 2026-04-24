@@ -435,17 +435,17 @@ AI-powered forecasting built on MongoDB aggregation:
 
 ---
 
-### Phase 8 — Advanced Features & Hardening ⬜
+### Phase 8 — Advanced Features & Hardening ✅
 > *"Polish, trust, and future-proof the platform."*
 
 | Item | Description | Status |
 |:---|:---|:---:|
-| Offline-first (PWA) | Service workers, IndexedDB, auto-sync (Workbox) | ⬜ Pending |
-| Blockchain transparency | Immutable audit trail for reports | ⬜ Pending |
-| Performance optimization | Code splitting, lazy loading, CDN | ⬜ Pending |
-| Security hardening | Rate limiting, input sanitization, CORS tightening | ⬜ Pending |
-| API documentation | Swagger/OpenAPI specs | ⬜ Pending |
-| Deployment & CI/CD | Vercel/AWS + GitHub Actions pipeline | ⬜ Pending |
+| Offline-first (PWA) | Service workers, `vite-plugin-pwa` install prompt, auto-sync (Workbox) | ✅ Done |
+| Blockchain transparency | Immutable audit trail for system actions (`AuditLog.js` + SHA-256) | ✅ Done |
+| Performance optimization | Code splitting (`lazy`/`Suspense`), manual chunking | ✅ Done |
+| Security hardening | `helmet`, Rate limits, Mongo sanitize, XSS cleaning | ✅ Done |
+| API documentation | Interactive Swagger UI (`/api/docs`) | ✅ Done |
+| Deployment & CI/CD | Vercel routing + GitHub Actions pipeline | ✅ Done |
 
 ---
 
@@ -467,7 +467,7 @@ AI-powered forecasting built on MongoDB aggregation:
 | **Chatbot** | Rule-based FAQ engine (15+ topics, `ChatBot.jsx`) | ✅ Active |
 | **Accessibility** | ARIA, skip links, focus-visible, reduced motion, `.sr-only` | ✅ Active |
 | **Storage** | Base64 encoding (client-side) | 🔄 Temporary |
-| **Deployment** | Vercel + Railway/AWS | ⬜ Phase 8 |
+| **Deployment** | Vercel + GitHub Actions CI/CD | ✅ Active |
 
 ---
 
