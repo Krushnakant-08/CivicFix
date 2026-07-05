@@ -48,9 +48,7 @@ app.use(
 
 // ─── Phase 8.4: CORS (tightened) ─────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
-  'http://localhost:5173',
-  'http://localhost:4173', // vite preview
+  process.env.CLIENT_URL || 'http://localhost:5173' // vite preview
 ].filter(Boolean);
 
 app.use(
