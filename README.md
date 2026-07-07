@@ -328,127 +328,6 @@ AI-powered forecasting built on MongoDB aggregation:
 
 ---
 
-## 📅 Implementation Phases
-
-> Phases are ordered by **priority** — foundational features first, advanced intelligence later.
-
-### Phase 1 — Foundation & Core Infrastructure ✅
-> *"Build the skeleton — auth, database, project structure."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| Project scaffolding | React 19 + Vite 7 + TailwindCSS 4 setup | ✅ Done |
-| Folder & file structure | Components, pages, services, context | ✅ Done |
-| Authentication system | JWT Auth (Email/Password + Protected Routes) | ✅ Done |
-| Database schema design | MongoDB Atlas — User & Report models (Mongoose 8) | ✅ Done |
-| Role-based access control | Citizen / Department / Admin roles + middleware | ✅ Done |
-| Basic API endpoints | Auth, Users, Reports — full CRUD | ✅ Done |
-| Frontend-backend integration | API service layer + AuthContext | ✅ Done |
-| UI components | Navbar, Footer, Button, Landing page (hero + steps + features + CTA) | ✅ Done |
-
----
-
-### Phase 2 — Citizen Report Submission & Tracking ✅
-> *"The core user journey — report an issue & track it."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| Report submission form | Title, category (7 types), description with char counter | ✅ Done |
-| Auto location tagging | GPS via Geolocation API + OpenStreetMap Nominatim reverse geocoding | ✅ Done |
-| Image upload pipeline | Client-side base64, drag-and-drop + click, max 3 images (5 MB), previews | ✅ Done |
-| Report tracking page | Search by tracking ID, status badge, detail grid, status timeline | ✅ Done |
-| Unique tracking IDs | Auto-generated `CF-YYMMDD-XXXXX` format | ✅ Done |
-| Anonymous reporting | Toggle for logged-in users; auto-anonymous for guests | ✅ Done |
-| My Reports dashboard | Status filter tabs, expand/collapse details, pagination | ✅ Done |
-
----
-
-### Phase 3 — Multi-Role Dashboards & Admin Portal ✅
-> *"Separate views for Citizens, Departments, and Admins."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| Department dashboard | Stats cards, status filter, department-scoped reports with action buttons, pagination | ✅ Done |
-| Admin dashboard | 4-tab interface: Overview, All Reports, Users, Create Staff | ✅ Done |
-| Community feed | 2-column grid, full filter bar, upvote buttons, pagination | ✅ Done |
-| Reusable components | ReportCard (3 variants), FilterBar (category/status/priority/sort) | ✅ Done |
-| User management | Admin can change roles, activate/deactivate accounts | ✅ Done |
-| Department assignment | Admin modal to reassign reports to any department | ✅ Done |
-
----
-
-### Phase 4 — Real-Time Communication & Notifications ✅
-> *"Keep everyone in the loop — live updates & alerts."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| WebSocket infrastructure | Socket.io server with JWT auth middleware, room management | ✅ Done |
-| Socket.io client | Authenticated connection, event subscription/emission | ✅ Done |
-| Notification model | 6 types, recipient, title, message, relatedReport, isRead, metadata | ✅ Done |
-| Notification API | Paginated fetch, unread count, mark read, delete, clear | ✅ Done |
-| Notification UI | Navbar dropdown with emoji indicators, timeAgo, mark read, delete | ✅ Done |
-| Real-time triggers | Status change, assignment, upvote events → in-app + WebSocket delivery | ✅ Done |
-
----
-
-### Phase 5 — AI Intelligence Layer ✅
-> *"Make the system smart — auto-classify, validate, and route."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| NLP engine | Rule-based keyword extraction, auto-tagging (up to 8 tags) | ✅ Done |
-| Smart validation | Jaccard-similarity duplicate detection (≥ 0.45 threshold, 30-day window) | ✅ Done |
-| Spam filtering | Score-based rejection (≥ 0.6) for test data, short content, repetitive words | ✅ Done |
-| Auto department routing | AI override when detected department scores 2+ more keywords | ✅ Done |
-| Priority & risk engine | Keyword-based severity scoring with confidence (0–1) | ✅ Done |
-| ETA estimation | Category base hours × priority multiplier ± historical average from MongoDB | ✅ Done |
-| AI insights UI | Post-submission panel (priority, severity, dept, ETA, tags, duplicates) | ✅ Done |
-
----
-
-### Phase 6 — Interactive Map & Heatmap ✅
-> *"See the city's issues — spatially and interactively."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| Map API endpoint | Geo-optimized report data with filters, `.lean()` for performance | ✅ Done |
-| Interactive Leaflet map | Full-screen with Carto Light tiles, custom SVG markers by category | ✅ Done |
-| Marker clustering | `react-leaflet-cluster` with density-based sizing and color gradients | ✅ Done |
-| Heatmap layer | `leaflet.heat` canvas layer (Blue→Red gradient), weighted by upvotes | ✅ Done |
-| Filter sidebar | Glassmorphism panel, category/status/priority dropdowns, mobile drawer | ✅ Done |
-| Near Me geolocation | Browser Geolocation API → `map.flyTo()` with smooth animation | ✅ Done |
-| Interactive legend | Click category to toggle filter with active ring highlight | ✅ Done |
-
----
-
-### Phase 7 — Analytics, Predictions & Accessibility ✅
-> *"Data-driven governance + inclusive design."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| Analytics dashboard | Daily trends, resolution rate, hourly activity, category breakdowns, top areas | ✅ Done |
-| Predictive engine | Hotspot clusters with risk levels and confidence scores | ✅ Done |
-| Voice-based reporting | Web Speech API speech-to-text for description field | ✅ Done |
-| Accessibility features | Skip-to-content, ARIA attributes, focus-visible, reduced motion, .sr-only | ✅ Done |
-| AI chatbot assistant | Rule-based FAQ engine (15+ topics), quick replies, navigation links | ✅ Done |
-| Environment templates | `.env.example` for both frontend and server | ✅ Done |
-
----
-
-### Phase 8 — Advanced Features & Hardening ✅
-> *"Polish, trust, and future-proof the platform."*
-
-| Item | Description | Status |
-|:---|:---|:---:|
-| Offline-first (PWA) | Service workers, `vite-plugin-pwa` install prompt, auto-sync (Workbox) | ✅ Done |
-| Blockchain transparency | Immutable audit trail for system actions (`AuditLog.js` + SHA-256) | ✅ Done |
-| Performance optimization | Code splitting (`lazy`/`Suspense`), manual chunking | ✅ Done |
-| Security hardening | `helmet`, Rate limits, Mongo sanitize, XSS cleaning | ✅ Done |
-| API documentation | Interactive Swagger UI (`/api/docs`) | ✅ Done |
-| Deployment & CI/CD | Vercel routing + GitHub Actions pipeline | ✅ Done |
-
----
-
 ## 🛠️ Tech Stack
 
 | Layer | Technology | Status |
@@ -552,7 +431,7 @@ Latrobe-CivicFix/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js** ≥ 18.x
+- **Node.js** ≥ 22.x
 - **npm** ≥ 9.x
 - **Git**
 - **MongoDB Atlas** account (free tier works)
@@ -611,25 +490,6 @@ npm run dev
 npm run dev
 # App available at http://localhost:5173
 ```
-
----
-
-## 📊 Development Progress
-
-> Last updated: **April 13, 2026**
-
-| Phase | Name | Status | Progress |
-|:---:|:---|:---:|:---:|
-| 1 | Foundation & Core Infrastructure | ✅ Complete | ██████████ 100% |
-| 2 | Citizen Report Submission & Tracking | ✅ Complete | ██████████ 100% |
-| 3 | Multi-Role Dashboards & Admin Portal | ✅ Complete | ██████████ 100% |
-| 4 | Real-Time Communication & Notifications | ✅ Complete | ██████████ 100% |
-| 5 | AI Intelligence Layer | ✅ Complete | ██████████ 100% |
-| 6 | Interactive Map & Heatmap | ✅ Complete | ██████████ 100% |
-| 7 | Analytics, Predictions & Accessibility | ✅ Complete | ██████████ 100% |
-| 8 | Advanced Features & Hardening | ⬜ Pending | ░░░░░░░░░░ 0% |
-
-> 📋 Detailed implementation log: [`IMPLEMENTATION_STATUS.md`](IMPLEMENTATION_STATUS.md)
 
 ---
 
