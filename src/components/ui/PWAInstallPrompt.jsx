@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { MdOutlineInstallDesktop } from 'react-icons/md';
 
 /**
  * PWAInstallPrompt — Phase 8.1
@@ -57,18 +58,18 @@ export default function PWAInstallPrompt() {
       aria-label="Install CivicFix app"
       className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-sm"
     >
-      <div className="glass-card border border-blue-500/30 shadow-2xl shadow-blue-900/40 p-4 flex items-center gap-4 animate-slide-up">
+      <div className="glass-card border border-stone-200 shadow-xl shadow-stone-200/70 p-4 flex items-center gap-4 animate-slide-up">
         {/* Icon */}
-        <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-blue-600 to-violet-600 rounded-2xl flex items-center justify-center text-2xl shadow-lg">
-          🏙️
+        <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-emerald-700 to-teal-800 rounded-2xl flex items-center justify-center text-white shadow-lg">
+          <MdOutlineInstallDesktop size={22} />
         </div>
 
         {/* Text */}
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-slate-900 text-sm leading-tight">
+          <p className="font-semibold text-stone-800 text-sm leading-tight">
             Install CivicFix
           </p>
-          <p className="text-slate-500 text-xs mt-0.5 leading-snug">
+          <p className="text-stone-600 text-xs mt-0.5 leading-snug">
             Works offline · Fast · No app store needed
           </p>
         </div>
@@ -77,13 +78,13 @@ export default function PWAInstallPrompt() {
         <div className="flex flex-col gap-1.5 shrink-0">
           <button
             onClick={handleInstall}
-            className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap"
+            className="px-3 py-1.5 bg-gradient-to-r from-emerald-700 to-teal-800 text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap"
           >
             Install
           </button>
           <button
             onClick={handleDismiss}
-            className="px-3 py-1.5 text-slate-400 text-xs hover:text-slate-600 transition-colors text-center"
+            className="px-3 py-1.5 text-stone-500 text-xs hover:text-stone-700 transition-colors text-center"
           >
             Not now
           </button>

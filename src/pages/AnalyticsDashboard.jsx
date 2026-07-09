@@ -247,7 +247,7 @@ export default function AnalyticsDashboard() {
                   {[
                     {
                       label: 'Total Reports', value: analytics.totalReports, Icon: ClipboardList,
-                      color: 'from-blue-500 to-cyan-400',
+                      color: 'from-teal-600 to-emerald-600',
                     },
                     {
                       label: 'Resolved', value: analytics.resolvedReports, Icon: CheckCircle,
@@ -432,7 +432,7 @@ export default function AnalyticsDashboard() {
                     <div className="space-y-2">
                       {analytics.topAreas.slice(0, 8).map((area, i) => (
                         <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
-                          <span className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-blue-400 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0">
+                          <span className="w-7 h-7 bg-gradient-to-br from-stone-600 to-stone-500 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0">
                             {i + 1}
                           </span>
                           <span className="text-sm text-slate-700 truncate flex-1">{area._id}</span>

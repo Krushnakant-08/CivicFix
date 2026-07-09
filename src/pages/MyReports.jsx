@@ -91,8 +91,8 @@ export default function MyReports() {
               onClick={() => handleFilterChange(tab.key)}
               className={`shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 activeFilter === tab.key
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300 hover:text-blue-600'
+                  ? 'bg-emerald-700 text-white shadow-md shadow-stone-200'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:border-stone-300 hover:text-emerald-700'
               }`}
             >
               {tab.label}
@@ -262,7 +262,7 @@ export default function MyReports() {
                                   <div className="mt-1.5">
                                     <div className={`w-3 h-3 rounded-full ${
                                       i === report.statusHistory.length - 1
-                                        ? `${entryConfig.dot} ring-4 ring-blue-100`
+                                        ? `${entryConfig.dot} ring-4 ring-stone-200`
                                         : 'bg-slate-300'
                                     }`}></div>
                                   </div>
@@ -297,7 +297,7 @@ export default function MyReports() {
                 <button
                   onClick={() => fetchReports(activeFilter, pagination.page - 1)}
                   disabled={pagination.page <= 1}
-                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   ← Previous
                 </button>
@@ -307,7 +307,7 @@ export default function MyReports() {
                 <button
                   onClick={() => fetchReports(activeFilter, pagination.page + 1)}
                   disabled={pagination.page >= pagination.pages}
-                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Next →
                 </button>

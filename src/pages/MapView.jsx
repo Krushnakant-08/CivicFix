@@ -132,8 +132,8 @@ function HeatmapLayer({ points }) {
 const statusStyle = (status) => {
   const map = {
     reported:     'bg-slate-100 text-slate-700',
-    acknowledged: 'bg-blue-50 text-blue-700',
-    assigned:     'bg-indigo-50 text-indigo-700',
+    acknowledged: 'bg-teal-50 text-teal-700',
+    assigned:     'bg-stone-50 text-stone-700',
     in_progress:  'bg-amber-50 text-amber-700',
     resolved:     'bg-emerald-50 text-emerald-700',
     closed:       'bg-slate-100 text-slate-500',

@@ -17,7 +17,7 @@ export default function ProtectedRoute({ children, roles }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-mesh">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-stone-200 border-t-stone-400 rounded-full animate-spin"></div>
           <p className="text-slate-500 text-sm font-medium">Loading...</p>
         </div>
       </div>
@@ -38,11 +38,11 @@ export default function ProtectedRoute({ children, roles }) {
           <h2 className="text-2xl font-bold text-slate-900 mb-3">Access Denied</h2>
           <p className="text-slate-600 mb-6">
             You don't have permission to access this page.
-            Required role: <span className="font-semibold text-blue-600">{roles.join(' or ')}</span>
+            Required role: <span className="font-semibold text-stone-200">{roles.join(' or ')}</span>
           </p>
           <a
             href="/"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+            className="inline-block px-6 py-3 bg-stone-200 text-white rounded-xl font-semibold hover:bg-[#6b3f1f] transition-colors"
           >
             Go Home
           </a>

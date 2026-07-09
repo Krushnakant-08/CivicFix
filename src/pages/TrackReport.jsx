@@ -31,17 +31,17 @@ export default function TrackReport() {
   };
 
   const inputClass =
-    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300';
+    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent transition-all duration-300';
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-mesh py-12 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
         {/* Search Card */}
         <div className="bg-white/80 backdrop-blur-xl p-8 md:p-10 relative overflow-hidden animate-slide-up rounded-3xl shadow-xl border border-slate-100 mb-8">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-blue-100 rounded-full blur-3xl -z-10 animate-float"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 bg-stone-200/20 rounded-full blur-3xl -z-10 animate-float"></div>
 
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-teal-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-800 to-teal-700 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -126,7 +126,7 @@ export default function TrackReport() {
                   {report.statusHistory.map((entry, idx) => (
                     <div key={idx} className="flex items-start gap-3">
                       <div className="mt-1.5">
-                        <div className={`w-3 h-3 rounded-full ${idx === report.statusHistory.length - 1 ? 'bg-blue-600 ring-4 ring-blue-100' : 'bg-slate-300'}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${idx === report.statusHistory.length - 1 ? 'bg-emerald-700 ring-4 ring-stone-200' : 'bg-slate-300'}`}></div>
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -145,12 +145,12 @@ export default function TrackReport() {
 
             {/* AI Insights */}
             {(report.aiTags?.length > 0 || report.estimatedResolutionTime || report.isDuplicate) && (
-              <div className="mt-4 bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-4">
+              <div className="mt-4 bg-gradient-to-r from-stone-50 to-orange-50/50 border border-stone-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Bot size={16} className="text-indigo-500" aria-hidden="true" />
+                  <Bot size={16} className="text-emerald-700" aria-hidden="true" />
                   <h4 className="text-xs font-bold text-slate-700">AI Analysis</h4>
                   {report.aiConfidence && (
-                    <span className="text-[10px] font-medium text-indigo-600 bg-indigo-100 px-1.5 py-0.5 rounded-full ml-auto">
+                    <span className="text-[10px] font-medium text-emerald-700 bg-stone-200 px-1.5 py-0.5 rounded-full ml-auto">
                       {Math.round(report.aiConfidence * 100)}% confidence
                     </span>
                   )}
@@ -172,7 +172,7 @@ export default function TrackReport() {
                 {report.aiTags?.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {report.aiTags.map((tag) => (
-                      <span key={tag} className="px-1.5 py-0.5 bg-white/80 border border-indigo-100 text-indigo-600 rounded text-[10px] font-medium capitalize">
+                      <span key={tag} className="px-1.5 py-0.5 bg-white/80 border border-stone-200 text-stone-700 rounded text-[10px] font-medium capitalize">
                         {tag.replace(/-/g, ' ')}
                       </span>
                     ))}

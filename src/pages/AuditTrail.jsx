@@ -71,7 +71,7 @@ export default function AuditTrail() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const ACTION_COLORS = {
-    REPORT_CREATED: 'bg-blue-100 text-blue-700',
+    REPORT_CREATED: 'bg-stone-100 text-stone-700',
     STATUS_CHANGED: 'bg-amber-100 text-amber-700',
     REPORT_ASSIGNED: 'bg-violet-100 text-violet-700',
     REPORT_RESOLVED: 'bg-green-100 text-green-700',
@@ -95,7 +95,7 @@ export default function AuditTrail() {
         {/* ── Header ─────────────────────────────────────── */}
         <div className="animate-slide-up">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center text-xl">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-700 to-amber-600 rounded-xl flex items-center justify-center text-xl">
               🔗
             </div>
             <div>
@@ -109,7 +109,7 @@ export default function AuditTrail() {
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="glass-card p-4 text-center">
-              <div className="text-3xl font-bold text-blue-600">{stats.totalEntries?.toLocaleString()}</div>
+              <div className="text-3xl font-bold" style={{ color: '#a2704a' }}>{stats.totalEntries?.toLocaleString()}</div>
               <div className="text-slate-500 text-xs mt-1">Total Blocks</div>
             </div>
             {stats.byAction?.slice(0, 3).map((a) => (
@@ -144,7 +144,7 @@ export default function AuditTrail() {
             <button
               onClick={verifyChain}
               disabled={verifying}
-              className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
+              className="px-5 py-2.5 bg-gradient-to-r from-emerald-700 to-teal-700 text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
             >
               {verifying ? '⏳ Verifying…' : '✅ Verify Chain'}
             </button>
@@ -157,7 +157,7 @@ export default function AuditTrail() {
             <select
               value={filter.action}
               onChange={(e) => setFilter((f) => ({ ...f, action: e.target.value }))}
-              className="flex-1 px-3 py-2 bg-white/70 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="flex-1 px-3 py-2 bg-white/70 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-emerald-700 outline-none"
             >
               <option value="">All Actions</option>
               <option value="REPORT_CREATED">Report Created</option>
@@ -173,19 +173,19 @@ export default function AuditTrail() {
               type="date"
               value={filter.from}
               onChange={(e) => setFilter((f) => ({ ...f, from: e.target.value }))}
-              className="flex-1 px-3 py-2 bg-white/70 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="flex-1 px-3 py-2 bg-white/70 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-emerald-700 outline-none"
               placeholder="From date"
             />
             <input
               type="date"
               value={filter.to}
               onChange={(e) => setFilter((f) => ({ ...f, to: e.target.value }))}
-              className="flex-1 px-3 py-2 bg-white/70 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="flex-1 px-3 py-2 bg-white/70 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-emerald-700 outline-none"
               placeholder="To date"
             />
             <button
               onClick={() => { setPage(1); fetchLogs(); }}
-              className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-emerald-700 text-white rounded-xl text-sm font-semibold hover:bg-emerald-800 transition-colors"
             >
               Filter
             </button>

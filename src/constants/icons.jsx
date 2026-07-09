@@ -19,7 +19,7 @@ export const STATUS_CONFIG = {
   reported:     { label: 'Reported',     color: 'bg-red-100 text-red-700',    dot: 'bg-red-500',    Icon: FileText },
   acknowledged: { label: 'Acknowledged', color: 'bg-orange-100 text-orange-700', dot: 'bg-orange-500', Icon: Eye },
   assigned:     { label: 'Assigned',     color: 'bg-amber-100 text-amber-700',  dot: 'bg-amber-500',  Icon: Pin },
-  in_progress:  { label: 'In Progress',  color: 'bg-blue-100 text-blue-700',   dot: 'bg-blue-500',   Icon: Wrench },
+  in_progress:  { label: 'In Progress',  color: 'bg-teal-100 text-teal-800',   dot: 'bg-teal-600',   Icon: Wrench },
   resolved:     { label: 'Resolved',     color: 'bg-green-100 text-green-700',  dot: 'bg-green-500',  Icon: CheckCircle },
   closed:       { label: 'Closed',       color: 'bg-slate-100 text-slate-700',  dot: 'bg-slate-500',  Icon: Archive },
   rejected:     { label: 'Rejected',     color: 'bg-red-100 text-red-700',     dot: 'bg-red-500',    Icon: XCircle },
@@ -39,10 +39,10 @@ export const CATEGORY_ICONS = {
 
 // ─── Notification type icons ─────────────────────────────
 export const NOTIFICATION_ICONS = {
-  status_change:   { Icon: RefreshCw,   color: 'bg-blue-500' },
+  status_change:   { Icon: RefreshCw,   color: 'bg-emerald-700' },
   report_assigned: { Icon: ClipboardList, color: 'bg-amber-500' },
   report_upvoted:  { Icon: ThumbsUp,    color: 'bg-green-500' },
-  new_report:      { Icon: FilePlus,    color: 'bg-indigo-500' },
+  new_report:      { Icon: FilePlus,    color: 'bg-stone-700' },
   report_resolved: { Icon: CheckCircle2, color: 'bg-emerald-500' },
   system:          { Icon: Settings,    color: 'bg-slate-500' },
 };

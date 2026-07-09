@@ -17,10 +17,20 @@ import {
 } from '../../constants/icons';
 
 const PRIORITY_CONFIG = {
-  low: { color: 'text-green-600', bg: 'bg-green-50' },
-  medium: { color: 'text-amber-600', bg: 'bg-amber-50' },
-  high: { color: 'text-orange-600', bg: 'bg-orange-50' },
-  critical: { color: 'text-red-600', bg: 'bg-red-50' },
+  low: { color: 'text-[#4f6f6a]', bg: 'bg-[#e7efed]' },
+  medium: { color: 'text-[#8c6c2e]', bg: 'bg-[#f4ebd6]' },
+  high: { color: 'text-[#8b5d35]', bg: 'bg-[#f4e8da]' },
+  critical: { color: 'text-[#7a4334]', bg: 'bg-[#f4e2db]' },
+};
+
+const CATEGORY_BADGE_STYLES = {
+  roads: 'category-pill-roads',
+  sanitation: 'category-pill-sanitation',
+  water: 'category-pill-water',
+  electricity: 'category-pill-electricity',
+  parks: 'category-pill-parks',
+  traffic: 'category-pill-traffic',
+  other: 'category-pill-other',
 };
 
 const ReportCard = React.memo(function ReportCard({
@@ -35,6 +45,7 @@ const ReportCard = React.memo(function ReportCard({
 }) {
   const statusConfig = STATUS_CONFIG[report.status] || STATUS_CONFIG.reported;
   const priorityConfig = PRIORITY_CONFIG[report.priority] || PRIORITY_CONFIG.medium;
+  const categoryBadgeClass = CATEGORY_BADGE_STYLES[report.category] || CATEGORY_BADGE_STYLES.other;
 
   const formatDate = (d) =>
     new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -42,7 +53,7 @@ const ReportCard = React.memo(function ReportCard({
   if (variant === 'compact') {
     return (
       <div
-        className="bg-white/80 backdrop-blur-xl rounded-xl border border-slate-100 p-4 hover:shadow-md transition-shadow duration-300 animate-slide-up"
+        className="bg-[var(--bg-surface)] rounded-[1.1rem] border border-[var(--border-soft)] p-4 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-strong)] transition-all duration-300 animate-slide-up"
         style={{ animationDelay: `${animationDelay}ms` }}
       >
         <div className="flex items-center justify-between gap-3">
@@ -54,7 +65,7 @@ const ReportCard = React.memo(function ReportCard({
                 {statusConfig.label}
               </span>
             </div>
-            <h4 className="font-semibold text-slate-900 text-sm truncate">{report.title}</h4>
+            <h4 className="font-semibold text-stone-800 text-sm truncate">{report.title}</h4>
           </div>
           <span className="text-xs text-slate-400 shrink-0">{formatDate(report.createdAt)}</span>
         </div>
@@ -64,7 +75,7 @@ const ReportCard = React.memo(function ReportCard({
 
   return (
     <div
-      className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow duration-300 animate-slide-up overflow-hidden"
+      className="bg-[var(--bg-surface)] rounded-[1.4rem] border border-[var(--border-soft)] shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-strong)] transition-all duration-300 animate-slide-up overflow-hidden"
       style={{ animationDelay: `${animationDelay}ms` }}
     >
       <div className="p-5">
@@ -79,7 +90,7 @@ const ReportCard = React.memo(function ReportCard({
                 {report.priority}
               </span>
             </div>
-            <h3 className="text-base font-bold text-slate-900">{report.title}</h3>
+            <h3 className="text-base font-bold text-stone-800">{report.title}</h3>
           </div>
           <span className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${statusConfig.color}`}>
             <StatusIcon config={statusConfig} size={12} />
@@ -88,13 +99,13 @@ const ReportCard = React.memo(function ReportCard({
         </div>
 
         {/* Description */}
-        <p className="text-sm text-slate-600 mb-3 line-clamp-2">{report.description}</p>
+        <p className="text-sm text-stone-600 mb-3 line-clamp-2">{report.description}</p>
 
         {/* Meta row */}
-        <div className="flex items-center gap-3 flex-wrap text-xs text-slate-500">
-          <span className="inline-flex items-center gap-1">
-            <CategoryIcon category={report.category} size={14} className="text-slate-400" />
-            <span className="capitalize">{report.category}</span>
+        <div className="flex items-center gap-3 flex-wrap text-xs text-[var(--text-secondary)]">
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 capitalize ${categoryBadgeClass}`}>
+            <CategoryIcon category={report.category} size={14} className="opacity-80" />
+            <span>{report.category}</span>
           </span>
           {report.location?.address && (
             <span className="inline-flex items-center gap-1 truncate max-w-[200px]">
@@ -134,12 +145,12 @@ const ReportCard = React.memo(function ReportCard({
         {report.aiTags?.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
             {report.aiTags.slice(0, 5).map((tag) => (
-              <span key={tag} className="px-1.5 py-0.5 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded text-[10px] font-medium capitalize">
+              <span key={tag} className="px-1.5 py-0.5 bg-[var(--bg-muted)] border border-[var(--border-soft)] text-[var(--text-secondary)] rounded-full text-[10px] font-medium capitalize">
                 {tag.replace(/-/g, ' ')}
               </span>
             ))}
             {report.aiConfidence && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-slate-50 text-slate-400 rounded text-[10px] font-medium">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-[var(--bg-surface)] text-[var(--text-secondary)] rounded-full text-[10px] font-medium border border-[var(--border-soft)]">
                 <Bot size={10} aria-hidden="true" />
                 {Math.round(report.aiConfidence * 100)}%
               </span>
@@ -177,7 +188,7 @@ const ReportCard = React.memo(function ReportCard({
         {/* Reporter info (admin variant) */}
         {variant === 'admin' && report.reporter && (
           <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-            <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-teal-400 rounded-md flex items-center justify-center text-white font-bold text-[10px]">
+            <div className="w-5 h-5 bg-stone-200 rounded-md flex items-center justify-center text-stone-700 font-bold text-[10px]">
               {report.reporter.name?.charAt(0).toUpperCase() || '?'}
             </div>
             <span>{report.reporter.name || 'Anonymous'}</span>
@@ -187,13 +198,13 @@ const ReportCard = React.memo(function ReportCard({
 
       {/* Action buttons */}
       {showActions && (
-        <div className="px-5 py-3 bg-slate-50/50 border-t border-slate-100 flex items-center gap-2 flex-wrap">
+        <div className="px-5 py-3 bg-[var(--bg-muted)]/70 border-t border-[var(--border-soft)] flex items-center gap-2 flex-wrap">
           {onStatusUpdate && report.status !== 'resolved' && report.status !== 'closed' && (
             <>
               {report.status === 'reported' && (
                 <button
                   onClick={() => onStatusUpdate(report._id, 'acknowledged', 'Report acknowledged')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 rounded-lg text-xs font-semibold hover:bg-orange-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4ebd6] border border-[#e4d6b5] text-[#8c6c2e] rounded-xl text-xs font-semibold hover:bg-[#efe0bf] transition-colors"
                 >
                   <Eye size={13} aria-hidden="true" /> Acknowledge
                 </button>
@@ -201,7 +212,7 @@ const ReportCard = React.memo(function ReportCard({
               {(report.status === 'reported' || report.status === 'acknowledged' || report.status === 'assigned') && (
                 <button
                   onClick={() => onStatusUpdate(report._id, 'in_progress', 'Work has started')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#e7efed] border border-[#cfded8] text-[#4b625e] rounded-xl text-xs font-semibold hover:bg-[#dce8e5] transition-colors"
                 >
                   <Wrench size={13} aria-hidden="true" /> Start Work
                 </button>
@@ -209,7 +220,7 @@ const ReportCard = React.memo(function ReportCard({
               {report.status === 'in_progress' && (
                 <button
                   onClick={() => onStatusUpdate(report._id, 'resolved', 'Issue resolved')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#e7efe4] border border-[#cfdcc2] text-[#4e6a45] rounded-xl text-xs font-semibold hover:bg-[#dce8d2] transition-colors"
                 >
                   <CheckCircle size={13} aria-hidden="true" /> Mark Resolved
                 </button>
@@ -225,7 +236,7 @@ const ReportCard = React.memo(function ReportCard({
           {onAssign && (
             <button
               onClick={() => onAssign(report)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 border border-purple-200 text-purple-700 rounded-lg text-xs font-semibold hover:bg-purple-100 transition-colors ml-auto"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#efe7dc] border border-[#e1d4c3] text-[#6d5c4c] rounded-xl text-xs font-semibold hover:bg-[#e5dccf] transition-colors ml-auto"
             >
               <Pin size={13} aria-hidden="true" /> Assign
             </button>

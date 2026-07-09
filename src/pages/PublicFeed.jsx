@@ -84,7 +84,7 @@ export default function PublicFeed() {
             <div className="mb-4"><AlertTriangle size={40} className="text-red-400 mx-auto" aria-hidden="true" /></div>
             <p className="text-slate-700 font-semibold mb-2">Failed to load feed</p>
             <p className="text-slate-500 text-sm mb-4">{error}</p>
-            <button onClick={() => fetchReports()} className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors">Retry</button>
+            <button onClick={() => fetchReports()} className="px-4 py-2 bg-emerald-700 text-white rounded-xl text-sm font-semibold hover:bg-emerald-800 transition-colors">Retry</button>
           </div>
         )}
 
@@ -121,7 +121,7 @@ export default function PublicFeed() {
                 <button
                   onClick={() => fetchReports(pagination.page - 1)}
                   disabled={pagination.page <= 1}
-                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   ← Previous
                 </button>
@@ -131,7 +131,7 @@ export default function PublicFeed() {
                 <button
                   onClick={() => fetchReports(pagination.page + 1)}
                   disabled={pagination.page >= pagination.pages}
-                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Next →
                 </button>

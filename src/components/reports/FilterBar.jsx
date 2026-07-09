@@ -47,7 +47,7 @@ export default function FilterBar({
   showSearch = false,
   compact = false,
 }) {
-  const selectClass = `bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer ${compact ? 'py-1.5 text-xs' : ''}`;
+  const selectClass = `bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer ${compact ? 'py-1.5 text-xs' : ''}`;
 
   return (
     <div className="flex items-center gap-3 flex-wrap">

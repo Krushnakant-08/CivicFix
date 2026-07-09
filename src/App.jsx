@@ -30,7 +30,7 @@ function PageLoader() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4 animate-pulse">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 animate-spin" />
+        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-700 to-amber-700 animate-spin" />
         <p className="text-slate-400 text-sm font-medium">Loading…</p>
       </div>
     </div>
@@ -144,7 +144,7 @@ function NotFound() {
         <p className="text-slate-500 mb-6">The page you're looking for doesn't exist.</p>
         <a
           href="/"
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+          className="inline-block px-6 py-3 bg-[#a2704a] text-white rounded-xl font-semibold hover:bg-[#8b5e3c] transition-colors"
         >
           Go Home
         </a>

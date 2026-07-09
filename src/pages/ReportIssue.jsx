@@ -286,7 +286,7 @@ export default function ReportIssue() {
   };
 
   const lightInputClass =
-    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300';
+    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent transition-all duration-300';
 
   // ─── Success State ─────────────────────────────────────
   if (success) {
@@ -308,7 +308,7 @@ export default function ReportIssue() {
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-6">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Your Tracking ID</p>
             <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl font-mono font-bold text-blue-600 tracking-wider">{success.trackingId}</span>
+              <span className="text-2xl font-mono font-bold text-emerald-800 tracking-wider">{success.trackingId}</span>
               <button
                 onClick={copyTrackingId}
                 className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
@@ -329,12 +329,12 @@ export default function ReportIssue() {
 
           {/* AI Insights Panel */}
           {success.aiInsights && (
-            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-2xl p-5 mb-6 text-left animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <div className="bg-gradient-to-r from-stone-50 to-orange-50/50 border border-stone-200 rounded-2xl p-5 mb-6 text-left animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <div className="flex items-center gap-2 mb-3">
-                <Bot size={18} className="text-indigo-500" aria-hidden="true" />
+                <Bot size={18} className="text-emerald-700" aria-hidden="true" />
                 <h3 className="font-bold text-slate-800 text-sm">AI Analysis</h3>
                 {success.aiInsights.confidence && (
-                  <span className="ml-auto text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
+                  <span className="ml-auto text-xs font-medium text-stone-700 bg-stone-200 px-2 py-0.5 rounded-full">
                     {Math.round(success.aiInsights.confidence * 100)}% confidence
                   </span>
                 )}
@@ -356,7 +356,7 @@ export default function ReportIssue() {
                   <p className="text-sm font-bold text-slate-700 capitalize">
                     {success.aiInsights.suggestedDepartment}
                     {success.aiInsights.departmentOverridden && (
-                      <span className="ml-1 text-xs font-normal text-indigo-500">(AI-routed)</span>
+                      <span className="ml-1 text-xs font-normal text-stone-600">(AI-routed)</span>
                     )}
                   </p>
                 </div>
@@ -418,7 +418,7 @@ export default function ReportIssue() {
     <div className="min-h-[calc(100vh-80px)] bg-mesh py-12 px-4 flex items-center justify-center font-sans">
       <div className="w-full max-w-2xl bg-white/80 backdrop-blur-xl p-8 md:p-12 relative overflow-hidden animate-slide-up rounded-[2rem] shadow-xl border border-slate-100">
         {/* Decorative glows */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl -z-10 animate-float"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-stone-200/15 rounded-full blur-3xl -z-10 animate-float"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
 
         <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">Report an Issue</h2>
@@ -461,7 +461,7 @@ export default function ReportIssue() {
                   onClick={() => { setError(null); setFormData({ ...formData, category: cat.value }); }}
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
                     formData.category === cat.value
-                      ? 'bg-blue-50 border-blue-300 text-blue-700 ring-2 ring-blue-200'
+                      ? 'bg-stone-100 border-stone-300 text-stone-700 ring-2 ring-stone-200'
                       : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                   }`}
                 >
@@ -489,11 +489,11 @@ export default function ReportIssue() {
                 type="button"
                 onClick={handleGeolocate}
                 disabled={isLocating}
-                className="shrink-0 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-600 hover:bg-blue-100 hover:border-blue-300 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="shrink-0 px-4 py-3 bg-stone-100 border border-stone-200 rounded-xl text-stone-700 hover:bg-stone-200 hover:border-stone-300 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Auto-detect my location"
               >
                 {isLocating ? (
-                  <div className="w-5 h-5 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-stone-300 border-t-stone-700 rounded-full animate-spin"></div>
                 ) : (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -524,7 +524,7 @@ export default function ReportIssue() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 ${
                     isListening
                       ? 'bg-red-50 border border-red-300 text-red-600 animate-pulse'
-                      : 'bg-slate-50 border border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50'
+                      : 'bg-slate-50 border border-slate-200 text-slate-500 hover:border-stone-300 hover:text-stone-700 hover:bg-stone-50'
                   }`}
                   aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
                 >
@@ -600,8 +600,8 @@ export default function ReportIssue() {
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer group ${
                   dragActive
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-slate-300 bg-white hover:bg-slate-50 hover:border-blue-400'
+                    ? 'border-emerald-500 bg-emerald-50'
+                    : 'border-slate-300 bg-white hover:bg-slate-50 hover:border-emerald-400'
                 }`}
               >
                 <input
@@ -612,14 +612,14 @@ export default function ReportIssue() {
                   onChange={handleFileSelect}
                   className="hidden"
                 />
-                <svg className={`w-10 h-10 mx-auto mb-3 transition-colors ${dragActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-blue-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-10 h-10 mx-auto mb-3 transition-colors ${dragActive ? 'text-emerald-700' : 'text-slate-400 group-hover:text-emerald-700'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <p className="text-slate-600 text-sm font-medium">
                   {dragActive ? (
-                    <span className="text-blue-600">Drop images here</span>
+                    <span className="text-emerald-800">Drop images here</span>
                   ) : (
-                    <>Drag and drop images, or <span className="text-blue-600 underline decoration-blue-200 underline-offset-4">click to browse</span></>
+                    <>Drag and drop images, or <span className="text-emerald-800 underline decoration-emerald-200 underline-offset-4">click to browse</span></>
                   )}
                 </p>
                 <p className="text-xs text-slate-400 mt-1">PNG, JPG, WebP - Max 5 MB each</p>
@@ -635,7 +635,7 @@ export default function ReportIssue() {
                 id="anonymous"
                 checked={isAnonymous}
                 onChange={(e) => setIsAnonymous(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                className="mt-0.5 w-4 h-4 rounded border-slate-300 text-stone-700 focus:ring-stone-500"
               />
               <label htmlFor="anonymous" className="cursor-pointer">
                 <span className="text-sm font-semibold text-slate-700">Submit Anonymously</span>

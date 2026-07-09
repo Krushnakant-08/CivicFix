@@ -212,7 +212,7 @@ export default function AdminDashboard() {
     { key: 'create-staff', label: 'Create Staff', Icon: Plus },
   ];
 
-  const inputClass = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm';
+  const inputClass = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent transition-all duration-300 text-sm';
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-mesh py-8 px-4 font-sans">
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
                 {/* Top-level stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {[
-                    { label: 'Total Reports', value: stats.totalReports, Icon: ClipboardList, color: 'from-blue-500 to-cyan-400' },
+                    { label: 'Total Reports', value: stats.totalReports, Icon: ClipboardList, color: 'from-emerald-700 to-teal-600' },
                     { label: 'Reported (New)', value: getStatValue(stats.byStatus, 'reported'), Icon: FileText, color: 'from-red-500 to-orange-400' },
                     { label: 'In Progress', value: getStatValue(stats.byStatus, 'in_progress'), Icon: Wrench, color: 'from-amber-500 to-yellow-400' },
                     { label: 'Resolved', value: getStatValue(stats.byStatus, 'resolved'), Icon: CheckCircle, color: 'from-green-500 to-emerald-400' },
@@ -294,7 +294,7 @@ export default function AdminDashboard() {
                           <div key={item._id} className="flex items-center gap-3">
                             <span className="text-sm font-medium text-slate-700 capitalize w-24 truncate">{item._id}</span>
                             <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-gradient-to-r from-blue-500 to-teal-400 rounded-full transition-all duration-500" style={{ width: `${pct}%` }}></div>
+                              <div className="h-full bg-gradient-to-r from-emerald-700 to-teal-600 rounded-full transition-all duration-500" style={{ width: `${pct}%` }}></div>
                             </div>
                             <span className="text-sm font-bold text-slate-900 w-10 text-right">{item.count}</span>
                           </div>
@@ -388,14 +388,14 @@ export default function AdminDashboard() {
             {/* User Filters */}
             <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-4 mb-6 shadow-sm flex gap-3 flex-wrap">
               <select value={userFilters.role || ''} onChange={(e) => setUserFilters({ ...userFilters, role: e.target.value })}
-                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-700">
                 <option value="">All Roles</option>
                 <option value="citizen">Citizen</option>
                 <option value="department">Department</option>
                 <option value="admin">Admin</option>
               </select>
               <select value={userFilters.department || ''} onChange={(e) => setUserFilters({ ...userFilters, department: e.target.value })}
-                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-700">
                 <option value="">All Departments</option>
                 {DEPARTMENTS.map((d) => <option key={d} value={d} className="capitalize">{d}</option>)}
               </select>
@@ -418,12 +418,12 @@ export default function AdminDashboard() {
             ) : (
               <div className="space-y-3">
                 {users.map((u, idx) => {
-                  const roleBadge = { admin: 'bg-purple-100 text-purple-700', department: 'bg-amber-100 text-amber-700', citizen: 'bg-blue-100 text-blue-700' };
+                  const roleBadge = { admin: 'bg-stone-200 text-stone-800', department: 'bg-amber-100 text-amber-700', citizen: 'bg-teal-100 text-teal-800' };
                   return (
                     <div key={u._id} className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow animate-slide-up" style={{ animationDelay: `${idx * 40}ms` }}>
                       <div className="flex items-center justify-between gap-4 flex-wrap">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold shrink-0">
+                          <div className="w-10 h-10 bg-gradient-to-br from-stone-200 to-emerald-100 rounded-xl flex items-center justify-center text-stone-700 font-bold shrink-0">
                             {u.name?.charAt(0).toUpperCase() || '?'}
                           </div>
                           <div className="min-w-0">

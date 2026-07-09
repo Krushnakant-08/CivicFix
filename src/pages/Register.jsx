@@ -57,18 +57,18 @@ export default function Register() {
   const displayError = localError || error;
 
   const inputClass =
-    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300';
+    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent transition-all duration-300';
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-mesh py-12 px-4 flex items-center justify-center font-sans">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-xl p-8 md:p-10 relative overflow-hidden animate-slide-up rounded-3xl shadow-xl border border-slate-100">
         {/* Decorative blurs */}
         <div className="absolute top-0 left-0 w-48 h-48 bg-teal-100 rounded-full blur-3xl -z-10 animate-float"></div>
-        <div className="absolute bottom-0 right-0 w-48 h-48 bg-blue-50 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-50 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-700 to-amber-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
@@ -171,7 +171,7 @@ export default function Register() {
               type="checkbox"
               checked={showPassword}
               onChange={() => setShowPassword(!showPassword)}
-              className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="w-4 h-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-700"
             />
             Show passwords
           </label>
@@ -199,7 +199,7 @@ export default function Register() {
             Already have an account?{' '}
             <Link
               to="/login"
-              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+              className="text-emerald-800 hover:text-emerald-900 font-semibold transition-colors"
             >
               Sign in
             </Link>
