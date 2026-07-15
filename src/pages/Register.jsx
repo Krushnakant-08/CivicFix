@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AlertCircle, Eye, EyeOff, LockKeyhole, Mail, Phone, UserRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
+
+const inputClass =
+  'w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-[var(--text)] placeholder:text-slate-400 transition focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-emerald-700/15';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -18,17 +22,16 @@ export default function Register() {
   const { register, error, clearError } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (event) => {
     clearError();
     setLocalError(null);
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setLocalError(null);
 
-    // Validation
     if (formData.password.length < 6) {
       setLocalError('Password must be at least 6 characters');
       return;
@@ -48,7 +51,7 @@ export default function Register() {
       });
       navigate('/', { replace: true });
     } catch {
-      // Error is set in AuthContext
+      // Error is set in AuthContext.
     } finally {
       setIsSubmitting(false);
     }
@@ -56,155 +59,148 @@ export default function Register() {
 
   const displayError = localError || error;
 
-  const inputClass =
-    'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent transition-all duration-300';
-
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-mesh py-12 px-4 flex items-center justify-center font-sans">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-xl p-8 md:p-10 relative overflow-hidden animate-slide-up rounded-3xl shadow-xl border border-slate-100">
-        {/* Decorative blurs */}
-        <div className="absolute top-0 left-0 w-48 h-48 bg-teal-100 rounded-full blur-3xl -z-10 animate-float"></div>
-        <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-50 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
-
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-emerald-700 to-amber-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
+    <div className="min-h-[calc(100dvh-80px)] bg-[var(--canvas)] px-5 py-10">
+      <div className="mx-auto grid max-w-6xl overflow-hidden rounded-2xl border border-[var(--border)] bg-white shadow-[var(--shadow)] lg:grid-cols-[0.9fr_1.1fr]">
+        <aside className="hidden bg-[var(--ink)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-emerald-100">New resident account</p>
+            <h1 className="font-display mt-4 text-5xl font-semibold leading-tight">Create a reliable record for every issue you report.</h1>
+            <p className="mt-4 max-w-sm text-white/70">
+              Your account keeps submissions, tracking IDs, and follow-up messages in one place.
+            </p>
           </div>
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Join CivicFix</h2>
-          <p className="text-slate-500 mt-2">Create your citizen account and make a difference</p>
-        </div>
-
-        {/* Error Alert */}
-        {displayError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-3 animate-slide-up">
-            <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            {displayError}
+          <div className="grid gap-3 text-sm text-white/75">
+            <div className="rounded-xl border border-white/10 p-4">Personal details help teams clarify reports faster.</div>
+            <div className="rounded-xl border border-white/10 p-4">Phone number is optional and only sent when provided.</div>
           </div>
-        )}
+        </aside>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Full Name</label>
-            <input
-              required
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="John Doe"
-              autoComplete="name"
-            />
+        <main className="p-6 sm:p-8 md:p-10">
+          <div className="mb-8">
+            <p className="text-sm font-semibold text-[var(--accent)]">Create account</p>
+            <h2 className="font-display mt-2 text-4xl font-semibold tracking-tight text-[var(--text)]">Join CivicFix</h2>
+            <p className="mt-2 text-[var(--muted)]">Set up your profile before submitting or tracking reports.</p>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Email</label>
-            <input
-              required
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="you@example.com"
-              autoComplete="email"
-            />
-          </div>
+          {displayError && (
+            <div className="mb-5 flex gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+              <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
+              <span>{displayError}</span>
+            </div>
+          )}
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Phone (Optional)</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="+91 98765 43210"
-              autoComplete="tel"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Password</label>
-              <div className="relative">
+          <form onSubmit={handleSubmit} className="grid gap-5">
+            <label className="grid gap-2 text-sm font-semibold text-[var(--text)]">
+              Full name
+              <span className="relative">
+                <UserRound className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} aria-hidden="true" />
                 <input
                   required
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
+                  type="text"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  className={inputClass}
-                  placeholder="••••••"
-                  autoComplete="new-password"
-                  minLength={6}
+                  className={`${inputClass} pl-10`}
+                  placeholder="Avery Singh"
+                  autoComplete="name"
                 />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Confirm</label>
-              <div className="relative">
-                <input
-                  required
-                  type={showPassword ? 'text' : 'password'}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={inputClass}
-                  placeholder="••••••"
-                  autoComplete="new-password"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Show password toggle */}
-          <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-500">
-            <input
-              type="checkbox"
-              checked={showPassword}
-              onChange={() => setShowPassword(!showPassword)}
-              className="w-4 h-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-700"
-            />
-            Show passwords
-          </label>
-
-          <Button
-            variant="primary"
-            type="submit"
-            className="w-full mt-2"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Creating account...
               </span>
-            ) : (
-              'Create Account'
-            )}
-          </Button>
-        </form>
+            </label>
 
-        {/* Footer links */}
-        <div className="mt-8 text-center">
-          <p className="text-slate-500 text-sm">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="text-emerald-800 hover:text-emerald-900 font-semibold transition-colors"
+            <div className="grid gap-5 md:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--text)]">
+                Email
+                <span className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} aria-hidden="true" />
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`${inputClass} pl-10`}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                  />
+                </span>
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-[var(--text)]">
+                Phone optional
+                <span className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} aria-hidden="true" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`${inputClass} pl-10`}
+                    placeholder="+91 98765 43210"
+                    autoComplete="tel"
+                  />
+                </span>
+              </label>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--text)]">
+                Password
+                <span className="relative">
+                  <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} aria-hidden="true" />
+                  <input
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`${inputClass} pl-10 pr-12`}
+                    placeholder="At least 6 characters"
+                    autoComplete="new-password"
+                    minLength={6}
+                  />
+                </span>
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-[var(--text)]">
+                Confirm password
+                <span className="relative">
+                  <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" size={18} aria-hidden="true" />
+                  <input
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className={`${inputClass} pl-10 pr-12`}
+                    placeholder="Repeat password"
+                    autoComplete="new-password"
+                  />
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((visible) => !visible)}
+              className="flex w-fit items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-[var(--muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
             >
+              {showPassword ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
+              {showPassword ? 'Hide passwords' : 'Show passwords'}
+            </button>
+
+            <Button variant="primary" type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating account...' : 'Create account'}
+            </Button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-[var(--muted)]">
+            Already have an account?{' '}
+            <Link to="/login" className="font-semibold text-[var(--accent)] hover:text-[var(--accent-strong)]">
               Sign in
             </Link>
           </p>
-        </div>
+        </main>
       </div>
     </div>
   );

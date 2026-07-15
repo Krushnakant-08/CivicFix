@@ -4,23 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        earthyBrown: '#6b3f1f',
+        earthyBrown: '#5e7260',
         earth: {
-          canvas: '#f6efe5',
-          surface: '#fcf8f1',
-          muted: '#efe3d0',
-          forest: '#567c51',
-          ocean: '#4f6f6a',
-          soil: '#a2704a',
-          sand: '#d6b07d',
+          canvas: '#f8f7f4',
+          surface: '#ffffff',
+          muted: '#f1f2ef',
+          forest: '#5e7260',
+          ocean: '#6b7280',
+          soil: '#8b9a8c',
+          sand: '#d1d5db',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        earthy: '0 12px 30px rgba(70, 48, 30, 0.08)',
-        earthyStrong: '0 18px 40px rgba(70, 48, 30, 0.12)',
+        earthy: '0 10px 24px rgba(17, 24, 39, 0.06)',
+        earthyStrong: '0 14px 30px rgba(17, 24, 39, 0.1)',
       },
     },
   },

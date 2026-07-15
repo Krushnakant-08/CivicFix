@@ -28,10 +28,15 @@ const AuditTrailPage      = lazy(() => import('./pages/AuditTrail'));
 // ─── Suspense Fallback ────────────────────────────────────
 function PageLoader() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4 animate-pulse">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-700 to-amber-700 animate-spin" />
-        <p className="text-slate-400 text-sm font-medium">Loading…</p>
+    <div className="flex min-h-[60vh] items-center justify-center bg-[var(--canvas)] px-5">
+      <div className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-white p-5 shadow-[var(--shadow)]">
+        <div className="skeleton mb-4 h-5 w-36 rounded-md" />
+        <div className="skeleton mb-3 h-10 w-full rounded-lg" />
+        <div className="skeleton mb-6 h-4 w-2/3 rounded-md" />
+        <div className="grid gap-3">
+          <div className="skeleton h-14 w-full rounded-xl" />
+          <div className="skeleton h-14 w-full rounded-xl" />
+        </div>
       </div>
     </div>
   );
@@ -137,16 +142,16 @@ function App() {
 
 function NotFound() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-mesh">
-      <div className="glass-card p-12 text-center max-w-md animate-slide-up">
-        <div className="mb-4"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 mx-auto" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <h2 className="text-3xl font-bold text-slate-900 mb-3">404 — Page Not Found</h2>
-        <p className="text-slate-500 mb-6">The page you're looking for doesn't exist.</p>
+    <div className="flex min-h-[60vh] items-center justify-center bg-[var(--canvas)] px-5">
+      <div className="max-w-md rounded-2xl border border-[var(--border)] bg-white p-10 text-center shadow-[var(--shadow)]">
+        <p className="mb-3 text-sm font-bold text-[var(--accent)]">404</p>
+        <h2 className="mb-3 text-3xl font-bold text-[var(--text)]">Page not found</h2>
+        <p className="mb-6 text-[var(--muted)]">The page you are looking for does not exist.</p>
         <a
           href="/"
-          className="inline-block px-6 py-3 bg-[#a2704a] text-white rounded-xl font-semibold hover:bg-[#8b5e3c] transition-colors"
+          className="inline-flex rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white transition hover:bg-[var(--accent-strong)]"
         >
-          Go Home
+          Go home
         </a>
       </div>
     </div>

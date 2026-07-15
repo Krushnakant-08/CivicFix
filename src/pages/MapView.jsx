@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
@@ -90,7 +90,7 @@ const createClusterIcon = (cluster) => {
       border: 3px solid rgba(255,255,255,0.8);
       border-radius: 50%;
       color: white; font-weight: 700; font-size: ${fontSize}px;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Outfit', sans-serif;
       box-shadow: 0 4px 14px rgba(0,0,0,0.25), 0 0 0 4px ${bgColor.replace(/[\d.]+\)$/, '0.25)')};
       transition: transform 0.2s;
     ">${count}</div>`,

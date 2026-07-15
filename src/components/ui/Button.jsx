@@ -1,15 +1,22 @@
 import React from 'react';
 
 export const Button = ({ children, variant = 'primary', className = '', ...props }) => {
+  const base =
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg px-5 py-3 text-sm font-semibold transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-55 active:translate-y-px';
+
   const variants = {
     primary:
-      'bg-emerald-800 hover:bg-emerald-700 text-[#fdf8ef] shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:ring-offset-2 px-6 py-3 rounded-2xl font-semibold transition-all duration-200 ease-in-out',
+      'bg-[var(--ink)] text-white hover:bg-[#33322e]',
     secondary:
-      'bg-[var(--bg-surface)] text-[var(--text-primary)] border border-[var(--border-soft)] hover:border-[var(--accent-forest)] hover:shadow-[var(--shadow-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-ocean)]/20 focus:ring-offset-2 px-6 py-3 rounded-2xl font-semibold transition-all duration-200 ease-in-out',
+      'border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--accent)] hover:bg-[var(--surface-muted)]',
+    ghost:
+      'text-[var(--text)] hover:bg-[var(--surface-muted)]',
+    danger:
+      'bg-red-700 text-white hover:bg-red-800',
   };
 
   return (
-    <button className={`${variants[variant]} ${className}`.trim()} {...props}>
+    <button className={`${base} ${variants[variant] || variants.primary} ${className}`.trim()} {...props}>
       {children}
     </button>
   );

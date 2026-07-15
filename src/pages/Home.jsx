@@ -1,62 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
-import { MdOutlineTrackChanges, MdOutlineAddLocationAlt, MdOutlineVisibility, MdOutlinePeopleOutline } from 'react-icons/md';
-
-const features = [
-  { title: "Real-time Tracking", desc: "Monitor the exact status of your reported issues from pending to completely resolved.", Icon: MdOutlineTrackChanges },
-  { title: "Image & Location Mapping", desc: "Attach visual proof and pinpoint exact coordinates to help departments act faster.", Icon: MdOutlineAddLocationAlt },
-  { title: "Transparent Process", desc: "Know exactly which municipal department is handling your community's concerns.", Icon: MdOutlineVisibility },
-  { title: "Community Driven", desc: "Join thousands of active citizens working together to make our city better.", Icon: MdOutlinePeopleOutline }
-];
+import {
+  ArrowRight,
+} from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-mesh font-sans">
-      
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-24 px-6 lg:px-8 max-w-7xl mx-auto text-center animate-slide-up">
-        <div className="absolute top-10 right-20 w-32 h-32 bg-stone-300/15 rounded-full blur-3xl animate-float"></div>
-        
-        <h1 className="text-5xl md:text-7xl font-extrabold text-stone-800 tracking-tight mb-6">
-          Report Civic Issues. <br className="hidden md:block"/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-cyan-800">
-            Improve Your City.
-          </span>
-        </h1>
-        <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-          A transparent, community-driven platform to report, track, and resolve local civic problems. Be the change your neighborhood needs.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/report">
-            <Button variant="primary" className="w-full sm:w-auto text-lg">
-              Report an Issue
-            </Button>
-          </Link>
-          <a href="#features">
-            <Button variant="secondary" className="w-full sm:w-auto text-lg">
-              Learn More
-            </Button>
-          </a>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, idx) => (
-            <div 
-              key={idx} 
-              className="glass-card p-8 animate-slide-up hover:-translate-y-2 transition-transform duration-300 group"
-              style={{ animationDelay: `${idx * 150}ms` }}
-            >
-              <div className="w-12 h-12 bg-stone-200 rounded-xl mb-6 flex items-center justify-center group-hover:bg-emerald-700 transition-colors">
-                <feature.Icon className="w-6 h-6 text-emerald-700 group-hover:text-white transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
-              <p className="text-slate-600 leading-relaxed">{feature.desc}</p>
+    <div className="min-h-screen bg-[var(--canvas)] text-[var(--text)]">
+      <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(94,114,96,0.08),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(17,24,39,0.04),transparent_30%)]" />
+        <div className="mx-auto flex min-h-[calc(100dvh-80px)] max-w-5xl items-center px-5 py-10 lg:px-8 lg:py-14">
+          <div className="relative z-10 max-w-3xl animate-slide-up">
+            {/* <p className="mb-5 inline-flex rounded-full border border-[var(--border)] bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)] backdrop-blur-sm">
+              Civic issue reporting for Latrobe communities
+            </p> */}
+            <h1 className="font-display max-w-4xl text-5xl font-semibold leading-[0.96] text-[var(--text)] text-balance md:text-7xl lg:text-[5.25rem]">
+              Make local problems visible, traceable, and fixable.
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-8 text-[var(--muted)] md:text-lg">
+              Report once, track progress, and keep the handoff readable for everyone involved.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link to="/report" className="w-full sm:w-auto">
+                <Button variant="primary" className="w-full sm:w-auto">
+                  Report issue <ArrowRight size={18} aria-hidden="true" />
+                </Button>
+              </Link>
+              <p className="text-sm text-[var(--muted)]">
+                Track and review reports from one place.
+              </p>
             </div>
-          ))}
+            <div className="mt-10 grid max-w-2xl grid-cols-3 gap-4 border-t border-[var(--border)] pt-6 text-sm text-[var(--muted)]">
+              {[
+                ['24/7', 'online intake'],
+                ['Live', 'status updates'],
+                ['Public', 'issue map'],
+              ].map(([value, label]) => (
+                <div key={label} className="space-y-1">
+                  <p className="font-display text-3xl font-semibold text-[var(--text)]">{value}</p>
+                  <p>{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>

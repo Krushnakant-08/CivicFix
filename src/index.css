@@ -1,5 +1,5 @@
-/* 1. EARTHY TYPOGRAPHY */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* 1. TYPOGRAPHY */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
 
 /* 2. TAILWIND (v4) */
 @import "tailwindcss";
@@ -8,42 +8,61 @@
 /* 3. GLOBAL VARIABLES & BASE STYLES */
 @layer base {
   :root {
-    --brand-blue: #567c51;
-    --brand-teal: #4f6f6a;
-    --brand-soil: #a2704a;
-    --bg-canvas: #f6efe5;
-    --bg-surface: #fcf8f1;
-    --bg-muted: #efe3d0;
-    --text-primary: #2f241d;
-    --text-secondary: #6d5c4c;
-    --border-soft: #d8cbb8;
-    --shadow-soft: 0 12px 30px rgba(70, 48, 30, 0.08);
-    --shadow-strong: 0 18px 40px rgba(70, 48, 30, 0.12);
-    --accent-forest: #567c51;
-    --accent-ocean: #4f6f6a;
-    --accent-soil: #a2704a;
-    --accent-sand: #d6b07d;
+    --canvas: #f8f7f4;
+    --surface: #ffffff;
+    --surface-muted: #f1f2ef;
+    --ink: #121212;
+    --text: #1f2933;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #5e7260;
+    --accent-strong: #4e6151;
+    --accent-soft: #edf1ed;
+    --danger: #b91c1c;
+    --warning: #92400e;
+    --shadow: 0 10px 28px rgba(17, 24, 39, 0.06);
+    --shadow-soft: 0 4px 14px rgba(17, 24, 39, 0.04);
+    --shadow-strong: 0 14px 28px rgba(17, 24, 39, 0.08);
+    --brand-blue: var(--accent);
+    --brand-teal: #5e7260;
+    --brand-soil: #6b7280;
+    --bg-canvas: var(--canvas);
+    --bg-surface: var(--surface);
+    --bg-muted: var(--surface-muted);
+    --text-primary: var(--text);
+    --text-secondary: var(--muted);
+    --border-soft: var(--border);
+    --accent-forest: var(--accent);
+    --accent-ocean: #5e7260;
+    --accent-soil: #6b7280;
+    --accent-sand: #d1d5db;
   }
 
   html {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background-color: var(--bg-canvas);
-    color: var(--text-primary);
+    background-color: var(--canvas);
+    color: var(--text);
     line-height: 1.6;
     letter-spacing: -0.01em;
     overflow-x: hidden;
   }
 
+  h1,
+  .font-display {
+    font-family: "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: -0.04em;
+  }
+
   /* Custom text selection */
   ::selection {
-    background-color: rgba(214, 176, 125, 0.35);
-    color: var(--text-primary);
+    background-color: rgba(22, 101, 52, 0.18);
+    color: var(--text);
   }
 }
 
@@ -76,16 +95,16 @@
 /* 5. COMPLEX COMPONENT ABSTRACTIONS */
 @layer components {
   .glass-card {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-soft);
-    border-radius: 1.35rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
     box-shadow: var(--shadow-soft);
   }
 
   .glass-card-dark {
-    background-color: var(--bg-muted);
-    border: 1px solid var(--border-soft);
-    border-radius: 1.6rem;
+    background-color: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
     box-shadow: var(--shadow-strong);
   }
 
@@ -93,11 +112,11 @@
     position: relative;
     overflow: hidden;
     padding: 0.8rem 1.2rem;
-    border-radius: 999px;
+    border-radius: 0.75rem;
     font-weight: 600;
-    color: #fdf8ef;
+    color: #ffffff;
     transition: all 180ms ease-out;
-    background: linear-gradient(135deg, var(--accent-forest) 0%, var(--accent-ocean) 55%, var(--accent-soil) 100%);
+    background: var(--ink);
     box-shadow: var(--shadow-soft);
   }
 
@@ -113,7 +132,7 @@
   .input-modern {
     width: 100%;
     border: 1px solid var(--border-soft);
-    border-radius: 1rem;
+    border-radius: 0.85rem;
     padding: 0.75rem 1rem;
     background-color: var(--bg-surface);
     color: var(--text-primary);
@@ -127,7 +146,7 @@
   .input-modern:focus {
     outline: none;
     border-color: var(--accent-ocean);
-    box-shadow: 0 0 0 3px rgba(79, 111, 106, 0.16);
+    box-shadow: 0 0 0 3px rgba(94, 114, 96, 0.16);
   }
 }
 
@@ -146,18 +165,19 @@
   }
 
   .bg-mesh {
-    background-color: var(--bg-canvas);
+    background-color: var(--canvas);
     background-image:
-      radial-gradient(at 20% 20%, rgba(86, 124, 81, 0.12) 0px, transparent 44%),
-      radial-gradient(at 80% 0%, rgba(79, 111, 106, 0.14) 0px, transparent 46%),
-      radial-gradient(at 0% 70%, rgba(162, 112, 74, 0.10) 0px, transparent 48%);
+      radial-gradient(circle at 18% 10%, rgba(94, 114, 96, 0.04), transparent 22rem),
+      linear-gradient(rgba(17, 24, 39, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17, 24, 39, 0.03) 1px, transparent 1px);
+    background-size: auto, 56px 56px, 56px 56px;
   }
 
   .bg-mesh-dark {
-    background-color: #2a221d;
+    background-color: #1f2320;
     background-image:
-      radial-gradient(at 80% 20%, rgba(86, 124, 81, 0.16) 0px, transparent 46%),
-      radial-gradient(at 20% 80%, rgba(79, 111, 106, 0.18) 0px, transparent 48%);
+      radial-gradient(at 80% 20%, rgba(94, 114, 96, 0.14) 0px, transparent 46%),
+      radial-gradient(at 20% 80%, rgba(107, 114, 128, 0.12) 0px, transparent 48%);
   }
 
   .category-pill-roads {
